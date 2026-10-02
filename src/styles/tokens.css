@@ -1,0 +1,37 @@
+:root {
+  --bg: #0B0B14;
+  --surface: #14141F;
+  --surface-2: #1C1C2B;
+  --border: rgba(255,255,255,0.08);
+  --text: #EDEDF5;
+  --muted: #8A8AA3;
+  --primary: #7C5CFF;
+  --secondary: #C6FF3D;
+  --highlight: #FF6B57;
+
+  /* Font scales using fluid clamps */
+  --font-hero: clamp(56px, 8vw, 160px);
+  --font-h1: clamp(48px, 6vw, 96px);
+  --font-h2: clamp(36px, 5vw, 72px);
+  --font-body: clamp(16px, 1.2vw, 18px);
+  --font-label: clamp(12px, 1vw, 13px);
+
+  /* Spacing */
+  --section-padding: clamp(80px, 12vw, 160px);
+  --max-width: 1280px;
+
+  /* Easing */
+  --ease-default: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.light {
+  --bg: #F7F5EF;
+  --surface: #FFFFFF;
+  --surface-2: #F0F0ED;
+  --border: rgba(0,0,0,0.08);
+  --text: #14141F;
+  --muted: #5E5E75;
+  --primary: #6340E5; /* Slightly deepened for contrast */
+  --secondary: #A0D818; /* Deepened lime */
+  --highlight: #E64B38;
+}

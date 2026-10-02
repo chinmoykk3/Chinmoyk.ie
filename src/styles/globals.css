@@ -1,0 +1,58 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@theme {
+    --font-sans: "Inter", "system-ui", "sans-serif";
+    --font-heading: "Space Grotesk", "sans-serif";
+    --font-mono: "JetBrains Mono", "monospace";
+
+    --color-bg: var(--bg);
+    --color-surface: var(--surface);
+    --color-surface-2: var(--surface-2);
+    --color-border: var(--border);
+    --color-text: var(--text);
+    --color-muted: var(--muted);
+    --color-primary: var(--primary);
+    --color-secondary: var(--secondary);
+    --color-highlight: var(--highlight);
+}
+
+@layer base {
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: var(--font-sans);
+        overflow-x: hidden;
+        /* faint SVG noise texture can be added here or in layout */
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: var(--font-heading);
+        font-weight: 600;
+    }
+}
+
+/* Glassmorphism utility */
+.glass {
+    background: rgba(var(--surface-rgb), 0.5);
+    /* need rgb tokens if opacity is used, or just hex + opacity filter */
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Gradient Texts */
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+}
