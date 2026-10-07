@@ -1,54 +1,44 @@
-# Mission Control Portfolio - Architecture
+# Flight Log Portfolio — Architecture
 
-## Tech Stack
+## Product direction
 
-- **Framework:** React 18 + Vite (JavaScript)
-- **Styling:** Tailwind CSS with raw CSS variables for design tokens.
-- **Animation:**
-  - Framer Motion (Layout animations, shared-element transitions, component states)
-  - GSAP + ScrollTrigger (Scroll-driven sequences, timeline drawing)
-- **Scrolling:** Lenis (Smooth scrolling, synced with ScrollTrigger)
-- **3D & Physics:**
-  - Three.js via @react-three/fiber (Background starfield/particle field)
-  - Matter.js (Physics for draggable stickers and playground)
-- **Routing:** React Router (404 page, case-study deep links endpoints)
-- **Forms & Utils:** react-hook-form + zod, cmdk (Command palette), canvas-confetti
+A warm, editorial instrument panel for a creative engineer. The interface uses a visible grid, hairline rules, telemetry labels, flat surfaces, and one signal accent instead of generic neon glassmorphism.
 
-## System Design (Midnight Neon)
+## Tech stack
 
-- **Theme Engine:** CSS Variables injected into `:root` and `.light` classes. Toggled via localStorage and initialized with `prefers-color-scheme`.
-- **Responsive Approach:** Mobile-first Tailwind utility classes. Layout breaks at 768px, 1024px, 1440px.
+- React 19 + Vite
+- Tailwind CSS v4 token compatibility through `src/styles/tokens.css`
+- Framer Motion for reveals and route-adjacent motion
+- React Router for `/` and deep-linkable `/work/:slug` case studies
+- Lucide React for interface icons
+- `react-hook-form` + `zod` remain available for the production contact endpoint
+- GSAP, ScrollTrigger, Lenis, Three.js, and Matter.js remain optional dependencies for future experiments; the core route does not load them
 
-## Suggested Folder Structure
+## Structure
 
-```
+```text
 src/
-  assets/
-  components/
-    layout/       (Navbar, Footer, LayoutWrapper)
-    ui/           (Buttons, Form inputs, Cmdk, Cursor)
-    sections/     (Hero, About, Projects, Skills, Experience, Playground, Contact)
-    effects/      (ThreeBackground, ParticleCanvas)
-  hooks/          (useMagnetic, useMousePosition, useTheme, useKonami, useReducedMotion)
-  data/           (projects.js, skills.js, experience.js, testimonials.js, site.js)
-  styles/         (globals.css, tokens.css)
-  pages/          (Home, ProjectPage, NotFound)
-  utils/          (animation helpers, physics setup)
+  App.jsx                 route shell, home sections, case-study template, 404
+  data/                   all editable portfolio content
+  styles/
+    tokens.css            theme tokens for Night Ops and Paper
+    globals.css           layout, typography, components, responsive rules
 ```
 
-## Data Management
+## Routes
 
-All content is centralized in `/src/data` (JS object exports).
-Component logic accesses this data purely to render the DOM. No complex global state management (Zustand/Redux) is needed since interactions are mostly local and animation-driven. Theme state is persisted in localStorage.
+- `/` — recruiter-first portfolio index
+- `/work/:slug` — shareable case-study route with summary, process, outcomes, and next-project link
+- `*` — on-brand 404 with return and contact actions
 
-## Performance Considerations
+## Data contract
 
-- Three.js context pauses when off-screen using `IntersectionObserver`.
-- Heavy assets and case-study overlays are lazy-loaded with React.lazy and Suspense.
-- Explicit image dimensions to avoid Layout Shifts.
+Project content is stored in `src/data/projects.js`, including `visual`, `role`, `timeline`, `problem`, `process`, `features`, and `results`. Visual covers are composed in CSS from this metadata, so the site has no stock-photo dependency. Site identity and contact details live in `src/data/site.js`; skills and experience remain data-driven.
 
-## Accessibility (A11y)
+## Accessibility and motion
 
-- `prefers-reduced-motion` hook controls complex GSAP/Framer animations, defaulting to simple opacity fades.
-- Full keyboard operability and visible focus rings.
-- Semantic HTML tags.
+Semantic headings, buttons, route links, focus rings, keyboard-operable project cards, reduced-motion CSS, and explicit labels are required. Motion explains state or hierarchy. Hover-only effects are paired with keyboard/focus behavior.
+
+## Themes
+
+The default theme is Night Ops. The navigation toggle writes `flight-log-theme` to localStorage and sets `data-theme` on the document root. Paper is designed as a separate palette rather than a simple inversion, with signal orange replacing the dark-theme accent.

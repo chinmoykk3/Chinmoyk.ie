@@ -1,40 +1,50 @@
-# Design System (Midnight Neon)
+# Design System — Flight Log
 
 ## Concept
 
-"Mission Control" - A playful, futuristic command-deck experience. Glassmorphism, neon accents on dark backgrounds, mono-font labels.
+A precise, warm, tactile mission-control aesthetic: aerospace documentation, Swiss grid posters, and Teenage Engineering labelling. Content is primary; decoration behaves like wayfinding.
 
-## Core Colors
+## Visual rules
 
-- **Backgrounds:** `--bg: #0B0B14`, `--surface: #14141F`, `--surface-2: #1C1C2B`
-- **Text:** `--text: #EDEDF5`, `--muted: #8A8AA3`
-- **Accents:**
-  - `--primary: #7C5CFF` (Violet: glows, gradients, focus)
-  - `--secondary: #C6FF3D` (Acid Lime: CTAs, active states, cursor)
-  - `--highlight: #FF6B57` (Coral: easter eggs, errors)
+- Use a visible 12-column grid with hairline rules and small telemetry labels.
+- Keep surfaces mostly flat. Use blur only for the command palette and navigation treatment.
+- Use 4px inputs/tags, 12px cards, and full-radius pills.
+- Use one signal accent per viewport: orange in both themes, with green reserved for online/available status.
+- Project visuals are CSS-composed abstract/typographic cards. Add real media only through data fields when it exists.
+
+## Tokens
+
+| Token | Night Ops | Paper |
+|---|---|---|
+| Background | `#0A0A0F` | `#F2EFE8` |
+| Surface | `#121218` | `#FBFAF6` |
+| Surface 2 | `#1A1A22` | `#E9E5DB` |
+| Text | `#F1EEE6` | `#0F0F14` |
+| Muted | `#8F8F9C` | `#5C5C66` |
+| Signal | `#FF4F1F` | `#E63E0E` |
+| Status | `#3DDC84` | `#3DDC84` |
 
 ## Typography
 
-- **Headings:** `Space Grotesk` (600-700 font-weight)
-- **Body:** `Inter` (400-500 font-weight)
-- **Labels/Code:** `JetBrains Mono` (Uppercase, 0.08em tracking)
+- Display: Space Grotesk with tight tracking and italic/color emphasis.
+- Body: Manrope, 15–18px, generous line-height.
+- Data: DM Mono, uppercase, 9–11px, tracked labels.
 
-## Spacing & Grid
+## Component inventory
 
-- **Base Grid:** 8px increments.
-- **Section Padding:** `clamp(80px, 12vw, 160px)`
-- **Content Max-Width:** 1280px
+- `SectionLabel` — numbered section header with eyebrow and description.
+- `Reveal` — viewport-aware opacity/translate entrance.
+- `ProjectCard` — keyboard-operable index item linking to a case-study route.
+- `ProjectPage` — shared case-study structure with role/timeline/stack, brief, process, outcomes, and next project.
+- `CommandMenu` — keyboard-first command surface opened with `⌘K` / `Ctrl+K`.
+- `RouteMessage` — helpful 404 and missing-project state.
 
-## UI Elements
+## Motion rules
 
-- **Surfaces:** `backdrop-blur(16px)`, `1px solid var(--border)`, 16-24px radius.
-- **Buttons:**
-  - *Primary:* Acid Lime bg, dark text.
-  - *Secondary:* Ghost outline, Violet interactions.
-  - All buttons have magnetic physics (pull towards cursor within 80px).
-- **Forms:** Input fields with glass effect, floating labels, inline error validation with shake animation.
+Use `cubic-bezier(.22, 1, .36, 1)` for reveals and short hover transitions. Prefer one clear motion moment per section. Respect `prefers-reduced-motion` by reducing transitions and disabling decorative movement.
 
-## Motion Language
+## Do / don't
 
-- **Easing:** `cubic-bezier(0.22, 1, 0.36, 1)` default.
-- **Pacing:** Micro-interactions (150-250ms), reveals (600-900ms), staggers (60-80ms).
+- Do use numbering, rules, and labels to make the page easier to scan.
+- Do let the case-study content carry the story.
+- Don't use neon gradients, anonymous icon circles, fake loading waits, or hover-only meaning.

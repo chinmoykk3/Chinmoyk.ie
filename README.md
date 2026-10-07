@@ -1,80 +1,43 @@
-# Mission Control Portfolio
+# Flight Log Portfolio
 
-A production-quality, award-level personal portfolio website built with React 18, Vite, Tailwind CSS, Framer Motion, GSAP, and Matter.js.
+An editorial React 19 portfolio for a creative engineer. The visual system is a precise instrument panel: visible rules, abstract project visuals, strong typography, and signal-orange interactions.
 
-## Setup Instructions
+## Setup
 
-1. **Install dependencies:**
+```bash
+npm install
+npm run dev
+npm run build
+npm run lint
+```
 
-   ```bash
-   npm install
-   ```
+## Content editing
 
-2. **Start the development server:**
+All personal content lives in `src/data/`:
 
-   ```bash
-   npm run dev
-   ```
+- `site.js` — identity, bio, contact details, links, timezone, and role rotation.
+- `projects.js` — project title, route slug, visual treatment, role, timeline, stack, problem, process, features, and outcomes.
+- `skills.js` — capability list.
+- `experience.js` — work history.
 
-3. **Build for production:**
+Project routes are generated at `/work/:slug`. Add a new project object with a unique `slug` to make it available from the index and next-project navigation.
 
-   ```bash
-   npm run build
-   ```
+## Themes
 
-## Folder Structure
+The default theme is Night Ops. The navigation sun/moon control switches to Paper and stores the preference in `localStorage` under `flight-log-theme`.
 
-- `/src/components/layout/` - Global layout components (Navbar, Footer).
-- `/src/components/sections/` - The main sections of the single-page application.
-- `/src/components/ui/` - Micro-components like the cursor and command palette.
-- `/src/components/effects/` - WebGL/Three.js layers.
-- `/src/data/` - **(IMPORTANT)** Contains all customizable site content.
-- `/src/hooks/` - Custom logic (theme, interactions).
-- `/docs/` - System architecture, PRD, rules, and history.
+## Contact form
 
-## How to Edit Content
-
-You do not need to touch any React components to update your information. Navigate to `/src/data/` and modify the following files:
-
-- `site.js`: Your name, tagline, bio, contact email, and social links.
-- `projects.js`: Your portfolio case studies (with images, tags, and problem/solution text).
-- `skills.js`: Add or remove skills for the graph/list.
-- `experience.js`: Your timeline of roles.
-- `testimonials.js`: Quotes from colleagues/clients.
-
-## Connecting the Contact Form
-
-The contact form is currently validated using `react-hook-form` + `zod` but lacks an actual backend hookup.
-To connect it:
-
-1. Sign up for a service like [Formspree](https://formspree.io/) or [EmailJS](https://www.emailjs.com/).
-2. Open `/src/components/sections/Contact.jsx`.
-3. Locate the `onSubmit` function.
-4. Replace the internal `setTimeout` placeholder with a `fetch` request to your Formspree endpoint (or the EmailJS send function).
+The current form is a validated frontend success flow. To connect a provider, add `VITE_FORM_ENDPOINT` and replace the simulated submission in `src/App.jsx` with a `fetch` POST to Formspree, EmailJS, or another endpoint. Keep server-side validation and spam protection in production.
 
 ## Deployment
 
-The app is fully static (`SSG`/`SPA`) and can be hosted anywhere.
+The app is a static Vite SPA. Build with `npm run build` and deploy `dist/`. Configure the host to serve `index.html` for `/` and `/work/*` routes. Netlify users can add `_redirects` with `/* /index.html 200`.
 
-### Vercel
+## Checklist
 
-1. Install Vercel CLI or link GitHub repo.
-2. Framework Preset: **Vite**
-3. Build Command: `npm run build`
-4. Output Directory: `dist`
-
-### Netlify
-
-1. Link GitHub repository.
-2. Build Command: `npm run build`
-3. Publish Directory: `dist`
-4. Ensure you set up a redirect rule (`_redirects` file with `/* /index.html 200`) to route all 404 paths to React Router.
-
-## Pre-Launch Checklist
-
-- [ ] Replace `site.js` placeholders (`[NAME]`, `[EMAIL]`, etc.) with real data.
-- [ ] Replace `projects.js` fake case studies with your actual work.
-- [ ] Swap out placeholder `.webp` and `.jpg` images.
-- [ ] Place your actual resume at `/public/resume.pdf`.
-- [ ] Configure the contact form endpoint.
-- [ ] Deploy and verify Lighthouse scores.
+- [ ] Replace placeholder identity/contact details in `src/data/site.js`.
+- [ ] Replace example project links and metrics in `src/data/projects.js`.
+- [ ] Add a real resume at `public/resume.pdf` if required.
+- [ ] Configure the contact endpoint.
+- [ ] Run the mobile and desktop accessibility/performance pass before launch.

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { BrowserRouter, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -7,10 +8,8 @@ import {
   Check,
   ChevronRight,
   Circle,
-  Code2,
   Command,
   Copy,
-  ExternalLink,
   GitBranch,
   Mail,
   MapPin,
@@ -19,6 +18,8 @@ import {
   RotateCcw,
   Send,
   Sparkles,
+  Sun,
+  Moon,
   X,
 } from "lucide-react";
 import projectsData from "./data/projects";
@@ -83,8 +84,12 @@ function ProjectCard({ project, index, onOpen }) {
       aria-label={`Open case study for ${project.title}`}
     >
       <div className="project-card__media">
-        <img src={project.cover} alt="" loading="lazy" />
-        <div className="project-card__shade" />
+        <div className={`project-visual project-visual--${project.visual || project.slug}`} aria-hidden="true">
+          <span className="project-visual__stamp">FLIGHT LOG / {String(index + 1).padStart(2, "0")}</span>
+          <span className="project-visual__word">{project.visualLabel || project.title}</span>
+          <span className="project-visual__grid" />
+          <span className="project-visual__signal" />
+        </div>
         <div className="project-card__topline">
           <span>{project.category}</span>
           <span>{project.year}</span>
@@ -109,101 +114,6 @@ function ProjectCard({ project, index, onOpen }) {
   );
 }
 
-function ProjectModal({ project, onClose }) {
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [onClose]);
-
-  return (
-    <motion.div
-      className="modal"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      role="dialog"
-      aria-modal="true"
-      aria-label={`${project.title} case study`}
-    >
-      <button className="modal__backdrop" onClick={onClose} aria-label="Close case study" />
-      <motion.div
-        className="modal__panel"
-        initial={{ opacity: 0, y: 30, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 20, scale: 0.98 }}
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <button className="modal__close" onClick={onClose} aria-label="Close case study">
-          <X size={20} />
-        </button>
-        <div className="modal__hero">
-          <img src={project.cover} alt={project.title} />
-          <div className="modal__hero-shade" />
-          <div className="modal__hero-copy">
-            <span className="eyebrow">{project.category} / {project.year}</span>
-            <h2>{project.title}</h2>
-            <p>{project.tagline}</p>
-          </div>
-        </div>
-        <div className="modal__content">
-          <div className="modal__main">
-            <div className="modal__section">
-              <span className="eyebrow">The brief</span>
-              <p className="modal__lead">{project.problem || project.tagline}</p>
-            </div>
-            {project.process?.length > 0 && (
-              <div className="modal__section">
-                <span className="eyebrow">The process</span>
-                <div className="process-list">
-                  {project.process.map((step, index) => (
-                    <div className="process-item" key={step.title}>
-                      <span className="process-item__number">0{index + 1}</span>
-                      <div>
-                        <h3>{step.title}</h3>
-                        <p>{step.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-          <aside className="modal__aside">
-            <div className="modal__aside-block">
-              <span className="eyebrow">Stack</span>
-              <div className="tag-list tag-list--large">
-                {project.tags.map((tag) => <span key={tag}>{tag}</span>)}
-              </div>
-            </div>
-            {project.features?.length > 0 && (
-              <div className="modal__aside-block">
-                <span className="eyebrow">Highlights</span>
-                <ul className="feature-list">
-                  {project.features.map((feature) => (
-                    <li key={feature}><ChevronRight size={15} />{feature}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <div className="modal__links">
-              {project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noreferrer">Live site <ExternalLink size={15} /></a>}
-              {project.repoUrl && <a href={project.repoUrl} target="_blank" rel="noreferrer">Source code <Code2 size={15} /></a>}
-            </div>
-          </aside>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
-
 function CommandMenu({ open, onClose, onNavigate, onCopyEmail }) {
   const [query, setQuery] = useState("");
   const commands = [
@@ -212,10 +122,6 @@ function CommandMenu({ open, onClose, onNavigate, onCopyEmail }) {
     { label: "Open GitHub", hint: "External link", action: () => window.open(siteData.github, "_blank") },
   ];
   const filteredCommands = commands.filter((command) => command.label.toLowerCase().includes(query.toLowerCase()));
-
-  useEffect(() => {
-    if (open) setQuery("");
-  }, [open]);
 
   return (
     <AnimatePresence>
@@ -242,11 +148,58 @@ function CommandMenu({ open, onClose, onNavigate, onCopyEmail }) {
   );
 }
 
-function App() {
+function ProjectPage() {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  const projectIndex = projectsData.findIndex((project) => project.slug === slug);
+  const project = projectsData[projectIndex];
+
+  if (!project) {
+    return (
+      <div className="route-message">
+        <span className="eyebrow">404 / coordinates unknown</span>
+        <h1>This project went off-course.</h1>
+        <button className="button button--primary" onClick={() => navigate("/")}>Return to base <ArrowUpRight size={16} /></button>
+      </div>
+    );
+  }
+
+  const nextProject = projectsData[(projectIndex + 1) % projectsData.length];
+  return (
+    <div className="case-study-page">
+      <header className="case-study-nav section-wrap">
+        <button className="brand-mark" onClick={() => navigate("/")} aria-label="Back to home">JD<i>.</i></button>
+        <button className="text-link" onClick={() => navigate(-1)}><ArrowRight size={16} style={{ transform: "rotate(180deg)" }} /> Back to index</button>
+      </header>
+      <main>
+        <section className="case-study-hero section-wrap">
+          <div className="case-study-hero__meta"><span className="eyebrow">{project.category} / {project.year}</span><span className="eyebrow">Case study 0{projectIndex + 1}</span></div>
+          <h1>{project.title}<em>.</em></h1>
+          <p>{project.tagline}</p>
+          <div className={`case-study-visual project-visual--${project.visual || project.slug}`}><span className="project-visual__stamp">FLIGHT LOG / {String(projectIndex + 1).padStart(2, "0")}</span><span className="project-visual__word">{project.visualLabel || project.title}</span><span className="project-visual__grid" /><span className="project-visual__signal" /></div>
+        </section>
+        <section className="case-study-summary section-wrap"><div><span className="eyebrow">Role</span><strong>{project.role || "Creative engineer"}</strong></div><div><span className="eyebrow">Timeline</span><strong>{project.timeline || project.year}</strong></div><div><span className="eyebrow">Stack</span><strong>{project.tags.join(" · ")}</strong></div></section>
+        <section className="case-study-body section-wrap">
+          <div className="case-study-body__main"><span className="eyebrow">The brief</span><h2>{project.problem || "A focused digital experience built around clarity, momentum, and the needs of its users."}</h2><span className="eyebrow">The approach</span><div className="case-study-process">{(project.process?.length ? project.process : [{ title: "A concise, intentional system", description: project.tagline }]).map((step, index) => <div key={step.title} className="case-study-step"><span>0{index + 1}</span><div><h3>{step.title}</h3><p>{step.description}</p></div></div>)}</div></div>
+          <aside className="case-study-body__aside"><span className="eyebrow">Outcomes</span>{project.results?.length ? <div className="result-grid">{project.results.map((result) => <div key={result.label}><strong>{result.value}</strong><span>{result.label}</span></div>)}</div> : <p className="case-study-note">A compact build focused on a clear interaction model and a strong visual point of view.</p>}<span className="eyebrow">Highlights</span><ul className="feature-list">{(project.features?.length ? project.features : ["Thoughtful interaction design", "Responsive by default", "Built to feel unmistakably its own"]).map((feature) => <li key={feature}><ChevronRight size={15} />{feature}</li>)}</ul></aside>
+        </section>
+        <section className="next-project section-wrap"><span className="eyebrow">Next coordinate</span><button onClick={() => navigate(`/work/${nextProject.slug}`)}><span>{nextProject.title}</span><ArrowUpRight size={22} /></button></section>
+      </main>
+    </div>
+  );
+}
+
+function NotFoundPage() {
+  const navigate = useNavigate();
+  return <div className="route-message"><span className="eyebrow">404 / signal lost</span><h1>Houston, we have a small problem.</h1><p>The page you requested is not in this flight plan.</p><div><button className="button button--primary" onClick={() => navigate("/")}>Return to base</button><button className="text-link" onClick={() => navigate("/#contact")}>Contact me <ArrowRight size={16} /></button></div></div>;
+}
+
+function PortfolioApp() {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
-  const [activeProject, setActiveProject] = useState(null);
   const [filter, setFilter] = useState("All");
+  const [theme, setTheme] = useState(() => localStorage.getItem("flight-log-theme") || "dark");
   const [copied, setCopied] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -270,20 +223,26 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!activeProject && !commandOpen) return undefined;
-    const handleEscape = (event) => event.key === "Escape" && (setActiveProject(null), setCommandOpen(false));
+    if (!commandOpen) return undefined;
+    const handleEscape = (event) => event.key === "Escape" && setCommandOpen(false);
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-  }, [activeProject, commandOpen]);
+  }, [commandOpen]);
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("flight-log-theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     if (!isPlaying) return undefined;
-    if (timeLeft <= 0) {
-      setIsPlaying(false);
-      setTarget(null);
-      return undefined;
-    }
-    const timer = window.setTimeout(() => setTimeLeft((time) => time - 1), 1000);
+    const timer = window.setTimeout(() => setTimeLeft((time) => {
+      if (time <= 1) {
+        setIsPlaying(false);
+        setTarget(null);
+        return 0;
+      }
+      return time - 1;
+    }), 1000);
     return () => window.clearTimeout(timer);
   }, [isPlaying, timeLeft]);
 
@@ -322,17 +281,19 @@ function App() {
   };
 
   return (
-    <div className="site-shell">
+    <div className={`site-shell theme-${theme}`}>
       <header className="site-nav">
         <button className="brand-mark" onClick={() => scrollTo("hero")} aria-label="Back to top">
-          <span>JD</span><i>.</i>
+          <svg className="brand-mark__svg" viewBox="0 0 42 30" aria-hidden="true"><path d="M2 3h10v16c0 5-2 8-7 8H2M17 3h8c9 0 15 5 15 12s-6 12-15 12h-8z" /></svg>
         </button>
         <nav className="site-nav__links" aria-label="Main navigation">
           {navItems.map((item) => <button key={item.target} onClick={() => scrollTo(item.target)}>{item.label}</button>)}
         </nav>
         <div className="site-nav__actions">
           <span className="availability"><i /> Available for select work</span>
+          <button className="theme-trigger" onClick={() => setTheme((current) => current === "dark" ? "light" : "dark")} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}>{theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}</button>
           <button className="command-trigger" onClick={() => setCommandOpen(true)} aria-label="Open command menu"><Command size={15} /><kbd>⌘K</kbd></button>
+          <button className="hire-trigger" onClick={() => scrollTo("contact")}>Hire me</button>
           <button className="menu-trigger" onClick={() => setMenuOpen((open) => !open)} aria-label="Toggle navigation menu">{menuOpen ? <X size={21} /> : <Menu size={21} />}</button>
         </div>
       </header>
@@ -358,8 +319,7 @@ function App() {
           </div>
           <div className="hero__visual">
             <div className="portrait-card">
-              <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=85&w=900" alt="Portrait" />
-              <div className="portrait-card__tint" />
+              <div className="portrait-graphic" aria-label="Abstract portrait graphic"><span>JD</span><i /><b /><em /></div>
               <span className="portrait-card__label">01 / 04 — profile</span>
               <div className="portrait-card__caption"><span>JANE<br />DOE</span><small>Building digital spaces<br />with a little more feeling.</small></div>
             </div>
@@ -390,7 +350,7 @@ function App() {
         <section className="projects-section section-wrap" id="projects">
           <Reveal><SectionLabel number="02" eyebrow="Selected work" title="A few things I’ve shipped." description="A small edit of product, platform, and brand work. Click a project to see the thinking behind it." /></Reveal>
           <Reveal className="project-toolbar" delay={0.08}><div className="filter-row" aria-label="Filter projects">{categories.map((category) => <button key={category} className={filter === category ? "is-active" : ""} onClick={() => setFilter(category)}>{category}</button>)}</div><span className="project-count">{String(filteredProjects.length).padStart(2, "0")} projects</span></Reveal>
-          <motion.div layout className="projects-grid">{filteredProjects.map((project, index) => <ProjectCard key={project.slug} project={project} index={index} onOpen={setActiveProject} />)}</motion.div>
+          <motion.div layout className="projects-grid">{filteredProjects.map((project, index) => <ProjectCard key={project.slug} project={project} index={index} onOpen={() => navigate(`/work/${project.slug}`)} />)}</motion.div>
         </section>
 
         <section className="approach-section section-wrap" id="approach">
@@ -413,9 +373,12 @@ function App() {
 
       <footer className="site-footer"><div className="brand-lockup"><span>JD</span><i>.</i></div><p>Designed, built, and occasionally overthought by {siteData.name}.</p><button onClick={() => scrollTo("hero")} aria-label="Back to top">Back to top <ArrowUpRight size={16} /></button></footer>
       <CommandMenu open={commandOpen} onClose={() => setCommandOpen(false)} onNavigate={scrollTo} onCopyEmail={copyEmail} />
-      <AnimatePresence>{activeProject && <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />}</AnimatePresence>
     </div>
   );
+}
+
+function App() {
+  return <BrowserRouter><Routes><Route path="/" element={<PortfolioApp />} /><Route path="/work/:slug" element={<ProjectPage />} /><Route path="*" element={<NotFoundPage />} /></Routes></BrowserRouter>;
 }
 
 export default App;

@@ -1,55 +1,44 @@
 # Brain / Workflow Tracker
 
-## Project Goal
+## Project goal
 
-Create a production-quality, award-level personal portfolio website with a "Mission Control" theme (playful, futuristic command-deck experience).
+Create a production-quality, award-level portfolio that feels art-directed, recruiter-clear, and inspectable by designers and engineers.
 
-## Phases & Status
+## Phases & status
 
-### ✅ Phase 0: Documentation & Prep
+### ✅ Phase 0: Audit & prep
 
-- [x] Create `architecture.md`
-- [x] Create `brain.md`
-- [x] Initialize React + Vite project
-- [x] Install base dependencies
+- [x] Read current source and docs.
+- [x] Confirmed legacy neon/glass direction, stock-image fields, dead code, and React 18 documentation mismatch.
 
-### ✅ Phase 1: Foundation
+### ✅ Phase 1: Flight Log foundation
 
-- [x] Project setup & Design tokens (`tokens.css`, `globals.css`)
-- [x] Tailwind CSS configuration for "Midnight Neon" theme
-- [x] Layout shell & Routing setup (React Router)
-- [x] Lenis smooth scrolling integration
-- [x] Theme toggle logic & animations
-- [x] Navbar (sticky, glassmorphism, animated active states)
-- [x] Custom cursor (Three-state: default, view, drag)
-- [x] Loading screen (0-100% counter, witty text, wipe reveal, sessionStorage bypass)
+- [x] Added Night Ops and Paper theme tokens.
+- [x] Added editorial grid, hairline rules, signal accent, and loaded display/body fonts.
+- [x] Replaced text logo with SVG monogram.
+- [x] Removed fake loader, legacy page shell, and unused section/effect files.
 
-### ✅ Phase 2: Core Sections
+### ✅ Phase 2: Core portfolio
 
-- [x] Hero Section (Physics-based name, typewriter roles, R3F starfield bg)
-- [x] About Section (Bio, Matter.js sticker board, stats counter)
-- [x] Projects Section (Horizontal GSAP scroll, 3D tilt cards, Framer Motion full-screen overlay)
+- [x] Rebuilt hero, about, selected work, toolkit, lab, contact, and footer around the Flight Log language.
+- [x] Replaced stock portrait/project-cover dependence with local abstract CSS/SVG treatments.
+- [x] Added theme toggle and keyboard command menu.
 
-### ✅ Phase 3: Secondary Sections
+### ✅ Phase 3: Work routes
 
-- [x] Skills Section (Interactive constellation graph)
-- [x] Experience Timeline (GSAP line draw, alternating layout)
-- [x] Playground / "The Lab" (Matter.js shapes + quiz/game)
-- [x] Testimonials Carousel (Draggable)
-- [x] Contact Section (react-hook-form validation, confetti, magnetic buttons)
-- [x] Footer (Scrolling marquee, local time)
+- [x] Added `/work/:slug` deep-linkable case-study template.
+- [x] Added role/timeline/stack summaries, process fallback, outcomes, highlights, and next-project navigation.
+- [x] Added helpful 404 and missing-project states.
 
-### ✅ Phase 4: Polish & Deploy
+### 🔄 Phase 4: Final polish
 
-- [x] Command Palette (cmdk via Cmd/Ctrl+K)
-- [x] Konami Easter Egg
-- [x] Custom 404 Page
-- [x] Accessibility pass & Keyboard navigation
-- [x] Performance pass (Lighthouse tuning, lazy loading)
-- [x] Final SEO (Title, meta, OG images, schema)
+- [x] Desktop build and local preview verified.
+- [ ] Run full keyboard-only, reduced-motion, contrast, and Lighthouse pass before production launch.
+- [ ] Connect `VITE_FORM_ENDPOINT` for real submissions.
 
-## Global Rules
+## Global rules
 
-- **Verify before moving on:** Run the app locally, check desktop & mobile responsiveness, and confirm zero console errors before starting the next phase.
-- **Tone:** Confident, witty, slightly nerdy.
-- **Animations:** Default ease `cubic-bezier(0.22, 1, 0.36, 1)`, no linear feel, use springs.
+- Content belongs in `src/data/`.
+- Motion explains hierarchy or state.
+- Every custom interaction must have a keyboard/focus path.
+- Keep the signal accent intentional and preserve contrast in both themes.
