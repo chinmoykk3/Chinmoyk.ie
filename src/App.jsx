@@ -302,8 +302,8 @@ function PortfolioApp() {
   return (
     <div className={`site-shell theme-${theme}`}>
       <header className="site-nav">
-        <button className="brand-mark" onClick={() => scrollTo("hero")} aria-label="Back to top">
-          <svg className="brand-mark__svg" viewBox="0 0 42 30" aria-hidden="true"><path d="M2 3h10v16c0 5-2 8-7 8H2M17 3h8c9 0 15 5 15 12s-6 12-15 12h-8z" /></svg>
+        <button className="brand-mark" onClick={() => scrollTo("hero")} aria-label={`Back to top — ${siteData.name}`}>
+          <span>{siteData.initials}</span><i>.</i>
         </button>
         <nav className="site-nav__links" aria-label="Main navigation">
           {navItems.map((item) => <button key={item.target} onClick={() => scrollTo(item.target)}>{item.label}</button>)}
