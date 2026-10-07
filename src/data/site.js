@@ -1,5 +1,6 @@
 const siteData = {
-    name: "Jane Doe", // [NAME]
+    name: "Chinmoy Kalita",
+    initials: "CK",
     title: "Full-Stack Developer / UI-UX Designer", // [TITLE]
     tagline: "Bridging the gap between engineering and design with a dash of space-age weirdness.", // [ONE-LINE TAGLINE]
     email: "hello@janedoe.example", // [EMAIL]

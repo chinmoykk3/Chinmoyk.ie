@@ -423,3 +423,27 @@ kbd { color: var(--faint); font-family: var(--mono); font-size: 9px; letter-spac
 .next-project button:hover { color:var(--signal); }
 @media (max-width:900px) { .hire-trigger { display:none; } .case-study-body { gap:50px; } }
 @media (max-width:560px) { .theme-trigger { display:none; } .brand-mark__svg { width:37px; } .case-study-nav { min-height:68px; } .case-study-hero { padding-top:55px; } .case-study-hero h1 { margin-top:45px; font-size:clamp(60px,18vw,94px); } .case-study-summary { grid-template-columns:1fr; } .case-study-summary > div { border-right:0; border-bottom:1px solid var(--line); } .case-study-summary > div:last-child { border-bottom:0; } .case-study-body { grid-template-columns:1fr; padding-top:90px; padding-bottom:100px; } .next-project { padding-bottom:80px; } .next-project button { font-size:48px; } .route-message > div { align-items:flex-start; flex-direction:column; } }
+
+
+/* Motion layer */
+@keyframes flight-float { 0%,100% { transform: translateY(0) rotate(4deg); } 50% { transform: translateY(-10px) rotate(3deg); } }
+@keyframes orbit-drift { from { transform: rotate(-24deg) scale(1); } 50% { transform: rotate(-17deg) scale(1.03); } to { transform: rotate(-24deg) scale(1); } }
+@keyframes signal-pulse { 0%,100% { opacity:.55; transform: rotate(-25deg) scaleX(1); } 50% { opacity:1; transform: rotate(-25deg) scaleX(1.16); } }
+@keyframes visual-scan { from { transform: translateX(-110%); } to { transform: translateX(110%); } }
+@keyframes route-enter { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+.hero__visual { animation: route-enter .9s var(--ease) both .15s; }
+.portrait-card { animation: flight-float 7s ease-in-out infinite; }
+.hero__orbit--one { animation: orbit-drift 12s ease-in-out infinite; }
+.hero__orbit--two { animation: orbit-drift 16s ease-in-out infinite reverse; }
+.project-visual::after { content:''; position:absolute; top:0; bottom:0; left:0; width:20%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent); transform:translateX(-120%); animation:visual-scan 7s ease-in-out infinite; pointer-events:none; }
+.project-card:hover .project-visual__word { color:var(--signal); transform:translate(-50%,-50%) scale(1.06); transition:color .35s ease, transform .55s var(--ease); }
+.project-visual__word { transition:color .35s ease, transform .55s var(--ease); }
+.project-visual__signal { animation:signal-pulse 3s ease-in-out infinite; }
+.button--primary, .hire-trigger { box-shadow:0 0 0 rgba(255,79,31,0); }
+.button--primary:hover, .hire-trigger:hover { box-shadow:0 10px 28px rgba(255,79,31,.22); }
+.case-study-page, .route-message { animation:route-enter .65s var(--ease) both; }
+.next-project button svg { transition:transform .35s var(--ease); }
+.next-project button:hover svg { transform:translate(5px,-5px); }
+@media (prefers-reduced-motion: reduce) {
+  .hero__visual,.portrait-card,.hero__orbit--one,.hero__orbit--two,.project-visual::after,.project-visual__signal,.case-study-page,.route-message { animation:none; }
+}

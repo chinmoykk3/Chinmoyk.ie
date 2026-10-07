@@ -168,7 +168,7 @@ function ProjectPage() {
   return (
     <div className="case-study-page">
       <header className="case-study-nav section-wrap">
-        <button className="brand-mark" onClick={() => navigate("/")} aria-label="Back to home">JD<i>.</i></button>
+        <button className="brand-mark" onClick={() => navigate("/")} aria-label="Back to home">{siteData.initials}<i>.</i></button>
         <button className="text-link" onClick={() => navigate(-1)}><ArrowRight size={16} style={{ transform: "rotate(180deg)" }} /> Back to index</button>
       </header>
       <main>
@@ -319,9 +319,9 @@ function PortfolioApp() {
           </div>
           <div className="hero__visual">
             <div className="portrait-card">
-              <div className="portrait-graphic" aria-label="Abstract portrait graphic"><span>JD</span><i /><b /><em /></div>
+              <div className="portrait-graphic" aria-label="Abstract portrait graphic"><span>{siteData.initials}</span><i /><b /><em /></div>
               <span className="portrait-card__label">01 / 04 — profile</span>
-              <div className="portrait-card__caption"><span>JANE<br />DOE</span><small>Building digital spaces<br />with a little more feeling.</small></div>
+              <div className="portrait-card__caption"><span>{siteData.name.split(" ")[0]}<br />{siteData.name.split(" ").slice(1).join(" ")}</span><small>Building digital spaces<br />with a little more feeling.</small></div>
             </div>
             <div className="hero__orbit hero__orbit--one" />
             <div className="hero__orbit hero__orbit--two" />
@@ -371,7 +371,7 @@ function PortfolioApp() {
         </section>
       </main>
 
-      <footer className="site-footer"><div className="brand-lockup"><span>JD</span><i>.</i></div><p>Designed, built, and occasionally overthought by {siteData.name}.</p><button onClick={() => scrollTo("hero")} aria-label="Back to top">Back to top <ArrowUpRight size={16} /></button></footer>
+      <footer className="site-footer"><div className="brand-lockup"><span>{siteData.initials}</span><i>.</i></div><p>Designed, built, and occasionally overthought by {siteData.name}.</p><button onClick={() => scrollTo("hero")} aria-label="Back to top">Back to top <ArrowUpRight size={16} /></button></footer>
       <CommandMenu open={commandOpen} onClose={() => setCommandOpen(false)} onNavigate={scrollTo} onCopyEmail={copyEmail} />
     </div>
   );
