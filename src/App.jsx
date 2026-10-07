@@ -329,8 +329,8 @@ function PortfolioApp() {
   return (
     <div className={`site-shell theme-${theme} mode-${activeMode}`} style={{ "--mode-accent": modes.find((mode) => mode.id === activeMode)?.accent }}>
       <header className="site-nav">
-        <button className="brand-mark" onClick={() => scrollTo("hero")} aria-label={`Back to top — ${siteData.name}`}>
-          <span>{siteData.initials}</span><i>.</i>
+        <button className="brand-mark" onClick={() => scrollTo("hero")} aria-label="Back to top">
+          {siteData.initials}<i>.</i>
         </button>
         <nav className="site-nav__links" aria-label="Main navigation">
           {navItems.map((item) => <button key={item.target} onClick={() => scrollTo(item.target)}>{item.label}</button>)}
@@ -359,7 +359,7 @@ function PortfolioApp() {
           <div className="hero__grid" aria-hidden="true"><span /><span /><span /><span /><span /></div>
           <div className="hero__telemetry" aria-label="Live portfolio telemetry"><span>SYS / ONLINE</span><span>LOCAL {telemetry.time}</span><span>SCROLL {String(telemetry.scroll).padStart(2, "0")}%</span></div>
           <div className="hero__copy">
-          <div className="hero__eyebrow"><span className="eyebrow-dot" /> {siteData.name} / {siteData.location}</div>
+            <div className="hero__eyebrow"><span className="eyebrow-dot" /> {siteData.name} / {siteData.location}</div>
             <h1><span>Chinmoy</span><br /><em>Kalita.</em></h1>
             <p className="hero__intro">{siteData.tagline}</p>
             <div className="hero__role-line"><span>Currently in</span><strong key={siteData.roles[roleIndex]}>{siteData.roles[roleIndex]}</strong></div>
@@ -377,7 +377,7 @@ function PortfolioApp() {
             </div>
             <div className="hero__orbit hero__orbit--one" />
             <div className="hero__orbit hero__orbit--two" />
-          <div className="hero__note"><Sparkles size={14} /> <span className="role-rotator">{siteData.roles[roleIndex]}</span></div>
+            <div className="hero__note"><Sparkles size={14} /> <span className="role-rotator">{siteData.roles[roleIndex]}</span></div>
           </div>
           <div className="hero__footer">
             <span>Scroll to explore</span><div className="scroll-line"><i /></div><span>01 — 06</span>
