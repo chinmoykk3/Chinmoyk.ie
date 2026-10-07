@@ -371,7 +371,7 @@ function PortfolioApp() {
           <div className="hero__visual">
             <svg className="hero__trajectory" viewBox="0 0 640 520" aria-hidden="true"><path d="M-30 420 C160 40 420 30 670 245 C490 430 250 505 40 255 C175 115 430 125 670 420" /><circle cx="435" cy="104" r="5" /><circle cx="435" cy="104" r="12" /></svg>
             <div className="portrait-card">
-              <div className="portrait-graphic" aria-label="Abstract portrait graphic"><span>{siteData.initials}</span><i /><b /><em /></div>
+              <div className="portrait-graphic portrait-graphic--photo"><img className="portrait-photo" src="/chinmoy-kalita.png" alt="Portrait of Chinmoy Kalita" /><span aria-hidden="true">{siteData.initials}</span><i /><b /><em /></div>
               <span className="portrait-card__label">01 / 04 — profile</span>
               <div className="portrait-card__caption"><span>{siteData.name.split(" ")[0]}<br />{siteData.name.split(" ").slice(1).join(" ")}</span><small>Building digital spaces<br />with a little more feeling.</small></div>
             </div>
