@@ -40,6 +40,13 @@ const socialItems = [
   { label: "Email", href: `mailto:${siteData.email}`, icon: Mail },
 ];
 
+const modes = [
+  { id: "dev", label: "DEV", title: "Build the system", copy: "Interfaces, infrastructure, and code that make ambitious products dependable.", accent: "#B6FF3B", scene: "about" },
+  { id: "design", label: "DESIGN", title: "Shape the signal", copy: "Graphic systems and interfaces with a point of view people can feel.", accent: "#FF3D8B", scene: "projects" },
+  { id: "ai", label: "AI", title: "Extend the possible", copy: "Practical intelligence, prototyped thoughtfully and grounded in human context.", accent: "#3DE0FF", scene: "approach" },
+  { id: "lead", label: "LEAD", title: "Make the team stronger", copy: "Clear direction, generous critique, and a path from plan to shipped work.", accent: "#FFB020", scene: "contact" },
+];
+
 function Reveal({ children, className = "", delay = 0 }) {
   return (
     <motion.div
@@ -209,6 +216,7 @@ function PortfolioApp() {
   const [target, setTarget] = useState(null);
   const [telemetry, setTelemetry] = useState({ scroll: 0, time: "--:--" });
   const [roleIndex, setRoleIndex] = useState(0);
+  const [activeMode, setActiveMode] = useState("dev");
 
   const categories = useMemo(() => ["All", ...new Set(projectsData.map((project) => project.category))], []);
   const filteredProjects = useMemo(() => projectsData.filter((project) => filter === "All" || project.category === filter), [filter]);
@@ -253,6 +261,20 @@ function PortfolioApp() {
   }, []);
 
   useEffect(() => {
+    const updateMode = () => {
+      const midpoint = window.innerHeight * 0.42;
+      const current = modes.reduce((found, mode) => {
+        const element = document.getElementById(mode.scene);
+        return element && element.getBoundingClientRect().top <= midpoint ? mode.id : found;
+      }, "dev");
+      setActiveMode(current);
+    };
+    updateMode();
+    window.addEventListener("scroll", updateMode, { passive: true });
+    return () => window.removeEventListener("scroll", updateMode);
+  }, []);
+
+  useEffect(() => {
     if (!isPlaying) return undefined;
     const timer = window.setTimeout(() => setTimeLeft((time) => {
       if (time <= 1) {
@@ -269,6 +291,11 @@ function PortfolioApp() {
     document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" });
     setMenuOpen(false);
     setCommandOpen(false);
+  };
+
+  const jumpToMode = (mode) => {
+    setActiveMode(mode.id);
+    scrollTo(mode.scene);
   };
 
   const copyEmail = async () => {
@@ -300,7 +327,7 @@ function PortfolioApp() {
   };
 
   return (
-    <div className={`site-shell theme-${theme}`}>
+    <div className={`site-shell theme-${theme} mode-${activeMode}`} style={{ "--mode-accent": modes.find((mode) => mode.id === activeMode)?.accent }}>
       <header className="site-nav">
         <button className="brand-mark" onClick={() => scrollTo("hero")} aria-label={`Back to top — ${siteData.name}`}>
           <span>{siteData.initials}</span><i>.</i>
@@ -308,6 +335,9 @@ function PortfolioApp() {
         <nav className="site-nav__links" aria-label="Main navigation">
           {navItems.map((item) => <button key={item.target} onClick={() => scrollTo(item.target)}>{item.label}</button>)}
         </nav>
+        <div className="mode-switcher" aria-label="Four Modes">
+          {modes.map((mode) => <button key={mode.id} className={activeMode === mode.id ? "is-active" : ""} onClick={() => jumpToMode(mode)} aria-pressed={activeMode === mode.id}>{mode.label}</button>)}
+        </div>
         <div className="site-nav__actions">
           <span className="availability"><i /> {siteData.availability}</span>
           <button className="theme-trigger" onClick={() => setTheme((current) => current === "dark" ? "light" : "dark")} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}>{theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}</button>
@@ -324,14 +354,15 @@ function PortfolioApp() {
         </motion.div>}
       </AnimatePresence>
 
-      <main>
+      <main id="main-content">
         <section className="hero section-wrap" id="hero">
           <div className="hero__grid" aria-hidden="true"><span /><span /><span /><span /><span /></div>
           <div className="hero__telemetry" aria-label="Live portfolio telemetry"><span>SYS / ONLINE</span><span>LOCAL {telemetry.time}</span><span>SCROLL {String(telemetry.scroll).padStart(2, "0")}%</span></div>
           <div className="hero__copy">
           <div className="hero__eyebrow"><span className="eyebrow-dot" /> {siteData.name} / {siteData.location}</div>
-            <h1>Digital products<br /><em>with clarity</em><br /><strong>and character.</strong></h1>
+            <h1><span>Chinmoy</span><br /><em>Kalita.</em></h1>
             <p className="hero__intro">{siteData.tagline}</p>
+            <div className="hero__role-line"><span>Currently in</span><strong key={siteData.roles[roleIndex]}>{siteData.roles[roleIndex]}</strong></div>
             <div className="hero__actions">
               <button className="button button--primary" onClick={() => scrollTo("projects")}>Explore selected work <ArrowUpRight size={17} /></button>
               <button className="text-link" onClick={() => scrollTo("contact")}>Start a conversation <ArrowRight size={17} /></button>
@@ -358,6 +389,13 @@ function PortfolioApp() {
           <div><span>Focus</span><strong>Frontend · UI/UX · WebGL</strong></div>
           <div><span>Currently</span><strong>{siteData.availability}</strong></div>
           <div><span>Local time</span><strong>09:42 — EST</strong></div>
+        </section>
+
+        <section className="modes-section section-wrap" aria-label="Four Modes">
+          <div className="modes-section__intro"><span className="eyebrow">One person / four modes</span><h2>A portfolio that<br /><em>changes with the work.</em></h2></div>
+          <div className="mode-scenes">
+            {modes.map((mode, index) => <button key={mode.id} className={`mode-scene mode-scene--${mode.id} ${activeMode === mode.id ? "is-active" : ""}`} onClick={() => jumpToMode(mode)} style={{ "--scene-accent": mode.accent }}><span className="mode-scene__index">0{index + 1} / 04</span><strong>{mode.label}</strong><h3>{mode.title}</h3><p>{mode.copy}</p><i aria-hidden="true" /></button>)}
+          </div>
         </section>
 
         <section className="section-wrap about-section" id="about">

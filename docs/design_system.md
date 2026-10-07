@@ -1,50 +1,59 @@
-# Design System — Flight Log
+# Design System — Four Modes
 
 ## Concept
 
-A precise, warm, tactile mission-control aesthetic: aerospace documentation, Swiss grid posters, and Teenage Engineering labelling. Content is primary; decoration behaves like wayfinding.
+**Four Modes** is a living portfolio system for Chinmoy Kalita: one person, four ways of making value.
 
-## Visual rules
+- **DEV** — systems, frontend engineering, infrastructure, and dependable delivery.
+- **DESIGN** — graphic language, interaction, typography, and visual craft.
+- **AI** — practical intelligence, experimentation, and human-centered automation.
+- **LEAD** — direction, critique, collaboration, and teams that ship.
 
-- Use a visible 12-column grid with hairline rules and small telemetry labels.
-- Keep surfaces mostly flat. Use blur only for the command palette and navigation treatment.
-- Use 4px inputs/tags, 12px cards, and full-radius pills.
-- Use one signal accent per viewport: orange in both themes, with green reserved for online/available status.
-- Project visuals are CSS-composed abstract/typographic cards. Add real media only through data fields when it exists.
+The mode switcher is persistent in the navigation. Scroll position updates the active mode, while clicking a pill jumps to the corresponding scene.
 
-## Tokens
+## Mode tokens
 
-| Token | Night Ops | Paper |
-|---|---|---|
-| Background | `#0A0A0F` | `#F2EFE8` |
-| Surface | `#121218` | `#FBFAF6` |
-| Surface 2 | `#1A1A22` | `#E9E5DB` |
-| Text | `#F1EEE6` | `#0F0F14` |
-| Muted | `#8F8F9C` | `#5C5C66` |
-| Signal | `#FF4F1F` | `#E63E0E` |
-| Status | `#3DDC84` | `#3DDC84` |
+| Mode | Accent | Motif | Motion personality |
+|---|---|---|---|
+| DEV | `#B6FF3B` | Grid / terminal signal | Precise, blinking, modular |
+| DESIGN | `#FF3D8B` | Registration grid / print layers | Elastic, misregistered, expressive |
+| AI | `#3DE0FF` | Signal orbit / node field | Reactive, pulsing, connective |
+| LEAD | `#FFB020` | Formation / metrics | Steady, assembling, directional |
+
+All mode accents are used on dark and light surfaces with readable supporting text. Decorative layers never carry meaning by themselves.
 
 ## Typography
 
-- Display: Space Grotesk with tight tracking and italic/color emphasis.
-- Body: Manrope, 15–18px, generous line-height.
-- Data: DM Mono, uppercase, 9–11px, tracked labels.
+- Display: Space Grotesk, tight tracking, fluid `clamp()` scale.
+- Body: Inter, 15–18px, generous line height.
+- Labels and telemetry: JetBrains Mono, uppercase, 9–11px.
+- Italic emphasis is reserved for the active mode or a single idea per heading.
 
 ## Component inventory
 
-- `SectionLabel` — numbered section header with eyebrow and description.
-- `Reveal` — viewport-aware opacity/translate entrance.
-- `ProjectCard` — keyboard-operable index item linking to a case-study route.
-- `ProjectPage` — shared case-study structure with role/timeline/stack, brief, process, outcomes, and next project.
-- `CommandMenu` — keyboard-first command surface opened with `⌘K` / `Ctrl+K`.
+- `ModeSwitcher` — keyboard-operable four-pill navigation.
+- `Reveal` — viewport-aware section entrance.
+- `ProjectCard` — keyboard-operable route link with mode/year metadata.
+- `SectionLabel` — numbered section heading and supporting copy.
+- `CommandMenu` — `Cmd/Ctrl+K` navigation and utility commands.
+- `ProjectPage` — shared Problem → Process → Outcome case-study route.
 - `RouteMessage` — helpful 404 and missing-project state.
+- `Hero telemetry` — live local time, scroll position, and role rotation.
 
 ## Motion rules
 
-Use `cubic-bezier(.22, 1, .36, 1)` for reveals and short hover transitions. Prefer one clear motion moment per section. Respect `prefers-reduced-motion` by reducing transitions and disabling decorative movement.
+Use the default ease `cubic-bezier(.22, 1, .36, 1)`. Motion must explain state or hierarchy: active mode, role rotation, project reveal, or navigation. Decorative animation is transform/opacity/clip-path only. `prefers-reduced-motion` disables trajectory, pulse, and rotating scene motion.
 
-## Do / don't
+## Accessibility
 
-- Do use numbering, rules, and labels to make the page easier to scan.
-- Do let the case-study content carry the story.
-- Don't use neon gradients, anonymous icon circles, fake loading waits, or hover-only meaning.
+- Semantic main landmark and skip link.
+- Mode switcher uses `aria-pressed` and works with keyboard focus.
+- Project cards remain keyboard-operable.
+- Visible focus rings are preserved.
+- Native cursor remains available; no hover-only content is required.
+- Reduced-motion users receive static scene treatments.
+- Content remains readable without animation or JavaScript-driven state.
+
+## Content rules
+
+All identity, role, project, experience, and contact content belongs in `src/data/*.js`. Placeholder values must be clearly marked before launch. No stock imagery is required; visuals are composed with CSS/SVG and project data.

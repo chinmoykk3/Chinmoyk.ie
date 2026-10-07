@@ -1,6 +1,6 @@
-# Flight Log Portfolio
+# Chinmoy Kalita — Four Modes Portfolio
 
-An editorial React 19 portfolio for a creative engineer. The visual system is a precise instrument panel: visible rules, abstract project visuals, strong typography, and signal-orange interactions.
+A highly art-directed React 19 portfolio for **Chinmoy Kalita**: Full-Stack Developer, Graphics Designer, AI Enthusiast, and Team Lead. The site is built as one living canvas with four visual modes — DEV, DESIGN, AI, and LEAD — connected to scroll position and a persistent keyboard-accessible mode switcher.
 
 ## Setup
 
@@ -13,31 +13,42 @@ npm run lint
 
 ## Content editing
 
-All personal content lives in `src/data/`:
+All identity and portfolio content lives in `src/data/`:
 
-- `site.js` — identity, bio, contact details, links, timezone, and role rotation.
-- `projects.js` — project title, route slug, visual treatment, role, timeline, stack, problem, process, features, and outcomes.
+- `site.js` — name, initials, roles, bio, contact details, social links, and availability.
+- `projects.js` — project route slug, category, visual treatment, role, timeline, stack, problem, process, features, and outcomes.
 - `skills.js` — capability list.
 - `experience.js` — work history.
 
-Project routes are generated at `/work/:slug`. Add a new project object with a unique `slug` to make it available from the index and next-project navigation.
+Project routes are generated at `/work/:slug`. Add a project object with a unique `slug` to make it available from the index and next-project navigation. Missing process and outcome fields render a graceful compact fallback.
 
-## Themes
+## Four Modes
 
-The default theme is Night Ops. The navigation sun/moon control switches to Paper and stores the preference in `localStorage` under `flight-log-theme`.
+The navigation mode switcher maps each identity to a scene in the page:
 
-## Contact form
+| Mode | Purpose | Accent |
+|---|---|---|
+| DEV | Systems and frontend engineering | Acid green |
+| DESIGN | Graphic systems and interface craft | Hot magenta |
+| AI | Practical intelligence and experimentation | Electric cyan |
+| LEAD | Direction, critique, and team delivery | Amber |
 
-The current form is a validated frontend success flow. To connect a provider, add `VITE_FORM_ENDPOINT` and replace the simulated submission in `src/App.jsx` with a `fetch` POST to Formspree, EmailJS, or another endpoint. Keep server-side validation and spam protection in production.
+The active mode is updated from scroll position and can be changed directly with the switcher. Each mode includes a reduced-motion fallback.
+
+## Contact and environment
+
+The current contact form provides a frontend success state. To connect a real provider, add `VITE_FORM_ENDPOINT` and replace the simulated submission in `src/App.jsx` with a server-validated POST. Keep server-side validation, a honeypot, rate limiting, and spam protection in production.
+
+The social preview and Person JSON-LD metadata are maintained in `index.html`. Update the canonical URL, OG image, and social links before deploying to a different domain.
 
 ## Deployment
 
-The app is a static Vite SPA. Build with `npm run build` and deploy `dist/`. Configure the host to serve `index.html` for `/` and `/work/*` routes. Netlify users can add `_redirects` with `/* /index.html 200`.
+This is a static Vite SPA. Build with `npm run build` and deploy `dist/`. Configure the host to serve `index.html` for `/` and `/work/*` routes. Netlify users can add `_redirects` with `/* /index.html 200`.
 
-## Checklist
+## Launch checklist
 
-- [ ] Replace placeholder identity/contact details in `src/data/site.js`.
-- [ ] Replace example project links and metrics in `src/data/projects.js`.
-- [ ] Add a real resume at `public/resume.pdf` if required.
-- [ ] Configure the contact endpoint.
-- [ ] Run the mobile and desktop accessibility/performance pass before launch.
+- Replace example project URLs and metrics in `src/data/projects.js`.
+- Add a real résumé at `public/resume.pdf` if required.
+- Configure `VITE_FORM_ENDPOINT` for real submissions.
+- Replace `/og-image.webp` with a final social preview asset if one is not already supplied.
+- Run keyboard, reduced-motion, contrast, mobile, and Lighthouse checks before launch.
