@@ -309,8 +309,8 @@ function PortfolioApp() {
         <section className="hero section-wrap" id="hero">
           <div className="hero__grid" aria-hidden="true"><span /><span /><span /><span /><span /></div>
           <div className="hero__copy">
-            <div className="hero__eyebrow"><span className="eyebrow-dot" /> Independent creative engineer / {siteData.location}</div>
-            <h1>Interfaces<br /><em>with a</em><br /><strong>point of view.</strong></h1>
+          <div className="hero__eyebrow"><span className="eyebrow-dot" /> {siteData.name} / {siteData.location}</div>
+            <h1>Digital products<br /><em>with clarity</em><br /><strong>and character.</strong></h1>
             <p className="hero__intro">{siteData.tagline}</p>
             <div className="hero__actions">
               <button className="button button--primary" onClick={() => scrollTo("projects")}>Explore selected work <ArrowUpRight size={17} /></button>
@@ -325,7 +325,7 @@ function PortfolioApp() {
             </div>
             <div className="hero__orbit hero__orbit--one" />
             <div className="hero__orbit hero__orbit--two" />
-            <div className="hero__note"><Sparkles size={14} /> Human-centered / system-minded</div>
+          <div className="hero__note"><Sparkles size={14} /> {siteData.title}</div>
           </div>
           <div className="hero__footer">
             <span>Scroll to explore</span><div className="scroll-line"><i /></div><span>01 — 06</span>
@@ -335,7 +335,7 @@ function PortfolioApp() {
         <section className="signal-strip">
           <div><span>Based in</span><strong>{siteData.location}</strong></div>
           <div><span>Focus</span><strong>Frontend · UI/UX · WebGL</strong></div>
-          <div><span>Currently</span><strong>Open to the right problem</strong></div>
+          <div><span>Currently</span><strong>{siteData.availability}</strong></div>
           <div><span>Local time</span><strong>09:42 — EST</strong></div>
         </section>
 
@@ -362,11 +362,11 @@ function PortfolioApp() {
         </section>
 
         <section className="lab-section section-wrap">
-          <Reveal className="lab-card"><div className="lab-card__copy"><div className="section-heading__meta"><span className="section-number">04</span><span className="eyebrow">The lab</span></div><h2>Small experiments.<br /><em>Useful mischief.</em></h2><p>A tiny reaction test, because a portfolio should have at least one thing that does not belong in a case study.</p><button className="button button--outline" onClick={startGame}>{isPlaying ? "Running…" : <><Play size={15} /> {timeLeft === 0 ? "Try again" : "Start the test"}</>}</button></div><div className="reaction-stage" aria-label="Reaction test game">{!isPlaying && timeLeft !== 0 && <div className="reaction-stage__idle"><Circle size={24} /><span>Click start.<br />Find the dot.</span></div>}{isPlaying && <><div className="reaction-stage__stats"><span>Score <strong>{score}</strong></span><span>Time <strong>00:{String(timeLeft).padStart(2, "0")}</strong></span></div>{target && <button className="reaction-target" onClick={() => { setScore((current) => current + 1); spawnTarget(); }} style={{ left: `${target.x}%`, top: `${target.y}%` }} aria-label="Hit target" />}</>}{!isPlaying && timeLeft === 0 && <div className="reaction-stage__result"><span>Final score</span><strong>{score}</strong><button onClick={startGame}><RotateCcw size={15} /> reset</button></div>}</div></Reveal>
+          <Reveal className="lab-card"><div className="lab-card__copy"><div className="section-heading__meta"><span className="section-number">04</span><span className="eyebrow">Selected experiments</span></div><h2>Small systems.<br /><em>Carefully considered.</em></h2><p>A compact interaction study exploring timing, feedback, and the details that make a product feel responsive.</p><button className="button button--outline" onClick={startGame}>{isPlaying ? "Running…" : <><Play size={15} /> {timeLeft === 0 ? "Run again" : "Run the study"}</>}</button></div><div className="reaction-stage" aria-label="Interactive timing study">{!isPlaying && timeLeft !== 0 && <div className="reaction-stage__idle"><Circle size={24} /><span>Start the study.<br />Follow the signal.</span></div>}{isPlaying && <><div className="reaction-stage__stats"><span>Score <strong>{score}</strong></span><span>Time <strong>00:{String(timeLeft).padStart(2, "0")}</strong></span></div>{target && <button className="reaction-target" onClick={() => { setScore((current) => current + 1); spawnTarget(); }} style={{ left: `${target.x}%`, top: `${target.y}%` }} aria-label="Hit target" />}</>}{!isPlaying && timeLeft === 0 && <div className="reaction-stage__result"><span>Final score</span><strong>{score}</strong><button onClick={startGame}><RotateCcw size={15} /> reset</button></div>}</div></Reveal>
         </section>
 
         <section className="contact-section section-wrap" id="contact">
-          <Reveal className="contact-heading"><div className="section-heading__meta"><span className="section-number">05</span><span className="eyebrow">Let’s make something</span></div><h2>Have a good<br /><em>problem?</em></h2><p>Tell me what you’re working through. I’m always interested in the part that hasn’t been figured out yet.</p></Reveal>
+          <Reveal className="contact-heading"><div className="section-heading__meta"><span className="section-number">05</span><span className="eyebrow">Start a conversation</span></div><h2>Let’s build<br /><em>something useful.</em></h2><p>Tell me what you’re working on, where you are in the process, and what a successful outcome looks like.</p></Reveal>
           <div className="contact-grid"><Reveal className="contact-form-wrap" delay={0.08}>{isSuccess ? <div className="success-state"><span><Check size={22} /></span><h3>Message received.</h3><p>Thanks for reaching out — I’ll get back to you shortly.</p><button className="text-link" onClick={() => setIsSuccess(false)}>Send another <ArrowRight size={16} /></button></div> : <form className="contact-form" onSubmit={handleSubmit}><label>Name<input name="name" required minLength="2" placeholder="Your name" /></label><label>Email<input name="email" required type="email" placeholder="you@company.com" /></label><label>What are we making?<textarea name="message" required minLength="10" rows="4" placeholder="A few words about the project…" /></label><button className="button button--primary" disabled={isSubmitting}>{isSubmitting ? "Sending…" : <>Send the signal <Send size={16} /></>}</button></form>}</Reveal><Reveal className="contact-details" delay={0.14}><div className="contact-email"><span className="eyebrow">Direct line</span><button onClick={copyEmail}>{siteData.email}<span>{copied ? <Check size={17} /> : <Copy size={17} />}</span></button><small>{copied ? "Copied to clipboard" : "Click to copy email"}</small></div><div className="contact-socials"><span className="eyebrow">Elsewhere</span>{socialItems.map(({ label, href, icon: Icon }) => <a key={label} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noreferrer">{label}<Icon size={16} /></a>)}</div><div className="contact-location"><MapPin size={16} /><span>{siteData.location}<br />Available worldwide</span></div></Reveal></div>
         </section>
       </main>

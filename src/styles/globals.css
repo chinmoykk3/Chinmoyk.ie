@@ -447,3 +447,29 @@ kbd { color: var(--faint); font-family: var(--mono); font-size: 9px; letter-spac
 @media (prefers-reduced-motion: reduce) {
   .hero__visual,.portrait-card,.hero__orbit--one,.hero__orbit--two,.project-visual::after,.project-visual__signal,.case-study-page,.route-message { animation:none; }
 }
+
+
+/* Professional polish */
+:root { --lime: #d9774f; --lime-dark: #b95a36; --coral: #d9774f; --violet: #8fa6c0; }
+:root[data-theme="light"] { --bg: #f5f3ee; --bg-soft: #ebe8e1; --surface: #fcfbf8; --surface-2: #ebe8e1; --surface-3: #dfdbd2; --ink: #17202a; --muted: #59636d; --faint: #78818a; --line: rgba(23,32,42,.14); --line-strong: rgba(23,32,42,.28); --lime: #b85735; --lime-dark: #994326; --coral: #b85735; --violet: #526b84; }
+html, body { background: var(--bg); }
+.site-nav { background: color-mix(in srgb, var(--bg) 88%, transparent); }
+.mobile-menu { background: color-mix(in srgb, var(--surface) 96%, transparent); }
+.hero h1 { letter-spacing: -.085em; }
+.hero__intro { color: var(--ink); max-width: 470px; }
+.hero__eyebrow { color: var(--faint); }
+.button--primary { background: var(--lime); }
+.button--primary:hover { background: var(--lime-dark); }
+.principle-card { background: var(--lime); }
+.project-card { border-radius: 6px; }
+.project-card__media { border-radius: 5px 5px 0 0; }
+.project-card__body h3 { letter-spacing: -.045em; }
+.case-study-visual, .result-grid, .skill-cloud, .experience-list { border-radius: 6px; }
+.case-study-hero h1, .route-message h1 { letter-spacing: -.095em; }
+.lab-card { border-radius: 6px; }
+.contact-form-wrap { border-radius: 6px; }
+.portrait-card { box-shadow: 15px 18px 0 color-mix(in srgb, var(--lime) 16%, transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  .portrait-card { animation-duration: 11s; }
+  .project-card:hover { transform: translateY(-4px); }
+}
