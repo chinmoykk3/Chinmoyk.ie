@@ -1,10 +1,10 @@
 const siteData = {
-    name: "Chinmoy Kalita",
+    name: "Chinmoy Kalita", // [NAME]
     initials: "CK",
     title: "Full-Stack Developer / UI-UX Designer", // [TITLE]
     tagline: "Bridging the gap between engineering and design with a dash of space-age weirdness.", // [ONE-LINE TAGLINE]
-    email: "hello@janedoe.example", // [EMAIL]
-    github: "https://github.com/janedoe", // [GITHUB]
+    email: "chinmoykk3@gmail.com", // [EMAIL]
+    github: "https://github.com/chinmoykk3", // [GITHUB]
     linkedin: "https://linkedin.com/in/janedoe", // [LINKEDIN]
     twitter: "https://twitter.com/janedoe", // [TWITTER/X]
     location: "New York, USA",
