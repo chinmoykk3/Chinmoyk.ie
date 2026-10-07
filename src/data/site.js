@@ -6,8 +6,8 @@ const siteData = {
   availability: "Available for select product work",
   email: "chinmoykk3@gmail.com",
   github: "https://github.com/chinmoykk3",
-  linkedin: "https://linkedin.com/in/janedoe",
-  twitter: "https://twitter.com/janedoe",
+  linkedin: "https://linkedin.com/in/chinmoykalita",
+  twitter: "https://twitter.com/chinmoykalita",
   location: "New York, USA",
   timezone: "America/New_York",
   bio: `I am a frontend engineer who combines rigorous systems thinking with thoughtful visual design. I build digital products that feel clear, useful, and considered.
