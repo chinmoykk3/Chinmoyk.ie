@@ -520,3 +520,52 @@ html, body { background: var(--bg); }
 @media (prefers-reduced-motion: reduce) {
   .site-shell::before, .site-shell::after { animation: none; }
 }
+
+/* Signature telemetry system */
+.hero__telemetry {
+  position: absolute;
+  top: 24px;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.hero__telemetry span:first-child { color: var(--lime); }
+.hero__trajectory {
+  position: absolute;
+  inset: 0 -7% 0 -4%;
+  width: 111%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  opacity: .7;
+}
+.hero__trajectory path {
+  fill: none;
+  stroke: var(--lime);
+  stroke-dasharray: 6 14;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  animation: trajectory-draw 22s linear infinite;
+}
+.hero__trajectory circle { fill: var(--lime); }
+.hero__trajectory circle + circle { fill: none; stroke: var(--lime); stroke-width: 1; opacity: .5; animation: trajectory-pulse 2.8s ease-in-out infinite; }
+.role-rotator { display: inline-block; min-width: 15ch; animation: role-shift .45s var(--ease) both; }
+@keyframes trajectory-draw { to { stroke-dashoffset: -400; } }
+@keyframes trajectory-pulse { 0%,100% { transform: scale(.75); transform-origin: 435px 104px; opacity: .3; } 50% { transform: scale(1.35); transform-origin: 435px 104px; opacity: .8; } }
+@keyframes role-shift { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 700px) {
+  .hero__telemetry { top: 14px; justify-content: space-between; gap: 8px; font-size: 8px; }
+  .hero__telemetry span:first-child { display: none; }
+  .hero__trajectory { inset: 0 -20% 0 -18%; width: 138%; opacity: .5; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__trajectory path, .hero__trajectory circle + circle, .role-rotator { animation: none; }
+}

@@ -207,6 +207,8 @@ function PortfolioApp() {
   const [timeLeft, setTimeLeft] = useState(10);
   const [isPlaying, setIsPlaying] = useState(false);
   const [target, setTarget] = useState(null);
+  const [telemetry, setTelemetry] = useState({ scroll: 0, time: "--:--" });
+  const [roleIndex, setRoleIndex] = useState(0);
 
   const categories = useMemo(() => ["All", ...new Set(projectsData.map((project) => project.category))], []);
   const filteredProjects = useMemo(() => projectsData.filter((project) => filter === "All" || project.category === filter), [filter]);
@@ -232,6 +234,23 @@ function PortfolioApp() {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("flight-log-theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    const updateTelemetry = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const scroll = scrollable > 0 ? Math.round((window.scrollY / scrollable) * 100) : 0;
+      setTelemetry({ scroll, time: new Intl.DateTimeFormat([], { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()) });
+    };
+    updateTelemetry();
+    window.addEventListener("scroll", updateTelemetry, { passive: true });
+    const clock = window.setInterval(updateTelemetry, 30000);
+    return () => { window.removeEventListener("scroll", updateTelemetry); window.clearInterval(clock); };
+  }, []);
+
+  useEffect(() => {
+    const rotation = window.setInterval(() => setRoleIndex((index) => (index + 1) % siteData.roles.length), 3200);
+    return () => window.clearInterval(rotation);
+  }, []);
 
   useEffect(() => {
     if (!isPlaying) return undefined;
@@ -290,7 +309,7 @@ function PortfolioApp() {
           {navItems.map((item) => <button key={item.target} onClick={() => scrollTo(item.target)}>{item.label}</button>)}
         </nav>
         <div className="site-nav__actions">
-          <span className="availability"><i /> Available for select work</span>
+          <span className="availability"><i /> {siteData.availability}</span>
           <button className="theme-trigger" onClick={() => setTheme((current) => current === "dark" ? "light" : "dark")} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}>{theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}</button>
           <button className="command-trigger" onClick={() => setCommandOpen(true)} aria-label="Open command menu"><Command size={15} /><kbd>⌘K</kbd></button>
           <button className="hire-trigger" onClick={() => scrollTo("contact")}>Hire me</button>
@@ -308,6 +327,7 @@ function PortfolioApp() {
       <main>
         <section className="hero section-wrap" id="hero">
           <div className="hero__grid" aria-hidden="true"><span /><span /><span /><span /><span /></div>
+          <div className="hero__telemetry" aria-label="Live portfolio telemetry"><span>SYS / ONLINE</span><span>LOCAL {telemetry.time}</span><span>SCROLL {String(telemetry.scroll).padStart(2, "0")}%</span></div>
           <div className="hero__copy">
           <div className="hero__eyebrow"><span className="eyebrow-dot" /> {siteData.name} / {siteData.location}</div>
             <h1>Digital products<br /><em>with clarity</em><br /><strong>and character.</strong></h1>
@@ -318,6 +338,7 @@ function PortfolioApp() {
             </div>
           </div>
           <div className="hero__visual">
+            <svg className="hero__trajectory" viewBox="0 0 640 520" aria-hidden="true"><path d="M-30 420 C160 40 420 30 670 245 C490 430 250 505 40 255 C175 115 430 125 670 420" /><circle cx="435" cy="104" r="5" /><circle cx="435" cy="104" r="12" /></svg>
             <div className="portrait-card">
               <div className="portrait-graphic" aria-label="Abstract portrait graphic"><span>{siteData.initials}</span><i /><b /><em /></div>
               <span className="portrait-card__label">01 / 04 — profile</span>
@@ -325,7 +346,7 @@ function PortfolioApp() {
             </div>
             <div className="hero__orbit hero__orbit--one" />
             <div className="hero__orbit hero__orbit--two" />
-          <div className="hero__note"><Sparkles size={14} /> {siteData.title}</div>
+          <div className="hero__note"><Sparkles size={14} /> <span className="role-rotator">{siteData.roles[roleIndex]}</span></div>
           </div>
           <div className="hero__footer">
             <span>Scroll to explore</span><div className="scroll-line"><i /></div><span>01 — 06</span>
