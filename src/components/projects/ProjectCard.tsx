@@ -147,3 +147,4 @@ export function ProjectCard({
     </motion.article>
   );
 }
+

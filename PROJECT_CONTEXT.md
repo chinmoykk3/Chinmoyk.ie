@@ -16,9 +16,29 @@
 ## 2. Core Creative & Architectural Specifications
 
 ### 2.1 Hero Section
-- **Visual Centerpiece**: Original abstract 3D sculpture rendered in real time.
-- **Interaction**: Dynamic mouse-based reactivity, fluid deformation / rotation, and physics-informed lighting/shadow responses.
-- **Fallback**: Graceful low-power/mobile 2D/canvas/WebGL fallback ensuring fast first-paint without layout shift. Respects `prefers-reduced-motion`.
+- **Visual Centerpiece**: Original abstract 3D sculpture rendered in real time using Three.js and React Three Fiber.
+- **Sculptural Geometry**: Multi-layered composition featuring:
+  1. A central **Parametric Harmonic Torus-Knot Sculpture** (`TorusKnotGeometry(1.5, 0.4, 260, 48, 2, 3)`).
+  2. An inner counter-rotating **Luminous Polyhedral Intelligence Core** (`OctahedronGeometry(0.75, 0)`).
+  3. Concentric **Gyroscopic Orbital Rings** rotating independently across secondary axes.
+- **Materiality & Lighting**:
+  - `MeshPhysicalMaterial` with clearcoat, deep obsidian-cobalt base (`#121724`), high metalness (`0.92`), and subtle roughness (`0.16`).
+  - Warm solar amber key directional light (`#fbbf24`), cool algorithmic rim point light (`#2f68ee`), and dynamic pointer proximity specular light (`#38bdf8`).
+  - Ground contact shadow plane (`ContactShadows`) grounding the sculpture.
+- **Interaction Model**:
+  - Continuous harmonic floating and breathing oscillation.
+  - Pointer position tracking with smooth lerped damping (`THREE.MathUtils.damp`).
+  - Full click-and-drag 360-degree rotation with momentum/inertia decay (`decay = 0.94`).
+  - Dynamic pointer proximity: light intensity intensifies as the cursor approaches the core.
+  - Scroll-linked transition: as the user scrolls, the sculpture gracefully translates along the Y/Z axes and rotates, transitioning seamlessly into Chapter 01.
+  - Accessibility: Respects `prefers-reduced-motion` by freezing dynamic drift, distortion, and drag momentum.
+- **Typography & Structure**:
+  - Compact editorial navigation header.
+  - Introductory headline: `"A CURIOUS MIND. AN ENDLESS CANVAS."`
+  - Oversized animated name: `CHINMOY KALITA` with staggered character masking.
+  - Professional descriptor: `"FULL-STACK DEVELOPER / AI ENGINEER / GRAPHIC DESIGNER"`.
+  - Supporting copy: `"I build digital experiences where engineering meets intelligence and creativity."`.
+  - Editorial metadata: coordinates `[ 26.14° N, 91.73° E ]`, engine status, and scroll indicator.
 
 ### 2.2 About Section
 - **Portrait Guideline**: Strict requirement to **use the real photograph supplied by the owner**.
@@ -62,34 +82,21 @@
   - `emerald.DEFAULT` (`#10b981`): Status verification & operational telemetry indicators.
 
 ### 3.2 Typography Scale
-- **Display Mammoth**: `font-serif font-normal text-4xl sm:text-6xl xl:text-7xl leading-[1.04] tracking-tight`
+- **Oversized Name Headline**: `font-serif font-normal text-5xl sm:text-7xl md:text-8xl lg:text-[7rem] xl:text-[8.5rem] leading-[0.92] tracking-tight`
 - **Section Heading**: `font-serif font-normal text-3xl sm:text-5xl lg:text-6xl leading-[1.08] tracking-tight`
 - **Editorial Subtitle**: `font-serif italic font-light text-paper-muted`
 - **Body Text**: `font-sans font-light text-base sm:text-lg leading-[1.75] text-paper-muted`
 - **Technical Index / Metadata**: `font-mono text-2xs uppercase tracking-[0.2em] text-paper-dim`
 
-### 3.3 Surface & Spatial Rules
-- **Container Max-Width**: `max-w-7xl mx-auto px-6` with standard vertical section padding (`py-28`).
-- **Hairline Framing**: Micro-borders with `rgba(247, 247, 244, 0.08)` standard, transitioning to `rgba(247, 247, 244, 0.20)` on hover.
-- **Depth & Shadows**: Layered translucent surfaces paired with directional radial aura glows (`from-cobalt/10` and `from-ochre/10`).
-- **Tactile Grain Overlay**: Fixed zero-pointer-event subtle procedural film grain (`opacity: 0.028`) preventing digital sterility.
-
-### 3.4 Motion & Kinetic Principles
-- **Spring Physics**: Damped non-bouncy springs (`damping: 15, stiffness: 180, mass: 0.2`) for magnetic attractions and physical returns.
-- **Masked Typography**: Word-level kinetic reveals (`RevealText`) with ease curve `[0.16, 1, 0.3, 1]`.
-- **Accessibility Safeguard**: Automatic fallback via `useReducedMotion()`. When active:
-  - Custom cursor follower is hidden;
-  - Preloader exits immediately;
-  - 3D sculpture pauses rotational drift and mesh distortion;
-  - Lenis smooth scroll inertia is disabled;
-  - Animations fallback to simple opacity transitions.
-
 ---
 
-## 4. Reusable Design System Component Inventory
+## 4. Reusable Component Inventory
 
 | Component | Path | Description |
 | :--- | :--- | :--- |
+| `AnimatedName` | `src/components/hero/AnimatedName.tsx` | Oversized staggered letter typography animation with masked overflow containers. |
+| `HeroSculpture` | `src/components/hero/HeroSculpture.tsx` | Multi-layered 3D sculpture (Harmonic Torus Knot, core, dual orbital rings, drag momentum, cursor light). |
+| `HeroSection` | `src/components/hero/HeroSection.tsx` | Comprehensive interactive hero orchestrating headline, name, descriptor, copy, CTAs, 3D artwork, and scroll cue. |
 | `SectionHeading` | `src/components/shared/SectionHeading.tsx` | Standardized editorial chapter heading with Roman numeral metadata, italic highlights, and lead paragraph. |
 | `ChapterLabel` | `src/components/shared/ChapterLabel.tsx` | Asymmetric chapter tag with blinking status pulse and animated hairline divider. |
 | `RevealText` | `src/components/shared/RevealText.tsx` | Kinetic word-by-word mask reveal with customizable italic and accent word targeting. |
@@ -131,8 +138,9 @@ Chinmoyk.ie/
     │   │   └── DisciplinesSection.tsx      # Chapter 01: Engineering, AI & Design pillars
     │   ├── gallery/                        # High-resolution visual gallery & interactive showcases
     │   ├── hero/
+    │   │   ├── AnimatedName.tsx            # Oversized staggered letter typography animation
     │   │   ├── HeroSection.tsx             # Editorial hero container, typography, magnetic CTAs & status
-    │   │   └── HeroSculpture.tsx           # Interactive 3D abstract sculpture (R3F, mouse reactivity, shaders)
+    │   │   └── HeroSculpture.tsx           # Multi-layered interactive 3D abstract sculpture (R3F, drag, lighting)
     │   ├── navigation/
     │   │   └── Navbar.tsx                  # Sticky editorial navigation with live studio clock & magnetic CTA
     │   ├── projects/
@@ -201,24 +209,28 @@ Chinmoyk.ie/
 ### 7.1 Current Development Phase
 - **Phase 01 — Project Foundation**: COMPLETED.
 - **Phase 02 — Creative Identity and Design System**: COMPLETED.
-- **Next Phase**: Phase 03 — Editorial Narrative, Deep-Dive Case Studies & Interactive Refinements.
+- **Phase 03 — Interactive Hero Experience**: COMPLETED.
+- **Next Phase**: Phase 04 — Editorial Chapters, Deep-Dive Case Studies & Interactive Exhibits.
 
 ### 7.2 Completed Components & Milestones
 - [x] Initialized Git repository with remote: `https://github.com/chinmoykk3/Chinmoyk.ie.git`.
 - [x] Formulated architectural and creative blueprint ([PROJECT_CONTEXT.md](file:///f:/chinmoyk.ie/Chinmoyk.ie/PROJECT_CONTEXT.md)).
 - [x] Bootstrapped Next.js 15 App Router with React 19, TypeScript strict mode, and Tailwind CSS.
 - [x] Established original editorial color palette (Obsidian Void, Warm Alabaster Paper, Burnt Ochre, Electric Cobalt).
-- [x] Built the complete set of reusable design system primitives:
-  - `Navbar.tsx` (real-time studio timezone clock, magnetic CTA, responsive drawer)
-  - `Footer.tsx` (colophon, direct channels, timezone, tech specs)
-  - `SectionHeading.tsx` (reusable chapter header with Roman numerals and italic highlights)
-  - `RevealText.tsx` (kinetic typography mask animation)
-  - `MagneticButton.tsx` (spring physics magnetic attraction)
-  - `ProjectCard.tsx` (editorial asymmetric layout, hover depth, category & milestone metadata)
-  - `ChapterLabel.tsx` (editorial indexing label with status pulse and hairline divider)
-  - `CustomCursor.tsx` (desktop follower, blend modes, magnetic snap, view label, touch/reduced-motion bypass)
-  - `LoadingScreen.tsx` (minimal preloader with progressive counter and editorial wipe)
-- [x] Integrated Lenis smooth scrolling with GSAP ScrollTrigger ticker.
+- [x] Built complete design system primitives: `SectionHeading`, `ChapterLabel`, `RevealText`, `MagneticButton`, `ProjectCard`, `CustomCursor`, `LoadingScreen`, `Navbar`, and `Footer`.
+- [x] **Engineered Phase 03 Interactive Hero Experience**:
+  - Oversized staggered letter typography animation for `CHINMOY KALITA` ([AnimatedName.tsx](file:///f:/chinmoyk.ie/Chinmoyk.ie/src/components/hero/AnimatedName.tsx)).
+  - Headline: `"A CURIOUS MIND. AN ENDLESS CANVAS."` with kinetic mask reveal.
+  - Professional descriptor: `"FULL-STACK DEVELOPER / AI ENGINEER / GRAPHIC DESIGNER"`.
+  - Supporting copy: `"I build digital experiences where engineering meets intelligence and creativity."`.
+  - Multi-layered 3D sculpture ([HeroSculpture.tsx](file:///f:/chinmoyk.ie/Chinmoyk.ie/src/components/hero/HeroSculpture.tsx)):
+    - Parametric Harmonic Torus Knot (`TorusKnotGeometry(1.5, 0.4, 260, 48, 2, 3)`).
+    - Inner pulsing octahedral intelligence core with emissive wireframe.
+    - Concentric counter-rotating gyroscopic orbital rings.
+    - Three-point lighting + dynamic pointer proximity specular point light.
+    - Ground contact shadow plane (`ContactShadows`).
+    - Full 360-degree pointer drag-to-rotate with inertia decay.
+    - Scroll-linked Y/Z depth transition.
 - [x] Verified zero TypeScript errors (`tsc --noEmit` passed with 0 errors).
 - [x] Verified production build (`npm run build` succeeded with clean static generation).
 
@@ -233,16 +245,18 @@ Chinmoyk.ie/
 - **Decision 008**: Implement spring physics for magnetic interactions with strict `prefers-reduced-motion` and touch screen bypasses.
 - **Decision 009**: Preloader must be non-intrusive and cached via `sessionStorage` after initial load.
 - **Decision 010**: Micro hairline borders (`rgba(247, 247, 244, 0.08)`) and tactile grain overlay (`editorial-grain`) unify all pages into a cohesive physical print-meets-digital aesthetic.
+- **Decision 011**: Mathematical multi-layered abstract 3D sculpture composed of a Parametric Harmonic Torus Knot, an inner pulsating octahedral intelligence core, and counter-rotating gyroscopic orbital rings.
+- **Decision 012**: Drag-to-rotate interaction with friction momentum decay, combined with cursor proximity specular lighting and scroll-triggered z/y-depth transition.
+- **Decision 013**: Oversized animated name typography (`CHINMOY KALITA`) with staggered character masking for maximum editorial presence while preserving selectable semantic HTML.
 
 ### 7.4 Known Bugs & Issues
 - *None currently logged. Production build verified clean.*
 
 ### 7.5 Pending Tasks
 - [ ] Provide authentic portrait photograph of Chinmoy Kalita to place into `public/images/chinmoy-portrait.webp`.
-- [ ] Build deep-dive case study drawers or modal experiences for `SAHYOG`, `LIBRARIUM`, and `SHUTTERSCAPE`.
-- [ ] Implement interactive career / experience timeline component (`ExperienceTimeline.tsx`).
+- [ ] Develop interactive deep-dive case study drawers or modal experiences for `SAHYOG`, `LIBRARIUM`, and `SHUTTERSCAPE`.
+- [ ] Build interactive career / experience timeline component (`ExperienceTimeline.tsx`).
 - [ ] Implement creative exhibits & generative gallery in `src/components/gallery/CreativeGallery.tsx`.
-- [ ] Refine 3D sculpture shader variants reflecting the 3 disciplines.
 
 ### 7.6 Project Content Requiring Owner Input
 - [ ] **Owner Photograph**: High-resolution authentic portrait photo of Chinmoy Kalita for the About section.
@@ -252,4 +266,4 @@ Chinmoyk.ie/
 
 ---
 
-*Last Updated*: Phase 02 Creative Identity & Design System (2026-11-10)
+*Last Updated*: Phase 03 Interactive Hero Experience (2026-11-10)
