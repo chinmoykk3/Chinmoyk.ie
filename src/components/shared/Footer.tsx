@@ -1,8 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { SITE_IDENTITY } from '@/data/projectData';
+import { MagneticButton } from './MagneticButton';
+import { ChapterLabel } from './ChapterLabel';
 
 function GithubIcon({ className = 'w-4 h-4' }: { className?: string }) {
   return (
@@ -34,36 +35,44 @@ function TwitterXIcon({ className = 'w-4 h-4' }: { className?: string }) {
 
 export function Footer() {
   return (
-    <footer id="contact" className="py-20 bg-background-subtle border-t border-editorial-border relative">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-editorial-border">
-          {/* Main Inquiry Column */}
+    <footer id="contact" className="py-24 bg-canvas-deep border-t border-editorial-border relative overflow-hidden">
+      {/* Background ambient lighting */}
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-radial-gradient from-cobalt/10 via-transparent to-transparent pointer-events-none rounded-full translate-x-1/3 translate-y-1/3" />
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <ChapterLabel
+          number="COLOPHON"
+          label="Dialogue &amp; Coordinates"
+          metadata="Guwahati &bull; Remote"
+          accent="ochre"
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-20 border-b border-editorial-border">
+          {/* Main Statement */}
           <div className="md:col-span-7 space-y-6">
-            <span className="text-xs font-mono uppercase tracking-widest text-accent-blue">
-              Initiate Dialogue &bull; Available 2025–2026
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-serif text-foreground font-normal leading-tight">
-              Have a visionary project or architectural challenge?
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif text-paper font-normal leading-[1.08] tracking-tight">
+              Have an architectural challenge or creative vision?
             </h2>
-            <p className="text-foreground-muted font-light max-w-xl">
-              Currently open to strategic engineering roles, AI product advisory, and bespoke creative development collaborations.
+            <p className="text-paper-muted font-light max-w-xl text-base sm:text-lg leading-relaxed">
+              Available for full-stack system architecture, AI research and integration, and bespoke digital creative direction.
             </p>
-            <div className="pt-2">
-              <a
+            <div className="pt-4">
+              <MagneticButton
                 href={`mailto:${SITE_IDENTITY.contact.email}`}
-                className="inline-flex items-center gap-3 px-6 py-3.5 rounded-lg bg-foreground text-background font-medium text-sm hover:bg-white transition-all shadow-md group"
+                variant="primary"
+                size="lg"
+                icon={<ArrowUpRight className="w-4 h-4" />}
               >
-                <span>{SITE_IDENTITY.contact.email}</span>
-                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </a>
+                {SITE_IDENTITY.contact.email}
+              </MagneticButton>
             </div>
           </div>
 
-          {/* Social and Navigation Links */}
+          {/* Coordinates & Index */}
           <div className="md:col-span-5 flex flex-col justify-between space-y-8">
-            <div className="space-y-3">
-              <div className="text-xs font-mono uppercase tracking-wider text-foreground-dim">
-                Public Coordinates
+            <div className="space-y-4">
+              <div className="text-2xs font-mono uppercase tracking-[0.2em] text-paper-dim">
+                Direct Channels
               </div>
               <ul className="space-y-3 text-sm">
                 <li>
@@ -71,14 +80,14 @@ export function Footer() {
                     href={SITE_IDENTITY.contact.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between text-foreground-muted hover:text-foreground transition-colors group"
+                    className="flex items-center justify-between p-3 rounded-editorial-md bg-canvas-card border border-editorial-border text-paper-muted hover:text-paper hover:border-editorial-border-hover transition-all group"
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2.5">
                       <GithubIcon className="w-4 h-4" />
                       <span>GitHub</span>
                     </span>
-                    <span className="text-xs font-mono text-foreground-dim group-hover:text-accent-blue">
-                      @chinmoykk3
+                    <span className="text-2xs font-mono text-paper-dim group-hover:text-cobalt">
+                      @chinmoykk3 &rarr;
                     </span>
                   </a>
                 </li>
@@ -87,14 +96,14 @@ export function Footer() {
                     href={SITE_IDENTITY.contact.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between text-foreground-muted hover:text-foreground transition-colors group"
+                    className="flex items-center justify-between p-3 rounded-editorial-md bg-canvas-card border border-editorial-border text-paper-muted hover:text-paper hover:border-editorial-border-hover transition-all group"
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2.5">
                       <LinkedinIcon className="w-4 h-4" />
                       <span>LinkedIn</span>
                     </span>
-                    <span className="text-xs font-mono text-foreground-dim group-hover:text-accent-blue">
-                      /in/chinmoykalita
+                    <span className="text-2xs font-mono text-paper-dim group-hover:text-cobalt">
+                      /in/chinmoykalita &rarr;
                     </span>
                   </a>
                 </li>
@@ -103,33 +112,36 @@ export function Footer() {
                     href={SITE_IDENTITY.contact.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between text-foreground-muted hover:text-foreground transition-colors group"
+                    className="flex items-center justify-between p-3 rounded-editorial-md bg-canvas-card border border-editorial-border text-paper-muted hover:text-paper hover:border-editorial-border-hover transition-all group"
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2.5">
                       <TwitterXIcon className="w-4 h-4" />
                       <span>Twitter / X</span>
                     </span>
-                    <span className="text-xs font-mono text-foreground-dim group-hover:text-accent-blue">
-                      @chinmoykalita
+                    <span className="text-2xs font-mono text-paper-dim group-hover:text-cobalt">
+                      @chinmoykalita &rarr;
                     </span>
                   </a>
                 </li>
               </ul>
             </div>
 
-            <div className="text-xs font-mono text-foreground-dim">
-              <span>Stack: Next.js App Router &bull; R3F &bull; GSAP &bull; Tailwind</span>
+            <div className="space-y-1 text-2xs font-mono text-paper-dim">
+              <div>ENGINEERED WITH NEXT.JS 15 &bull; R3F &bull; GSAP</div>
+              <div>HOSTED WITH PRODUCTION STATIC OPTIMIZATION</div>
             </div>
           </div>
         </div>
 
-        {/* Colophon & Copyright */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-foreground-dim gap-4">
-          <div>
-            &copy; {new Date().getFullYear()} {SITE_IDENTITY.name}. All rights reserved.
+        {/* Bottom Colophon Bar */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-2xs font-mono text-paper-dim gap-4">
+          <div className="flex items-center space-x-2">
+            <span>&copy; {new Date().getFullYear()} {SITE_IDENTITY.name}.</span>
+            <span className="text-editorial-border">/</span>
+            <span>ALL RIGHTS RESERVED.</span>
           </div>
           <div>
-            A Mind in Motion &bull; Three disciplines. One creative universe.
+            A MIND IN MOTION &bull; THREE DISCIPLINES &bull; ONE CREATIVE UNIVERSE
           </div>
         </div>
       </div>

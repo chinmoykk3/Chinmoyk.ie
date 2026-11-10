@@ -48,3 +48,4 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
 
   return <>{children}</>;
 }
+

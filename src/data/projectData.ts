@@ -104,3 +104,4 @@ export const NAVIGATION_LINKS: NavigationItem[] = [
   { label: 'About', href: '#about' },
   { label: 'Contact', href: '#contact' },
 ];
+

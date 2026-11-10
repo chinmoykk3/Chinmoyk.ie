@@ -1,12 +1,65 @@
-import type { Variants } from 'framer-motion';
+import type { Variants, Transition } from 'framer-motion';
 
 /**
- * Editorial fade & slide upwards variant
+ * Editorial Spring Physics
+ * Crisp, non-bouncy physical transitions used across magnetic controls and interactive surfaces.
+ */
+export const editorialSpring: Transition = {
+  type: 'spring',
+  stiffness: 260,
+  damping: 24,
+  mass: 0.6,
+};
+
+/**
+ * Smooth Cubic Bezier Curves
+ * Emulates high-end editorial physical reveals.
+ */
+export const editorialEase = [0.16, 1, 0.3, 1] as const;
+export const editorialEaseSlow = [0.65, 0, 0.35, 1] as const;
+
+/**
+ * Reveal Text Mask (Kinetic word / line reveal)
+ */
+export const maskReveal: Variants = {
+  hidden: {
+    y: '110%',
+    opacity: 0,
+    rotateZ: 1.5,
+  },
+  visible: (customDelay = 0) => ({
+    y: '0%',
+    opacity: 1,
+    rotateZ: 0,
+    transition: {
+      duration: 0.85,
+      delay: customDelay,
+      ease: editorialEase,
+    },
+  }),
+};
+
+/**
+ * Editorial Staggered Children Container
+ */
+export const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: (staggerSpeed = 0.1) => ({
+    opacity: 1,
+    transition: {
+      staggerChildren: staggerSpeed,
+      delayChildren: 0.05,
+    },
+  }),
+};
+
+/**
+ * Fade In Up Variant
  */
 export const fadeInUp: Variants = {
   hidden: {
     opacity: 0,
-    y: 28,
+    y: 24,
   },
   visible: (customDelay = 0) => ({
     opacity: 1,
@@ -14,50 +67,34 @@ export const fadeInUp: Variants = {
     transition: {
       duration: 0.8,
       delay: customDelay,
-      ease: [0.16, 1, 0.3, 1],
+      ease: editorialEase,
     },
   }),
 };
 
 /**
- * Staggered container variant for lists, tags, and grid items
+ * Hairline Divider Expansion
  */
-export const staggerContainer: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-/**
- * Subtle scale-in reveal
- */
-export const scaleIn: Variants = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.6,
-      ease: [0.16, 1, 0.3, 1],
-    },
-  },
-};
-
-/**
- * Editorial line expander
- */
-export const lineReveal: Variants = {
+export const hairlineReveal: Variants = {
   hidden: { scaleX: 0, originX: 0 },
-  visible: {
+  visible: (customDelay = 0) => ({
     scaleX: 1,
     transition: {
       duration: 1.1,
-      ease: [0.16, 1, 0.3, 1],
+      delay: customDelay,
+      ease: editorialEaseSlow,
     },
+  }),
+};
+
+/**
+ * Editorial Card Elevation & Focus
+ */
+export const cardHover: Variants = {
+  initial: { y: 0, borderColor: 'rgba(247, 247, 244, 0.08)' },
+  hover: {
+    y: -4,
+    borderColor: 'rgba(247, 247, 244, 0.22)',
+    transition: editorialSpring,
   },
 };

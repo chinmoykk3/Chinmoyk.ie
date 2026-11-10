@@ -4,6 +4,8 @@ import '@/styles/globals.css';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/shared/Footer';
 import { SmoothScrollProvider } from '@/components/shared/SmoothScrollProvider';
+import { CustomCursor } from '@/components/shared/CustomCursor';
+import { LoadingScreen } from '@/components/shared/LoadingScreen';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -69,7 +71,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0a0b0e',
+  themeColor: '#090a0d',
   width: 'device-width',
   initialScale: 1,
 };
@@ -84,7 +86,9 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} dark`}
     >
-      <body className="bg-background text-foreground antialiased selection:bg-accent-blue selection:text-white">
+      <body className="bg-canvas text-paper antialiased selection:bg-ochre selection:text-canvas">
+        <LoadingScreen />
+        <CustomCursor />
         <SmoothScrollProvider>
           {/* Subtle noise/grain layer */}
           <div className="editorial-grain" aria-hidden="true" />

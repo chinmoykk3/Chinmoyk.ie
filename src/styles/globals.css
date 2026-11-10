@@ -6,17 +6,24 @@
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-serif: 'Playfair Display', Georgia, Cambria, 'Times New Roman', serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --color-canvas: #090a0d;
+  --color-paper: #f7f7f4;
+  --color-paper-muted: #a5a7b0;
+  --color-hairline: rgba(247, 247, 244, 0.08);
+  --color-ochre: #e67e3a;
+  --color-cobalt: #2f68ee;
 }
 
 @layer base {
   * {
-    border-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(247, 247, 244, 0.08);
   }
 
   html {
     color-scheme: dark;
-    background-color: #0a0b0e;
-    color: #f3f4f6;
+    background-color: #090a0d;
+    color: #f7f7f4;
     scroll-behavior: smooth;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -24,32 +31,40 @@
   }
 
   body {
-    background-color: #0a0b0e;
-    color: #f3f4f6;
+    background-color: #090a0d;
+    color: #f7f7f4;
     overflow-x: hidden;
     min-height: 100vh;
     font-family: var(--font-sans);
+    cursor: default;
   }
 
-  /* Custom selection aesthetics */
+  /* High contrast accessible focus indicators */
+  :focus-visible {
+    outline: 2px solid #2f68ee;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Archival selection aesthetics */
   ::selection {
-    background: #3b82f6;
-    color: #ffffff;
+    background: #e67e3a;
+    color: #090a0d;
   }
 
   /* Editorial custom scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
   }
   ::-webkit-scrollbar-track {
-    background: #0a0b0e;
+    background: #090a0d;
   }
   ::-webkit-scrollbar-thumb {
-    background: #232733;
-    border-radius: 3px;
+    background: #1c1f2b;
+    border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #3b82f6;
+    background: #2f68ee;
   }
 }
 
@@ -74,7 +89,7 @@ html.lenis, html.lenis body {
   pointer-events: none;
 }
 
-/* Noise overlay */
+/* Editorial subtle paper grain overlay */
 .editorial-grain {
   position: fixed;
   top: 0;
@@ -82,8 +97,34 @@ html.lenis, html.lenis body {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 99;
-  opacity: 0.025;
+  z-index: 999;
+  opacity: 0.028;
   background-image: radial-gradient(#ffffff 1px, transparent 0);
-  background-size: 24px 24px;
+  background-size: 20px 20px;
+}
+
+/* Micro-hairline borders */
+.hairline-b {
+  border-bottom: 1px solid rgba(247, 247, 244, 0.08);
+}
+
+.hairline-t {
+  border-top: 1px solid rgba(247, 247, 244, 0.08);
+}
+
+.hairline-r {
+  border-right: 1px solid rgba(247, 247, 244, 0.08);
+}
+
+.hairline-l {
+  border-left: 1px solid rgba(247, 247, 244, 0.08);
+}
+
+/* Hide standard cursor when custom cursor is active (on desktop devices with fine pointers) */
+@media (hover: hover) and (pointer: fine) {
+  body.has-custom-cursor a,
+  body.has-custom-cursor button,
+  body.has-custom-cursor [data-cursor] {
+    cursor: none !important;
+  }
 }
