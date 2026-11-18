@@ -7,6 +7,23 @@ export interface ChapterNarrationItem {
   note?: string;
 }
 
+export interface CuriositySlot {
+  id: string;
+  label: string;
+  question: string;
+  visualType: 'gear' | 'circuit' | 'sketch';
+  placeholder: string;
+}
+
+export interface ConvergingIdentity {
+  id: string;
+  role: string;
+  accent: AccentKey;
+  description: string;
+  feedsOthers: string;
+  isPlaceholder?: boolean;
+}
+
 export interface Chapter {
   id: string;
   number: number | string; // e.g. 0 for Prologue, 1-7, 'Epilogue'
@@ -18,6 +35,8 @@ export interface Chapter {
   narration: ChapterNarrationItem[];
   bridgeToNext: string;
   isPlaceholder?: boolean;
+  curiositySlots?: CuriositySlot[];
+  convergingIdentities?: ConvergingIdentity[];
 }
 
 export const chapters: Chapter[] = [
@@ -47,47 +66,122 @@ export const chapters: Chapter[] = [
   {
     id: 'chapter-01',
     number: 1,
-    title: 'Chapter 01: The First Terminal',
-    subtitle: 'Uncovering the digital canvas',
-    emotionalArc: 'Discovery',
+    title: 'Chapter 01: It Started With Curiosity',
+    subtitle: 'The shift from observer to maker',
+    emotionalArc: 'Curiosity',
     accentKey: 'gold',
     summary:
-      'The discovery of computing: when text becomes instruction, and instruction brings ideas to life.',
+      "I've always been fascinated by understanding how things work. But eventually, understanding wasn't enough. I wanted to create things myself.",
     narration: [
       {
-        text: 'The moment lines of code execute on screen for the first time, the boundary between imagination and reality dissolves.',
-        note: 'DRAFT narration',
+        text: "I've always been fascinated by understanding how things work. But eventually, understanding wasn't enough. I wanted to create things myself.",
+        note: 'DRAFT narration — core movement thesis',
       },
       {
-        text: '[TODO: Add personal milestone: first language learned, first tool built, or pivotal discovery moment]',
-        note: 'PLACEHOLDER: Awaiting real dates and early experiences',
+        text: '[TODO: Chinmoy to supply: what first sparked curiosity]',
+        note: 'PLACEHOLDER: Slot 1 — Early technical spark',
+      },
+      {
+        text: '[TODO: Chinmoy to supply: a first thing I built]',
+        note: 'PLACEHOLDER: Slot 2 — First creation milestone',
+      },
+      {
+        text: '[TODO: Chinmoy to supply: what keeps me experimenting]',
+        note: 'PLACEHOLDER: Slot 3 — Perpetual experimenter drive',
+      },
+    ],
+    curiositySlots: [
+      {
+        id: 'slot-spark',
+        label: 'THE SPARK',
+        question: 'What first sparked curiosity?',
+        visualType: 'gear',
+        placeholder:
+          '[TODO: Chinmoy to supply: what first sparked curiosity — e.g. taking apart hardware, examining how mechanical/digital systems tick]',
+      },
+      {
+        id: 'slot-first-build',
+        label: 'FIRST CREATION',
+        question: 'A first thing I built',
+        visualType: 'circuit',
+        placeholder:
+          '[TODO: Chinmoy to supply: a first thing I built — e.g. an early C script, electronic circuit, game prototype, or web tool]',
+      },
+      {
+        id: 'slot-fuel',
+        label: 'PERPETUAL DRIVE',
+        question: 'What keeps me experimenting?',
+        visualType: 'sketch',
+        placeholder:
+          '[TODO: Chinmoy to supply: what keeps me experimenting — e.g. the obsession with bringing imagined systems into tangible reality]',
       },
     ],
     bridgeToNext:
-      'Understanding the mechanics opens the door to testing boundaries — breaking things to see how they rebuild.',
+      'When you begin creating, you realize technology cannot exist in a vacuum. I found more than one world waiting to be bridged.',
     isPlaceholder: true,
   },
   {
     id: 'chapter-02',
     number: 2,
-    title: 'Chapter 02: Breaking & Building',
-    subtitle: 'Trial by code and curiosity',
-    emotionalArc: 'Experimentation',
+    title: 'Chapter 02: I Found More Than One World',
+    subtitle: 'Four disciplines converging into a single craft',
+    emotionalArc: 'Convergence',
     accentKey: 'all',
     summary:
-      'The experimental stage: tinkering with prototypes, scripts, and unraveling failures into insight across all directions.',
+      "I didn't want to choose between technology and creativity. I wanted to explore both.",
     narration: [
       {
-        text: 'Experimentation is messy. It is the willingness to build imperfect things repeatedly until intuition forms.',
-        note: 'DRAFT narration',
+        text: "I didn't want to choose between technology and creativity. I wanted to explore both.",
+        note: 'DRAFT narration — convergence thesis',
       },
       {
-        text: '[TODO: Add specific experimental projects, early hackathons, or exploratory prototypes]',
-        note: 'PLACEHOLDER: Awaiting authentic project memories',
+        text: '[TODO: Chinmoy to supply: Reflections on refusing to be siloed into a single traditional developer box]',
+        note: 'PLACEHOLDER: Synthesis of disciplines',
+      },
+    ],
+    convergingIdentities: [
+      {
+        id: 'the-builder',
+        role: 'The Builder',
+        accent: 'azure',
+        description: 'Architecting resilient full-stack systems and production foundations.',
+        feedsOthers:
+          'Lays the robust infrastructure and scalable mechanics that turn abstract reasoning into reliable products.',
+        isPlaceholder: true,
+      },
+      {
+        id: 'the-engineer-of-intelligence',
+        role: 'The Engineer of Intelligence',
+        accent: 'iris',
+        description:
+          'Designing autonomous agent workflows, machine learning models, and cognitive systems.',
+        feedsOthers:
+          'Injects adaptive intelligence and reasoning loops into the builder’s static architectures.',
+        isPlaceholder: true,
+      },
+      {
+        id: 'the-visual-thinker',
+        role: 'The Visual Thinker',
+        accent: 'rose',
+        description:
+          'Crafting spatial interfaces, fluid motion choreography, and tactile typography.',
+        feedsOthers:
+          'Gives intelligent systems a human, emotional voice, turning invisible logic into intuitive clarity.',
+        isPlaceholder: true,
+      },
+      {
+        id: 'the-explorer',
+        role: 'The Explorer',
+        accent: 'ember',
+        description:
+          'Investigating decentralized topologies, civic technology, and community resilience.',
+        feedsOthers:
+          'Pushes systems into unmapped public frontiers, testing whether technology truly serves real people.',
+        isPlaceholder: true,
       },
     ],
     bridgeToNext:
-      'Out of chaotic experimentation crystallizes the desire to craft coherent, purposeful products.',
+      'When these disciplines converge, you don’t just write code — you begin to construct coherent worlds.',
     isPlaceholder: true,
   },
   {

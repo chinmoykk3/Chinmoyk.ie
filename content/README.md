@@ -17,10 +17,17 @@ Accents: `prologue=gold, 01=gold, 02=all, 03=azure, 04=rose, 05=iris, 06=gold-em
 
 - [ ] **Prologue (Curiosity · gold)**:
   - `narration[1].text`: Replace `[TODO: Add personal opening memory/reflection about early fascination with machines, computers, or problem-solving]` with your authentic opening reflection.
-- [ ] **Chapter 01 (Discovery · gold)**:
-  - `narration[1].text`: Replace `[TODO: Add personal milestone: first language learned, first tool built, or pivotal discovery moment]` with your real first coding milestone and dates.
-- [ ] **Chapter 02 (Experimentation · all)**:
-  - `narration[1].text`: Replace `[TODO: Add specific experimental projects, early hackathons, or exploratory prototypes]` with early hacks and prototypes you built.
+- [ ] **Chapter 01 (Curiosity · gold)**:
+  - `narration[0].text`: Core draft narration: *"I've always been fascinated by understanding how things work. But eventually, understanding wasn't enough. I wanted to create things myself."*
+  - `curiositySlots[0]`: Fill slot 1: **What first sparked curiosity** (early hardware/system teardowns, questions).
+  - `curiositySlots[1]`: Fill slot 2: **A first thing I built** (first real script, electronic project, game, or tool).
+  - `curiositySlots[2]`: Fill slot 3: **What keeps me experimenting** (perpetual recursive drive to build).
+- [ ] **Chapter 02 (Convergence · all)**:
+  - `narration[0].text`: Core draft narration: *"I didn't want to choose between technology and creativity. I wanted to explore both."*
+  - `convergingIdentities[0]`: Refine/personalize **The Builder** (azure) connection.
+  - `convergingIdentities[1]`: Refine/personalize **The Engineer of Intelligence** (iris) connection.
+  - `convergingIdentities[2]`: Refine/personalize **The Visual Thinker** (rose) connection.
+  - `convergingIdentities[3]`: Refine/personalize **The Explorer** (ember) connection.
 - [ ] **Chapter 03 (Creation · azure)**:
   - `narration[1].text`: Replace `[TODO: Detail the shift into full-stack development, early system designs, and community platforms]` with your experience architecting real end-to-end systems.
 - [ ] **Chapter 04 (Expression · rose)**:

@@ -40,6 +40,15 @@ const config: Config = {
           ember: 'var(--color-ember)',
           gold: 'var(--color-gold)',
         },
+        // Cinematic opening experience tokens (Pure black #000000, true neutral cinema palette)
+        cinema: {
+          bg: 'var(--color-cinema-bg)',
+          surface: 'var(--color-cinema-surface)',
+          text: 'var(--color-cinema-text)',
+          muted: 'var(--color-cinema-muted)',
+          border: 'var(--color-cinema-border)',
+          gold: 'var(--color-cinema-gold)',
+        },
       },
       fontFamily: {
         serif: ['var(--font-serif)', 'Instrument Serif', 'Georgia', 'serif'],
@@ -58,6 +67,7 @@ const config: Config = {
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out forwards',
         'subtle-pulse': 'subtlePulse 3s ease-in-out infinite',
+        breathe: 'breathe 2.6s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -67,6 +77,10 @@ const config: Config = {
         subtlePulse: {
           '0%, 100%': { opacity: '0.4' },
           '50%': { opacity: '0.85' },
+        },
+        breathe: {
+          '0%, 100%': { transform: 'scale(1)', opacity: '0.6' },
+          '50%': { transform: 'scale(1.4)', opacity: '1' },
         },
       },
     },

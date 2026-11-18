@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { ChapterLabel } from '@/components/ui/ChapterLabel';
 import { SectionWrapper } from '@/components/ui/SectionWrapper';
 import { Container } from '@/components/ui/Container';
-import { Compass, Play } from 'lucide-react';
+import { Compass, Play, Film } from 'lucide-react';
 
 export function StoryHero() {
   return (
@@ -72,6 +72,20 @@ export function StoryHero() {
               Explore Projects Mode
             </Button>
           </Link>
+
+          <Button
+            size="lg"
+            variant="ghost"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new Event('ck_replay_intro'));
+              }
+            }}
+            className="text-theme-muted hover:text-theme-text"
+          >
+            <Film className="w-4 h-4 text-theme-gold" />
+            Replay Intro
+          </Button>
         </div>
       </Container>
     </SectionWrapper>

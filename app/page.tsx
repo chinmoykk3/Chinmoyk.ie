@@ -1,6 +1,7 @@
 import React from 'react';
 import { chapters } from '@/content/chapters';
 import { projects } from '@/content/projects';
+import { OpeningExperience } from '@/components/story/OpeningExperience';
 import { StoryHero } from '@/components/story/StoryHero';
 import { ChapterCard } from '@/components/chapters/ChapterCard';
 import { ChapterRail } from '@/components/story/ChapterRail';
@@ -12,6 +13,9 @@ import Link from 'next/link';
 export default function StoryModePage() {
   return (
     <div className="w-full relative">
+      {/* Cinematic Opening Experience (Pure Black Screen, Focus Pull, Breathing Gold Point) */}
+      <OpeningExperience />
+
       {/* Desktop Chapter Rail (Synced to continuous scroll with arrow-key jumping) */}
       <ChapterRail />
 

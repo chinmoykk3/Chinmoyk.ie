@@ -30,6 +30,14 @@
   --accent: var(--color-gold);
   --accent-raw: #F59E0B;
   --wash: rgba(180, 83, 9, 0.05);
+
+  /* Pure cinematic tokens for documentary opening experience */
+  --color-cinema-bg: #000000;
+  --color-cinema-surface: #0A0A0A;
+  --color-cinema-text: #F5F5F5;
+  --color-cinema-muted: #A3A3A3;
+  --color-cinema-border: rgba(255, 255, 255, 0.12);
+  --color-cinema-gold: #FBBF24;
 }
 
 .dark {
@@ -42,6 +50,14 @@
   --color-text-muted: #A3A3A3;
   --color-border: rgba(255, 255, 255, 0.08);
   --color-border-strong: rgba(255, 255, 255, 0.16);
+
+  /* Pure cinematic tokens for documentary opening experience */
+  --color-cinema-bg: #000000;
+  --color-cinema-surface: #0A0A0A;
+  --color-cinema-text: #F5F5F5;
+  --color-cinema-muted: #A3A3A3;
+  --color-cinema-border: rgba(255, 255, 255, 0.12);
+  --color-cinema-gold: #FBBF24;
 
   /* Sunrise-ramp color tokens (Dark mode high-radiance WCAG AA passing) */
   --color-gold: #FBBF24;
