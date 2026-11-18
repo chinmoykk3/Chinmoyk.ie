@@ -3,6 +3,7 @@ import { chapters } from '@/content/chapters';
 import { projects } from '@/content/projects';
 import { StoryHero } from '@/components/story/StoryHero';
 import { ChapterCard } from '@/components/chapters/ChapterCard';
+import { ChapterRail } from '@/components/story/ChapterRail';
 import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Tag';
 import { Card } from '@/components/ui/Card';
@@ -10,7 +11,10 @@ import Link from 'next/link';
 
 export default function StoryModePage() {
   return (
-    <div className="w-full">
+    <div className="w-full relative">
+      {/* Desktop Chapter Rail (Synced to continuous scroll with arrow-key jumping) */}
+      <ChapterRail />
+
       {/* Narrative Hero */}
       <StoryHero />
 
