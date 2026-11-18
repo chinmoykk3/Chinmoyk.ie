@@ -27,7 +27,8 @@ export const chapters: Chapter[] = [
     emotionalArc: 'Curiosity',
     accent: '#dfb15b', // warm gold
     themeColor: 'documentary-gold',
-    summary: 'Before the systems, the code, and the architectures, there was only relentless curiosity.',
+    summary:
+      'Before the systems, the code, and the architectures, there was only relentless curiosity.',
     narration: [
       {
         text: 'Everything started not with an answer, but with an insatiable need to ask why things work the way they do.',
@@ -38,7 +39,8 @@ export const chapters: Chapter[] = [
         note: 'PLACEHOLDER: Awaiting authentic personal memory from Chinmoy',
       },
     ],
-    bridgeToNext: 'Curiosity alone asks questions; discovery begins when the first answers reveal how deep the world really is.',
+    bridgeToNext:
+      'Curiosity alone asks questions; discovery begins when the first answers reveal how deep the world really is.',
     isPlaceholder: true,
   },
   {
@@ -49,7 +51,8 @@ export const chapters: Chapter[] = [
     emotionalArc: 'Discovery',
     accent: '#38bdf8', // cyan
     themeColor: 'documentary-cyan',
-    summary: 'The discovery of computing: when text becomes instruction, and instruction brings ideas to life.',
+    summary:
+      'The discovery of computing: when text becomes instruction, and instruction brings ideas to life.',
     narration: [
       {
         text: 'The moment lines of code execute on screen for the first time, the boundary between imagination and reality dissolves.',
@@ -60,7 +63,8 @@ export const chapters: Chapter[] = [
         note: 'PLACEHOLDER: Awaiting real dates and early experiences',
       },
     ],
-    bridgeToNext: 'Understanding the mechanics opens the door to testing boundaries — breaking things to see how they rebuild.',
+    bridgeToNext:
+      'Understanding the mechanics opens the door to testing boundaries — breaking things to see how they rebuild.',
     isPlaceholder: true,
   },
   {
@@ -71,7 +75,8 @@ export const chapters: Chapter[] = [
     emotionalArc: 'Experimentation',
     accent: '#a855f7', // violet
     themeColor: 'documentary-violet',
-    summary: 'The experimental stage: tinkering with prototypes, scripts, and unraveling failures into insight.',
+    summary:
+      'The experimental stage: tinkering with prototypes, scripts, and unraveling failures into insight.',
     narration: [
       {
         text: 'Experimentation is messy. It is the willingness to build imperfect things repeatedly until intuition forms.',
@@ -82,7 +87,8 @@ export const chapters: Chapter[] = [
         note: 'PLACEHOLDER: Awaiting authentic project memories',
       },
     ],
-    bridgeToNext: 'Out of chaotic experimentation crystallizes the desire to craft coherent, purposeful products.',
+    bridgeToNext:
+      'Out of chaotic experimentation crystallizes the desire to craft coherent, purposeful products.',
     isPlaceholder: true,
   },
   {
@@ -93,7 +99,8 @@ export const chapters: Chapter[] = [
     emotionalArc: 'Creation',
     accent: '#34d399', // emerald
     themeColor: 'documentary-emerald',
-    summary: 'Engineering end-to-end applications designed to solve concrete problems for real communities.',
+    summary:
+      'Engineering end-to-end applications designed to solve concrete problems for real communities.',
     narration: [
       {
         text: 'Software creation shifts when you realize code is never about the developer — it is about the person whose friction you remove.',
@@ -104,7 +111,8 @@ export const chapters: Chapter[] = [
         note: 'PLACEHOLDER: Add real architectural breakthroughs',
       },
     ],
-    bridgeToNext: 'Functionality is the baseline; how a system communicates its soul requires another dimension.',
+    bridgeToNext:
+      'Functionality is the baseline; how a system communicates its soul requires another dimension.',
     isPlaceholder: true,
   },
   {
@@ -115,7 +123,8 @@ export const chapters: Chapter[] = [
     emotionalArc: 'Expression',
     accent: '#e5a93c', // amber
     themeColor: 'documentary-amber',
-    summary: 'Bridging backend rigor with interactive visual design, motion dynamics, and micro-interactions.',
+    summary:
+      'Bridging backend rigor with interactive visual design, motion dynamics, and micro-interactions.',
     narration: [
       {
         text: 'An interface is not decoration. It is the language through which complexity explains itself gracefully.',
@@ -126,7 +135,8 @@ export const chapters: Chapter[] = [
         note: 'PLACEHOLDER: Awaiting Chinmoy design philosophy notes',
       },
     ],
-    bridgeToNext: 'When technical capability unites with expressive design, wider territories call to be explored.',
+    bridgeToNext:
+      'When technical capability unites with expressive design, wider territories call to be explored.',
     isPlaceholder: true,
   },
   {
@@ -137,7 +147,8 @@ export const chapters: Chapter[] = [
     emotionalArc: 'Exploration',
     accent: '#6366f1', // indigo
     themeColor: 'documentary-indigo',
-    summary: 'Diving into generative AI, decentralized protocols, and data-heavy institutional infrastructures.',
+    summary:
+      'Diving into generative AI, decentralized protocols, and data-heavy institutional infrastructures.',
     narration: [
       {
         text: 'True exploration requires stepping into domains where standard playbooks do not yet exist.',
@@ -148,7 +159,8 @@ export const chapters: Chapter[] = [
         note: 'PLACEHOLDER: Awaiting project background details',
       },
     ],
-    bridgeToNext: 'Every frontier explored transforms the builder, demanding deeper resilience and systematic growth.',
+    bridgeToNext:
+      'Every frontier explored transforms the builder, demanding deeper resilience and systematic growth.',
     isPlaceholder: true,
   },
   {
@@ -159,7 +171,8 @@ export const chapters: Chapter[] = [
     emotionalArc: 'Growth',
     accent: '#e24a4a', // crimson
     themeColor: 'documentary-crimson',
-    summary: 'Navigating real-world stakes, user adoption, latency, reliability, and engineering discipline.',
+    summary:
+      'Navigating real-world stakes, user adoption, latency, reliability, and engineering discipline.',
     narration: [
       {
         text: 'Growth does not happen in isolation. It happens when software encounters real people, real friction, and real accountability.',
@@ -170,7 +183,8 @@ export const chapters: Chapter[] = [
         note: 'PLACEHOLDER: Add verified user numbers, scale metrics, or organizational context',
       },
     ],
-    bridgeToNext: 'Mastering today’s constraints clears the lens to envision what could be built tomorrow.',
+    bridgeToNext:
+      'Mastering today’s constraints clears the lens to envision what could be built tomorrow.',
     isPlaceholder: true,
   },
   {
@@ -181,7 +195,8 @@ export const chapters: Chapter[] = [
     emotionalArc: 'Possibility',
     accent: '#f59e0b', // warm amber-gold
     themeColor: 'documentary-gold',
-    summary: 'Synthesizing creative engineering, intelligent systems, and enduring craft for what lies ahead.',
+    summary:
+      'Synthesizing creative engineering, intelligent systems, and enduring craft for what lies ahead.',
     narration: [
       {
         text: 'We stand at the intersection of autonomous intelligence and human expression. What we choose to build now defines the shape of our tools.',
@@ -203,7 +218,8 @@ export const chapters: Chapter[] = [
     emotionalArc: 'Possibility',
     accent: '#dfb15b',
     themeColor: 'documentary-gold',
-    summary: 'The journey continues. An invitation to build, converse, and push boundaries together.',
+    summary:
+      'The journey continues. An invitation to build, converse, and push boundaries together.',
     narration: [
       {
         text: 'This portfolio is not an archive of what has ended. It is an artifact of momentum.',

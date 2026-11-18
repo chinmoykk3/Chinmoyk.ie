@@ -56,14 +56,10 @@ export function ChapterCard({ chapter, index }: { chapter: Chapter; index: numbe
         {chapter.title}
       </h2>
 
-      <p className="text-sm font-medium text-zinc-400 mt-1 italic">
-        {chapter.subtitle}
-      </p>
+      <p className="text-sm font-medium text-zinc-400 mt-1 italic">{chapter.subtitle}</p>
 
       {/* Summary */}
-      <p className="text-zinc-300 text-sm sm:text-base leading-relaxed mt-4">
-        {chapter.summary}
-      </p>
+      <p className="text-zinc-300 text-sm sm:text-base leading-relaxed mt-4">{chapter.summary}</p>
 
       {/* Narration Excerpts */}
       <div className="mt-6 pt-5 border-t border-canvas-border space-y-3">

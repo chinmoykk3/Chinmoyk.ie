@@ -11,7 +11,8 @@ export function Footer() {
             A Story Still Unfolding — The Portfolio of Chinmoy Kalita
           </p>
           <p className="text-xs text-zinc-400 mt-1">
-            Built with Next.js App Router, TypeScript, Tailwind CSS, Framer Motion, GSAP, and Three.js.
+            Built with Next.js App Router, TypeScript, Tailwind CSS, Framer Motion, GSAP, and
+            Three.js.
           </p>
         </div>
 

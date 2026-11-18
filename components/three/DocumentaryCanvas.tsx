@@ -28,18 +28,9 @@ function AmbientParticles() {
   return (
     <points ref={pointsRef}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[particles, 3]}
-        />
+        <bufferAttribute attach="attributes-position" args={[particles, 3]} />
       </bufferGeometry>
-      <pointsMaterial
-        size={0.06}
-        color="#dfb15b"
-        transparent
-        opacity={0.4}
-        sizeAttenuation
-      />
+      <pointsMaterial size={0.06} color="#dfb15b" transparent opacity={0.4} sizeAttenuation />
     </points>
   );
 }
@@ -69,14 +60,8 @@ export function DocumentaryCanvas() {
   }
 
   return (
-    <div
-      aria-hidden="true"
-      className="fixed inset-0 pointer-events-none -z-10 opacity-60"
-    >
-      <Canvas
-        camera={{ position: [0, 0, 5], fov: 60 }}
-        gl={{ alpha: true, antialias: true }}
-      >
+    <div aria-hidden="true" className="fixed inset-0 pointer-events-none -z-10 opacity-60">
+      <Canvas camera={{ position: [0, 0, 5], fov: 60 }} gl={{ alpha: true, antialias: true }}>
         <Float speed={1.5} rotationIntensity={0.4} floatIntensity={0.6}>
           <AmbientParticles />
         </Float>

@@ -21,11 +21,7 @@ export const metadata: Metadata = {
   authors: [{ name: 'Chinmoy Kalita' }],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
       <body className="min-h-screen bg-canvas-base text-foreground antialiased selection:bg-amber-400/30 selection:text-amber-200 flex flex-col font-sans">
