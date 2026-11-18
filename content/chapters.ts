@@ -299,23 +299,23 @@ export const chapters: Chapter[] = [
   {
     id: 'epilogue',
     number: 'Epilogue',
-    title: 'Epilogue: A Story Still Unfolding',
-    subtitle: 'Open invitations to collaborate',
+    title: 'Epilogue: The Story Is Still Being Written',
+    subtitle: 'An unfinished narrative, an open invitation to build',
     emotionalArc: 'Possibility',
     accentKey: 'sunrise',
     summary:
-      'The journey continues into full illumination. An invitation to build, converse, and push boundaries together.',
+      "I don't know exactly where this journey will lead me. And perhaps that's what makes it interesting. There are still ideas to explore, problems to solve and things to create.",
     narration: [
       {
-        text: 'This portfolio is not an archive of what has ended. It is an artifact of momentum.',
-        note: 'DRAFT narration',
+        text: "I don't know exactly where this journey will lead me. And perhaps that's what makes it interesting. There are still ideas to explore, problems to solve and things to create.",
+        note: 'DRAFT narration — epilogue thesis',
       },
       {
-        text: '[TODO: Add personal closing sign-off from Chinmoy Kalita]',
+        text: '[TODO: Chinmoy to supply: Personal closing thoughts and reflection on the unfinished horizon ahead]',
         note: 'PLACEHOLDER: Awaiting authentic closing words',
       },
     ],
-    bridgeToNext: 'Explore the work or start a conversation.',
+    bridgeToNext: 'The story remains open. Let us build what comes next together.',
     isPlaceholder: true,
   },
 ];

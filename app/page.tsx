@@ -9,6 +9,7 @@ import { Chapter02Worlds } from '@/components/chapters/Chapter02Worlds';
 import { Chapter03Real } from '@/components/chapters/Chapter03Real';
 import { Chapter04Design } from '@/components/chapters/Chapter04Design';
 import { Chapter05Intelligence } from '@/components/chapters/Chapter05Intelligence';
+import { EpilogueSection } from '@/components/story/EpilogueSection';
 import { ChapterRail } from '@/components/story/ChapterRail';
 import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Tag';
@@ -58,6 +59,9 @@ export default function StoryModePage() {
             }
             if (chapter.id === 'chapter-05') {
               return <Chapter05Intelligence key={chapter.id} chapter={chapter} />;
+            }
+            if (chapter.id === 'epilogue') {
+              return <EpilogueSection key={chapter.id} chapter={chapter} />;
             }
             return <ChapterCard key={chapter.id} chapter={chapter} index={index} />;
           })}

@@ -16,6 +16,9 @@ export const metadata = {
   title: 'Design & Systems — Chinmoy Kalita',
   description:
     'Design systems, spatial 3D interfaces, visual identity, and ergonomic interaction architecture.',
+  alternates: {
+    canonical: '/design',
+  },
 };
 
 export default function DesignPage() {

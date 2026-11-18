@@ -51,6 +51,9 @@ export async function generateMetadata({
       title: `${project.title} — Chinmoy Kalita`,
       description: project.tagline,
     },
+    alternates: {
+      canonical: `/projects/${project.slug}`,
+    },
   };
 }
 

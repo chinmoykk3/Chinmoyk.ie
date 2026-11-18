@@ -29,6 +29,9 @@ export const metadata = {
   title: 'Explore Hub — Chinmoy Kalita',
   description:
     'Non-linear exploration hub across documentary chapters, 10-point engineering projects, design systems, AI research, and contact information.',
+  alternates: {
+    canonical: '/explore',
+  },
 };
 
 export default function ExplorePage() {
