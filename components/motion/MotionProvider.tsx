@@ -9,6 +9,7 @@ import { MotionContext } from '@/hooks/useMotion';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
 }
 
 export function MotionProvider({ children }: { children: React.ReactNode }) {

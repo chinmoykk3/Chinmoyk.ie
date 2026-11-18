@@ -1,20 +1,56 @@
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { chapters } from '@/content/chapters';
 import { projects } from '@/content/projects';
 import { OpeningExperience } from '@/components/story/OpeningExperience';
 import { StoryHero } from '@/components/story/StoryHero';
 import { ChapterCard } from '@/components/chapters/ChapterCard';
-import { Chapter01Curiosity } from '@/components/chapters/Chapter01Curiosity';
-import { Chapter02Worlds } from '@/components/chapters/Chapter02Worlds';
-import { Chapter03Real } from '@/components/chapters/Chapter03Real';
-import { Chapter04Design } from '@/components/chapters/Chapter04Design';
-import { Chapter05Intelligence } from '@/components/chapters/Chapter05Intelligence';
-import { EpilogueSection } from '@/components/story/EpilogueSection';
 import { ChapterRail } from '@/components/story/ChapterRail';
 import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Tag';
 import { Card } from '@/components/ui/Card';
 import Link from 'next/link';
+
+function ChapterSkeleton({ title, number }: { title: string; number: string }) {
+  return (
+    <div className="py-16 my-8 animate-pulse border border-theme-border/40 rounded-3xl p-8 sm:p-12 bg-theme-surface/40 space-y-4">
+      <div className="flex items-center gap-3">
+        <span className="text-[11px] font-mono uppercase tracking-widest px-2.5 py-1 rounded bg-theme-surface-subtle text-theme-muted font-semibold">
+          CHAPTER {number}
+        </span>
+        <div className="h-4 w-28 bg-theme-surface-subtle rounded" />
+      </div>
+      <h3 className="text-2xl sm:text-3xl font-serif font-bold text-theme-text/80">{title}</h3>
+      <div className="h-12 w-full max-w-xl bg-theme-surface-subtle/50 rounded" />
+    </div>
+  );
+}
+
+// Code-split heavy GSAP/R3F chapters for ultra-fast initial paint and low LCP
+const Chapter01Curiosity = dynamic(
+  () => import('@/components/chapters/Chapter01Curiosity').then((m) => m.Chapter01Curiosity),
+  { loading: () => <ChapterSkeleton title="It Started With Curiosity" number="01" /> }
+);
+const Chapter02Worlds = dynamic(
+  () => import('@/components/chapters/Chapter02Worlds').then((m) => m.Chapter02Worlds),
+  { loading: () => <ChapterSkeleton title="I Found More Than One World" number="02" /> }
+);
+const Chapter03Real = dynamic(
+  () => import('@/components/chapters/Chapter03Real').then((m) => m.Chapter03Real),
+  { loading: () => <ChapterSkeleton title="I Wanted To Build Something Real" number="03" /> }
+);
+const Chapter04Design = dynamic(
+  () => import('@/components/chapters/Chapter04Design').then((m) => m.Chapter04Design),
+  { loading: () => <ChapterSkeleton title="Another Language Called Design" number="04" /> }
+);
+const Chapter05Intelligence = dynamic(
+  () => import('@/components/chapters/Chapter05Intelligence').then((m) => m.Chapter05Intelligence),
+  { loading: () => <ChapterSkeleton title="The World of Intelligence" number="05" /> }
+);
+const EpilogueSection = dynamic(
+  () => import('@/components/story/EpilogueSection').then((m) => m.EpilogueSection),
+  { loading: () => <ChapterSkeleton title="The Story Is Still Being Written" number="EPILOGUE" /> }
+);
 
 export default function StoryModePage() {
   return (

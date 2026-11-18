@@ -1,13 +1,27 @@
 'use client';
 
-import React, { useRef, useMemo, useEffect } from 'react';
+import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { StaticNetworkFallback } from './StaticNetworkFallback';
 
 export interface IntelligenceNetworkCanvasProps {
   inView?: boolean;
   highlightCategory?: 'completed' | 'experiments' | 'learning' | 'future' | null;
   className?: string;
+}
+
+function hasWebGL(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+    );
+  } catch {
+    return false;
+  }
 }
 
 // Inner 3D Network Particle Scene
@@ -98,6 +112,16 @@ export default function IntelligenceNetworkCanvas({
   highlightCategory,
   className,
 }: IntelligenceNetworkCanvasProps) {
+  const [webglSupported, setWebglSupported] = useState(true);
+
+  useEffect(() => {
+    setWebglSupported(hasWebGL());
+  }, []);
+
+  if (!webglSupported) {
+    return <StaticNetworkFallback className={className} />;
+  }
+
   return (
     <div aria-hidden="true" className={className || 'w-full h-full relative pointer-events-none'}>
       <Canvas

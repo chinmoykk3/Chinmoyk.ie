@@ -158,7 +158,7 @@ export function OpeningExperience() {
   return (
     <section
       aria-label="Documentary Cinematic Opening Sequence"
-      className="fixed inset-0 z-50 flex flex-col justify-between items-center bg-cinema-bg text-cinema-text select-none overflow-hidden"
+      className="opening-experience-overlay fixed inset-0 z-50 flex flex-col justify-between items-center bg-cinema-bg text-cinema-text select-none overflow-hidden"
     >
       {/* 35mm Procedural Film Grain Overlay (Subtle Optical Texture) */}
       {grainUrl && !isReduced && (

@@ -49,12 +49,27 @@ function AmbientParticles() {
   );
 }
 
+function hasWebGL(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function DocumentaryCanvas() {
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [webglSupported, setWebglSupported] = useState(true);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    setWebglSupported(hasWebGL());
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
     setReducedMotion(media.matches);
 
@@ -63,7 +78,7 @@ export function DocumentaryCanvas() {
     return () => media.removeEventListener('change', listener);
   }, []);
 
-  if (!mounted || reducedMotion) {
+  if (!mounted || reducedMotion || !webglSupported) {
     // Accessible fallback: Ambient subtle wash using design token classes with zero WebGL overhead
     return (
       <div

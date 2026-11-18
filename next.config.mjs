@@ -2,6 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['three', '@react-three/fiber', '@react-three/drei'],
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60,
+  },
+  compress: true,
 };
 
 export default nextConfig;

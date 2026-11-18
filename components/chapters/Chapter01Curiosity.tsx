@@ -167,7 +167,12 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
                   Voiceover Narration
                 </div>
 
-                <div className="space-y-4 font-serif italic" aria-live="polite">
+                {/* Screen-reader order: clean cohesive text without live scroll spamming */}
+                <div className="sr-only">
+                  <p>{narrationLines.join(' ')}</p>
+                </div>
+
+                <div aria-hidden="true" className="space-y-4 font-serif italic">
                   {narrationLines.map((line, idx) => {
                     const isPassed = isReduced || idx <= activeNarrationIndex;
                     const isCurrent = isReduced || idx === activeNarrationIndex;
