@@ -56,9 +56,7 @@ export const designWorks: DesignWorkItem[] = [
     description:
       '[TODO: Add description of mission-critical GIS map interface and crisis notification layouts for low-latency operational environments]',
     tools: ['Figma [TODO: confirm]'],
-    deliverables: [
-      '[TODO: Incident triage workflows, emergency alert typography, map overlays]',
-    ],
+    deliverables: ['[TODO: Incident triage workflows, emergency alert typography, map overlays]'],
     caseStudyAvailable: false,
   },
   {

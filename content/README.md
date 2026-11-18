@@ -3,6 +3,7 @@
 This directory contains the single source of truth for all structured narrative and technical content across **"A STORY STILL UNFOLDING — The Story of Chinmoy Kalita"**.
 
 Per the core project rules:
+
 > **RULE:** Never invent personal facts, clients, dates, metrics, or project outcomes. All unknown content must be a clearly marked placeholder (e.g. `[TODO: ...]`) stored in `/content` files. Narration text provided is DRAFT and editable.
 
 Below is the complete registry of every placeholder you must fill to replace draft/stub data with verified facts.
@@ -37,6 +38,7 @@ The documentary arc follows: **Curiosity → Discovery → Experimentation → C
 ## 2. `projects.ts` (The 10-Point Project Framework)
 
 For each seed project below, fill out the 10-point framework:
+
 1. `idea`
 2. `problem`
 3. `motivation`
@@ -49,6 +51,7 @@ For each seed project below, fill out the 10-point framework:
 10. `lessons`
 
 ### A. Sahyog Cryptos
+
 - [ ] `year`: Actual creation year/dates.
 - [ ] `status`: Change from `'prototype'` to `'completed'` or `'in-progress'` as accurate.
 - [ ] `framework.idea`: Core premise of Sahyog Cryptos.
@@ -65,6 +68,7 @@ For each seed project below, fill out the 10-point framework:
 - [ ] Toggle `isPlaceholder: false` once verified.
 
 ### B. Librarium 2.0
+
 - [ ] `year`: Actual year/dates.
 - [ ] `status`: Verify real status (`'completed'` | `'in-progress'` | `'prototype'`).
 - [ ] `framework.idea`: Specific library information architecture concept.
@@ -81,6 +85,7 @@ For each seed project below, fill out the 10-point framework:
 - [ ] Toggle `isPlaceholder: false` once verified.
 
 ### C. GCU Campus Flow
+
 - [ ] `year`: Actual development year/dates.
 - [ ] `status`: Verify status (`'completed'` | `'in-progress'` | `'prototype'`).
 - [ ] `framework.idea`: Exact scope of campus workflows handled.
@@ -97,6 +102,7 @@ For each seed project below, fill out the 10-point framework:
 - [ ] Toggle `isPlaceholder: false` once verified.
 
 ### D. IRDMS Assam (Integrated Resource & Disaster Management System)
+
 - [ ] `year`: Actual project year/dates.
 - [ ] `status`: Verify status (`'completed'` | `'in-progress'` | `'prototype'`).
 - [ ] `framework.idea`: Exact disaster relief/resource scope for Assam.
@@ -136,6 +142,7 @@ For each seed project below, fill out the 10-point framework:
 ## 4. `aiWork.ts` (AI Systems & Research)
 
 Organized into 4 distinct arrays:
+
 - [ ] **`completed`**:
   - Replace `completed-ai-placeholder-1` with your actual shipped AI projects, clients, or benchmarked models.
 - [ ] **`experiments`**:

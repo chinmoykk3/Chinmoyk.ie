@@ -16,9 +16,7 @@ export default function StoryModePage() {
       <section className="max-w-4xl mx-auto px-4 sm:px-6 py-16 space-y-12">
         <div className="flex items-center justify-between border-b border-canvas-border pb-4">
           <div>
-            <h2 className="text-xl sm:text-2xl font-serif font-bold text-white">
-              The Chapters
-            </h2>
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-white">The Chapters</h2>
             <p className="text-xs sm:text-sm text-zinc-400 mt-1">
               8 chronological movements from initial curiosity to future possibilities
             </p>
@@ -70,9 +68,7 @@ export default function StoryModePage() {
                 <h4 className="text-base font-serif font-semibold text-white group-hover:text-amber-300 transition-colors">
                   {proj.title}
                 </h4>
-                <p className="text-xs text-zinc-400 mt-1 line-clamp-2">
-                  {proj.tagline}
-                </p>
+                <p className="text-xs text-zinc-400 mt-1 line-clamp-2">{proj.tagline}</p>
               </Link>
             ))}
           </div>

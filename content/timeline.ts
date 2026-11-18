@@ -85,7 +85,8 @@ export const timeline: TimelineMilestone[] = [
     yearOrPeriod: 'Present & Beyond',
     title: 'A Story Still Unfolding',
     stage: 'Possibility',
-    summary: 'Continuing research, open-source work, and looking for transformative collaborations.',
+    summary:
+      'Continuing research, open-source work, and looking for transformative collaborations.',
     details: '[TODO: Current focus, target roles, or next research ventures]',
     isPlaceholder: true,
   },

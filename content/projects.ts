@@ -31,7 +31,8 @@ export interface Project {
   year?: string;
   status: ProjectStatus;
   isPlaceholder: boolean;
-  category: 'Full-Stack & Systems' | 'Decentralized / Web3' | 'Civic Tech & Gov' | 'Educational & Campus';
+  category:
+    'Full-Stack & Systems' | 'Decentralized / Web3' | 'Civic Tech & Gov' | 'Educational & Campus';
   featured: boolean;
   framework: ProjectTenPointFramework;
   links?: {
@@ -54,10 +55,13 @@ export const projects: Project[] = [
     featured: true,
     framework: {
       idea: '[TODO: Define core idea for Sahyog Cryptos — e.g. cooperative crypto-asset custody or micro-community staking]',
-      problem: '[TODO: Specify problem statement — friction in group management, transparency, or trust in decentralized crypto transactions]',
+      problem:
+        '[TODO: Specify problem statement — friction in group management, transparency, or trust in decentralized crypto transactions]',
       motivation: '[TODO: Add personal motivation for building Sahyog Cryptos]',
-      vision: '[TODO: Add vision for decentralized collective finance or community trust protocols]',
-      contribution: '[TODO: Detail Chinmoy’s specific technical role — smart contracts, frontend, state management, or architecture]',
+      vision:
+        '[TODO: Add vision for decentralized collective finance or community trust protocols]',
+      contribution:
+        '[TODO: Detail Chinmoy’s specific technical role — smart contracts, frontend, state management, or architecture]',
       process: '[TODO: Document the technical process, prototyping phase, and testing setup]',
       stack: [
         'Web3 / Smart Contracts [TODO: verify chain / Solidity]',
@@ -66,9 +70,12 @@ export const projects: Project[] = [
         'Tailwind CSS',
         '[TODO: Add real node/indexer/wallet provider]',
       ],
-      challenges: '[TODO: Document key technical roadblocks — e.g. gas optimization, multi-sig consensus, or state synchronization]',
-      outcomes: '[TODO: Add real verified metrics, testing outcomes, or deployment milestones — DO NOT INVENT]',
-      lessons: '[TODO: Key lessons learned about blockchain mechanics, trustless systems, or UX friction]',
+      challenges:
+        '[TODO: Document key technical roadblocks — e.g. gas optimization, multi-sig consensus, or state synchronization]',
+      outcomes:
+        '[TODO: Add real verified metrics, testing outcomes, or deployment milestones — DO NOT INVENT]',
+      lessons:
+        '[TODO: Key lessons learned about blockchain mechanics, trustless systems, or UX friction]',
     },
     links: {
       github: '[TODO: add repo URL if public]',
@@ -87,10 +94,13 @@ export const projects: Project[] = [
     featured: true,
     framework: {
       idea: '[TODO: Define core premise of Librarium 2.0 — e.g. modern digital cataloging, intelligent indexing, and physical resource tracking]',
-      problem: '[TODO: Specific pain point in legacy library systems — search latency, manual checkout overhead, fragmented indexes]',
-      motivation: '[TODO: Motivation for re-engineering the library experience into a 2.0 architecture]',
+      problem:
+        '[TODO: Specific pain point in legacy library systems — search latency, manual checkout overhead, fragmented indexes]',
+      motivation:
+        '[TODO: Motivation for re-engineering the library experience into a 2.0 architecture]',
       vision: '[TODO: Vision for seamless knowledge discovery and open resource access]',
-      contribution: '[TODO: Detail Chinmoy’s individual engineering contributions — DB schema, full-stack API, client UI]',
+      contribution:
+        '[TODO: Detail Chinmoy’s individual engineering contributions — DB schema, full-stack API, client UI]',
       process: '[TODO: Step-by-step development process, user research, schema normalization]',
       stack: [
         'TypeScript',
@@ -99,9 +109,12 @@ export const projects: Project[] = [
         'Search / Query Indexing [TODO: specify]',
         'Tailwind CSS',
       ],
-      challenges: '[TODO: Real challenges faced — e.g. catalog search latency, concurrency handling, or asset tagging]',
-      outcomes: '[TODO: Real metrics or project outcome — e.g. number of cataloged items, adoption status — DO NOT INVENT]',
-      lessons: '[TODO: Engineering insights gained regarding data relational integrity and search ergonomics]',
+      challenges:
+        '[TODO: Real challenges faced — e.g. catalog search latency, concurrency handling, or asset tagging]',
+      outcomes:
+        '[TODO: Real metrics or project outcome — e.g. number of cataloged items, adoption status — DO NOT INVENT]',
+      lessons:
+        '[TODO: Engineering insights gained regarding data relational integrity and search ergonomics]',
     },
     links: {
       github: '[TODO: add repo URL if public]',
@@ -120,11 +133,14 @@ export const projects: Project[] = [
     featured: true,
     framework: {
       idea: '[TODO: Define core premise of GCU Campus Flow — centralized digital operations, attendance, event flow, or admin workflows]',
-      problem: '[TODO: Disjointed university administration, paper trails, or siloed departmental portals at Girijananda Chowdhury University (GCU)]',
+      problem:
+        '[TODO: Disjointed university administration, paper trails, or siloed departmental portals at Girijananda Chowdhury University (GCU)]',
       motivation: '[TODO: Motivation for tackling university operational friction]',
       vision: '[TODO: Vision for a frictionless, unified digital campus ecosystem]',
-      contribution: '[TODO: Chinmoy’s specific engineering scope — full-stack architecture, role-based auth, dashboard design]',
-      process: '[TODO: Stakeholder consultation, workflow mapping, rapid prototyping, campus iteration]',
+      contribution:
+        '[TODO: Chinmoy’s specific engineering scope — full-stack architecture, role-based auth, dashboard design]',
+      process:
+        '[TODO: Stakeholder consultation, workflow mapping, rapid prototyping, campus iteration]',
       stack: [
         'TypeScript',
         'React / Next.js',
@@ -133,9 +149,12 @@ export const projects: Project[] = [
         'Tailwind CSS',
         'Auth [TODO: specify auth provider or JWT setup]',
       ],
-      challenges: '[TODO: Real challenges — role permissions hierarchy, peak traffic loads, or user onboarding]',
-      outcomes: '[TODO: Real verified outcome — pilot user count, admin adoption, or status — DO NOT INVENT]',
-      lessons: '[TODO: Architectural lessons learned when building for diverse non-technical institutional users]',
+      challenges:
+        '[TODO: Real challenges — role permissions hierarchy, peak traffic loads, or user onboarding]',
+      outcomes:
+        '[TODO: Real verified outcome — pilot user count, admin adoption, or status — DO NOT INVENT]',
+      lessons:
+        '[TODO: Architectural lessons learned when building for diverse non-technical institutional users]',
     },
     links: {
       github: '[TODO: add repo URL if public]',
@@ -154,11 +173,15 @@ export const projects: Project[] = [
     featured: true,
     framework: {
       idea: '[TODO: Define core premise of IRDMS Assam — regional resource allocation, disaster reporting, geospatial or relief coordination for Assam]',
-      problem: '[TODO: Emergency communication breakdowns, flood response delays, or fragmented resource inventories in regional crisis management]',
+      problem:
+        '[TODO: Emergency communication breakdowns, flood response delays, or fragmented resource inventories in regional crisis management]',
       motivation: '[TODO: Motivation for building civic resilience technology for Assam]',
-      vision: '[TODO: Long-term vision for data-driven, rapid emergency mobilization in vulnerable regions]',
-      contribution: '[TODO: Chinmoy’s specific contribution — GIS mapping integration, alert dispatch system, or incident reporting interface]',
-      process: '[TODO: Research on regional crisis response workflows, mock incident drills, API integration]',
+      vision:
+        '[TODO: Long-term vision for data-driven, rapid emergency mobilization in vulnerable regions]',
+      contribution:
+        '[TODO: Chinmoy’s specific contribution — GIS mapping integration, alert dispatch system, or incident reporting interface]',
+      process:
+        '[TODO: Research on regional crisis response workflows, mock incident drills, API integration]',
       stack: [
         'TypeScript',
         'Next.js / React',
@@ -166,9 +189,12 @@ export const projects: Project[] = [
         'Backend / Real-time updates [TODO: specify WebSockets / Server-Sent Events]',
         'Tailwind CSS',
       ],
-      challenges: '[TODO: Critical challenges — low-bandwidth offline resilience, data verification in high-stress scenarios]',
-      outcomes: '[TODO: Real project outcomes — deployment status, demo presentation, institutional review — DO NOT INVENT]',
-      lessons: '[TODO: Fundamental takeaways on high-reliability, mission-critical public infrastructure design]',
+      challenges:
+        '[TODO: Critical challenges — low-bandwidth offline resilience, data verification in high-stress scenarios]',
+      outcomes:
+        '[TODO: Real project outcomes — deployment status, demo presentation, institutional review — DO NOT INVENT]',
+      lessons:
+        '[TODO: Fundamental takeaways on high-reliability, mission-critical public infrastructure design]',
     },
     links: {
       github: '[TODO: add repo URL if public]',
