@@ -186,47 +186,47 @@ export const chapters: Chapter[] = [
   {
     id: 'chapter-03',
     number: 3,
-    title: 'Chapter 03: Architecture of Meaning',
-    subtitle: 'From scripts to cohesive software',
+    title: 'Chapter 03: I Wanted To Build Something Real',
+    subtitle: 'From exploratory scripts to concrete, deployed systems',
     emotionalArc: 'Creation',
     accentKey: 'azure',
     summary:
-      'Engineering end-to-end applications designed to solve concrete problems for real communities.',
+      'Moving beyond theoretical exercises: engineering full-scale architectures that solve tangible friction for people and institutions.',
     narration: [
       {
-        text: 'Software creation shifts when you realize code is never about the developer — it is about the person whose friction you remove.',
-        note: 'DRAFT narration',
+        text: 'Building small scripts is empowering, but eventually you crave real weight. You want to engineer systems that stand on their own in the real world.',
+        note: 'DRAFT narration — creation thesis',
       },
       {
-        text: '[TODO: Detail the shift into full-stack development, early system designs, and community platforms]',
-        note: 'PLACEHOLDER: Add real architectural breakthroughs',
+        text: '[TODO: Chinmoy to supply: Reflections on the transition from learning code to architecting real platforms]',
+        note: 'PLACEHOLDER: The drive toward tangible engineering',
       },
     ],
     bridgeToNext:
-      'Functionality is the baseline; how a system communicates its soul requires sensory and visual craft.',
+      'When a system becomes real, how it speaks to people matters as much as how it runs. Architecture demands expression.',
     isPlaceholder: true,
   },
   {
     id: 'chapter-04',
     number: 4,
-    title: 'Chapter 04: The Visual Voice',
-    subtitle: 'Where engineering meets sensory craft',
+    title: 'Chapter 04: Another Language Called Design',
+    subtitle: 'Visual voice, typography, and the architecture of feeling',
     emotionalArc: 'Expression',
     accentKey: 'rose',
     summary:
-      'Bridging backend rigor with interactive visual design, motion dynamics, and micro-interactions.',
+      'Design is not decoration — it is another language for communicating ideas. A discipline that stands shoulder-to-shoulder with engineering.',
     narration: [
       {
-        text: 'An interface is not decoration. It is the language through which complexity explains itself gracefully.',
-        note: 'DRAFT narration',
+        text: 'Code instructs machines what to do. Design explains to humans why it matters. Design is another language of thought.',
+        note: 'DRAFT narration — design co-equality thesis',
       },
       {
-        text: '[TODO: Add personal insights on design systems, 3D interaction, spatial design, and typography craft]',
-        note: 'PLACEHOLDER: Awaiting Chinmoy design philosophy notes',
+        text: '[TODO: Chinmoy to supply: Reflections on visual identity, typography, and why design is co-equal with engineering]',
+        note: 'PLACEHOLDER: Craft philosophy from Chinmoy',
       },
     ],
     bridgeToNext:
-      'When technical capability unites with expressive design, wider territories call to be explored.',
+      'When engineering rigor and visual language unite, you gain the confidence to venture into uncharted frontiers.',
     isPlaceholder: true,
   },
   {

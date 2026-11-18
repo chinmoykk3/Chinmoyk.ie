@@ -23,6 +23,20 @@ export interface ProjectTenPointFramework {
   lessons: string;
 }
 
+export interface ProjectEvidence {
+  screenshots: { caption: string; url?: string; placeholder: string }[];
+  demoVideo: { caption: string; url?: string; placeholder: string };
+  repoLink: { url?: string; placeholder: string };
+  liveLink: { url?: string; placeholder: string };
+}
+
+export interface ArchitectureNode {
+  id: string;
+  label: string;
+  sublabel: string;
+  type: 'client' | 'gateway' | 'service' | 'db' | 'ledger' | 'ai';
+}
+
 export interface Project {
   id: string;
   slug: string;
@@ -35,6 +49,8 @@ export interface Project {
     'Full-Stack & Systems' | 'Decentralized / Web3' | 'Civic Tech & Gov' | 'Educational & Campus';
   featured: boolean;
   framework: ProjectTenPointFramework;
+  architectureNodes: ArchitectureNode[];
+  evidence: ProjectEvidence;
   links?: {
     demo?: string;
     github?: string;
@@ -81,6 +97,34 @@ export const projects: Project[] = [
       github: '[TODO: add repo URL if public]',
       demo: '[TODO: add live demo URL if deployed]',
     },
+    architectureNodes: [
+      { id: 'n1', label: 'Client Interface', sublabel: 'React / Web3 Provider', type: 'client' },
+      { id: 'n2', label: 'RPC Router', sublabel: 'EIP-1193 Gateway', type: 'gateway' },
+      { id: 'n3', label: 'Multi-Sig Engine', sublabel: 'Consensus Coordinator', type: 'service' },
+      { id: 'n4', label: 'On-Chain Ledger', sublabel: 'EVM Contract State', type: 'ledger' },
+    ],
+    evidence: {
+      screenshots: [
+        {
+          caption: 'Transaction Reconciliation & Custody Dashboard',
+          placeholder: '[TODO: Add verified dashboard screenshot / wireframe]',
+        },
+        {
+          caption: 'Smart Contract Interaction Matrix',
+          placeholder: '[TODO: Add verified interaction screenshot]',
+        },
+      ],
+      demoVideo: {
+        caption: 'Interactive Walkthrough of Asset Flow',
+        placeholder: '[TODO: Add Loom or MP4 demo link when recorded]',
+      },
+      repoLink: {
+        placeholder: '[TODO: Add public GitHub link or request access]',
+      },
+      liveLink: {
+        placeholder: '[TODO: Add testnet or production deployment link]',
+      },
+    },
   },
   {
     id: 'librarium-2-0',
@@ -119,6 +163,34 @@ export const projects: Project[] = [
     links: {
       github: '[TODO: add repo URL if public]',
       demo: '[TODO: add live demo URL if deployed]',
+    },
+    architectureNodes: [
+      { id: 'n1', label: 'Catalog Portal', sublabel: 'Next.js App Client', type: 'client' },
+      { id: 'n2', label: 'Edge Gateway', sublabel: 'REST & Search Edge', type: 'gateway' },
+      { id: 'n3', label: 'Indexing Engine', sublabel: 'Faceted Search Core', type: 'service' },
+      { id: 'n4', label: 'Relational Store', sublabel: 'Normalized Catalog DB', type: 'db' },
+    ],
+    evidence: {
+      screenshots: [
+        {
+          caption: 'Resource Search & Filtering Interface',
+          placeholder: '[TODO: Add screenshot of search results and filters]',
+        },
+        {
+          caption: 'Administrative Asset Tracking Portal',
+          placeholder: '[TODO: Add screenshot of checkout & asset management]',
+        },
+      ],
+      demoVideo: {
+        caption: 'End-to-End Search & Checkout Demo',
+        placeholder: '[TODO: Add video walkthrough link]',
+      },
+      repoLink: {
+        placeholder: '[TODO: Add repository URL if public]',
+      },
+      liveLink: {
+        placeholder: '[TODO: Add deployed URL if available]',
+      },
     },
   },
   {
@@ -160,6 +232,34 @@ export const projects: Project[] = [
       github: '[TODO: add repo URL if public]',
       demo: '[TODO: add live demo URL if deployed]',
     },
+    architectureNodes: [
+      { id: 'n1', label: 'Campus Web Portal', sublabel: 'Role-Based Dashboard', type: 'client' },
+      { id: 'n2', label: 'Auth Gateway', sublabel: 'RBAC & Session Broker', type: 'gateway' },
+      { id: 'n3', label: 'Workflow Engine', sublabel: 'Departmental Routing', type: 'service' },
+      { id: 'n4', label: 'Institutional DB', sublabel: 'Secure Academic Store', type: 'db' },
+    ],
+    evidence: {
+      screenshots: [
+        {
+          caption: 'Student & Faculty Operations Hub',
+          placeholder: '[TODO: Add screenshot of role-based campus overview]',
+        },
+        {
+          caption: 'Departmental Approval Pipeline View',
+          placeholder: '[TODO: Add screenshot of approval queues]',
+        },
+      ],
+      demoVideo: {
+        caption: 'Campus Workflow Demonstration',
+        placeholder: '[TODO: Add demo screen recording link]',
+      },
+      repoLink: {
+        placeholder: '[TODO: Add institutional repository link if public]',
+      },
+      liveLink: {
+        placeholder: '[TODO: Add live staging or campus domain URL]',
+      },
+    },
   },
   {
     id: 'irdms-assam',
@@ -199,6 +299,34 @@ export const projects: Project[] = [
     links: {
       github: '[TODO: add repo URL if public]',
       demo: '[TODO: add live demo URL if deployed]',
+    },
+    architectureNodes: [
+      { id: 'n1', label: 'Field Responder App', sublabel: 'Offline-First Client', type: 'client' },
+      { id: 'n2', label: 'Crisis Dispatch', sublabel: 'Realtime WebSocket Edge', type: 'gateway' },
+      { id: 'n3', label: 'Geospatial Service', sublabel: 'Regional GIS Engine', type: 'service' },
+      { id: 'n4', label: 'Incident State DB', sublabel: 'Sync Queue & History', type: 'db' },
+    ],
+    evidence: {
+      screenshots: [
+        {
+          caption: 'Assam Regional Crisis Mapping View',
+          placeholder: '[TODO: Add screenshot of live incident heatmaps and relief zones]',
+        },
+        {
+          caption: 'Resource Inventory & Dispatch Table',
+          placeholder: '[TODO: Add screenshot of dispatch coordination]',
+        },
+      ],
+      demoVideo: {
+        caption: 'Disaster Simulation & Dispatch Runthrough',
+        placeholder: '[TODO: Add simulation walkthrough link]',
+      },
+      repoLink: {
+        placeholder: '[TODO: Add repository URL if open-sourced]',
+      },
+      liveLink: {
+        placeholder: '[TODO: Add deployment or regional demo URL]',
+      },
     },
   },
 ];

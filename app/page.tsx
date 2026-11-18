@@ -6,6 +6,8 @@ import { StoryHero } from '@/components/story/StoryHero';
 import { ChapterCard } from '@/components/chapters/ChapterCard';
 import { Chapter01Curiosity } from '@/components/chapters/Chapter01Curiosity';
 import { Chapter02Worlds } from '@/components/chapters/Chapter02Worlds';
+import { Chapter03Real } from '@/components/chapters/Chapter03Real';
+import { Chapter04Design } from '@/components/chapters/Chapter04Design';
 import { ChapterRail } from '@/components/story/ChapterRail';
 import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Tag';
@@ -46,6 +48,12 @@ export default function StoryModePage() {
             }
             if (chapter.id === 'chapter-02') {
               return <Chapter02Worlds key={chapter.id} chapter={chapter} />;
+            }
+            if (chapter.id === 'chapter-03') {
+              return <Chapter03Real key={chapter.id} chapter={chapter} />;
+            }
+            if (chapter.id === 'chapter-04') {
+              return <Chapter04Design key={chapter.id} chapter={chapter} />;
             }
             return <ChapterCard key={chapter.id} chapter={chapter} index={index} />;
           })}
