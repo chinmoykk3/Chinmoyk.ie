@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Menu, X, Compass, Film } from 'lucide-react';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 const NAV_ITEMS = [
   { href: '/', label: 'Story Mode', icon: Film, subtitle: 'The Documentary' },
   { href: '/explore', label: 'Explore Hub', icon: Compass, subtitle: 'Projects & Systems' },
   { href: '/design', label: 'Design' },
+  { href: '/styleguide', label: 'Styleguide' },
   { href: '/contact', label: 'Contact' },
 ];
 
@@ -43,43 +45,47 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav
-            aria-label="Main Navigation"
-            className="hidden md:flex items-center space-x-1 sm:space-x-2"
-          >
-            {NAV_ITEMS.map((item) => {
-              const isActive = pathname === item.href;
-              const Icon = item.icon;
+          <div className="flex items-center space-x-3">
+            <nav
+              aria-label="Main Navigation"
+              className="hidden md:flex items-center space-x-1 sm:space-x-2"
+            >
+              {NAV_ITEMS.map((item) => {
+                const isActive = pathname === item.href;
+                const Icon = item.icon;
 
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    'relative px-3.5 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200 flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400',
-                    isActive
-                      ? 'bg-zinc-800/90 text-amber-300 shadow-sm border border-amber-400/20'
-                      : 'text-zinc-300 hover:text-white hover:bg-zinc-850/60'
-                  )}
-                  aria-current={isActive ? 'page' : undefined}
-                >
-                  {Icon && <Icon className="w-3.5 h-3.5 opacity-80" />}
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      'relative px-3.5 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200 flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-chapter-accent',
+                      isActive
+                        ? 'bg-theme-surface-elevated text-theme-text font-semibold shadow-sm border border-theme-border-strong'
+                        : 'text-theme-muted hover:text-theme-text hover:bg-theme-surface'
+                    )}
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    {Icon && <Icon className="w-3.5 h-3.5 opacity-80" />}
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
 
-          {/* Mobile hamburger button */}
-          <button
-            type="button"
-            className="md:hidden p-2 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800/60 focus:outline-none focus:ring-2 focus:ring-amber-400"
-            aria-expanded={mobileOpen}
-            aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+            <ThemeToggle />
+
+            {/* Mobile hamburger button */}
+            <button
+              type="button"
+              className="md:hidden p-2 rounded-md text-theme-muted hover:text-theme-text hover:bg-theme-surface focus:outline-none focus:ring-2 focus:ring-chapter-accent"
+              aria-expanded={mobileOpen}
+              aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu dropdown */}

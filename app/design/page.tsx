@@ -1,6 +1,16 @@
 import React from 'react';
 import { designWorks } from '@/content/designWork';
-import { Palette, Box, Layers, AlertCircle } from 'lucide-react';
+import { Container } from '@/components/ui/Container';
+import { Tag } from '@/components/ui/Tag';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/Card';
+import { AlertCircle } from 'lucide-react';
 
 export const metadata = {
   title: 'Design & Systems — Chinmoy Kalita',
@@ -10,17 +20,17 @@ export const metadata = {
 
 export default function DesignPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-16">
+    <Container className="py-12 sm:py-16 space-y-16">
       {/* Header */}
-      <div className="border-b border-canvas-border pb-8">
-        <span className="text-xs font-mono uppercase tracking-widest text-amber-400">
+      <div className="border-b border-theme-border pb-8">
+        <Tag variant="amber" size="sm">
           Craft & Aesthetics
-        </span>
-        <h1 className="text-3xl sm:text-5xl font-serif font-black text-white mt-2">
+        </Tag>
+        <h1 className="text-fluid-h1 font-serif font-black text-theme-text mt-3">
           Design Systems & Spatial UI
         </h1>
-        <p className="text-zinc-400 text-sm sm:text-base max-w-2xl mt-3">
-          Exploring typography, micro-interactions, dark-mode ergonomics, spatial WebGL canvases,
+        <p className="text-theme-muted text-sm sm:text-base max-w-2xl mt-3">
+          Exploring typography, micro-interactions, dual-mode ergonomics, spatial WebGL canvases,
           and institutional interface systems.
         </p>
       </div>
@@ -28,28 +38,24 @@ export default function DesignPage() {
       {/* Design Works List */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {designWorks.map((work) => (
-          <article
-            key={work.id}
-            className="p-6 rounded-2xl bg-canvas-surface border border-canvas-border space-y-4 flex flex-col justify-between"
-          >
+          <Card key={work.id} className="flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-xs font-mono mb-2">
-                <span className="px-2.5 py-0.5 rounded-full bg-zinc-800 text-amber-300">
+              <CardHeader>
+                <Tag variant="accent" size="sm">
                   {work.category}
-                </span>
-                <span className="text-zinc-400">{work.year}</span>
-              </div>
+                </Tag>
+                <span className="text-xs font-mono text-theme-muted">{work.year}</span>
+              </CardHeader>
 
-              <h2 className="text-xl font-serif font-bold text-white">{work.title}</h2>
-
-              <p className="text-sm text-zinc-300 leading-relaxed mt-2">{work.description}</p>
+              <CardTitle>{work.title}</CardTitle>
+              <CardDescription>{work.description}</CardDescription>
 
               {/* Deliverables */}
-              <div className="mt-4 pt-3 border-t border-canvas-border space-y-2">
-                <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">
+              <div className="mt-4 pt-3 border-t border-theme-border space-y-2">
+                <span className="text-xs font-mono text-theme-muted uppercase tracking-wider block">
                   Deliverables & Specs
                 </span>
-                <ul className="list-disc list-inside text-xs text-zinc-400 space-y-1">
+                <ul className="list-disc list-inside text-xs text-theme-muted space-y-1">
                   {work.deliverables.map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}
@@ -59,25 +65,24 @@ export default function DesignPage() {
               {/* Tools */}
               <div className="mt-4 flex flex-wrap gap-1.5">
                 {work.tools.map((tool, i) => (
-                  <span
-                    key={i}
-                    className="px-2 py-0.5 rounded bg-zinc-850 text-[11px] font-mono text-zinc-300 border border-canvas-border"
-                  >
+                  <Tag key={i} variant="default" size="sm">
                     {tool}
-                  </span>
+                  </Tag>
                 ))}
               </div>
             </div>
 
             {work.isPlaceholder && (
-              <div className="mt-4 pt-3 border-t border-canvas-border text-[11px] font-mono text-amber-400 flex items-center gap-1.5">
-                <AlertCircle className="w-3.5 h-3.5" />
-                <span>Placeholders marked in /content/designWork.ts</span>
-              </div>
+              <CardFooter>
+                <div className="text-[11px] font-mono text-theme-amber flex items-center gap-1.5">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>Placeholders marked in /content/designWork.ts</span>
+                </div>
+              </CardFooter>
             )}
-          </article>
+          </Card>
         ))}
       </div>
-    </div>
+    </Container>
   );
 }

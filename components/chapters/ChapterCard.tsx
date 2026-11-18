@@ -2,105 +2,109 @@
 
 import React from 'react';
 import { Chapter } from '@/content/chapters';
-import { Sparkles, ArrowRight, BookOpen } from 'lucide-react';
-import Link from 'next/link';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/Card';
+import { ChapterLabel } from '@/components/ui/ChapterLabel';
+import { NarrationText } from '@/components/ui/NarrationText';
+import { OutlinedNumeral } from '@/components/ui/OutlinedNumeral';
+import { Tag } from '@/components/ui/Tag';
+import { Sparkles } from 'lucide-react';
 
 export function ChapterCard({ chapter, index }: { chapter: Chapter; index: number }) {
-  const isNumbered = typeof chapter.number === 'number';
+  const chapterNumber = typeof chapter.number === 'number' ? chapter.number : index;
 
   return (
     <article
       id={chapter.id}
+      data-chapter={chapterNumber}
       aria-labelledby={`heading-${chapter.id}`}
-      className="relative group p-6 sm:p-8 rounded-2xl bg-canvas-surface/90 border border-canvas-border hover:border-canvas-border-strong transition-all duration-300 shadow-lg backdrop-blur-sm"
+      className="relative transition-all duration-300"
     >
-      {/* Chapter header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div className="flex items-center gap-3">
-          <span
-            className="px-3 py-1 text-xs font-mono font-medium rounded-full border"
-            style={{
-              borderColor: `${chapter.accent}40`,
-              color: chapter.accent,
-              backgroundColor: `${chapter.accent}12`,
-            }}
-          >
-            {isNumbered
-              ? chapter.number === 0
-                ? 'PROLOGUE'
-                : `CHAPTER 0${chapter.number}`
-              : chapter.number.toString().toUpperCase()}
-          </span>
-
-          <span className="text-xs uppercase tracking-widest text-zinc-400 flex items-center gap-1.5 font-medium">
-            <span
-              className="w-2 h-2 rounded-full inline-block"
-              style={{ backgroundColor: chapter.accent }}
+      <Card withWash hoverEffect className="overflow-hidden">
+        {/* Chapter Header */}
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <ChapterLabel
+              chapter={chapter.number}
+              timecode={`00:${String((index + 1) * 6).padStart(2, '0')}:00`}
+              arc={chapter.emotionalArc}
             />
-            {chapter.emotionalArc}
-          </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {chapter.isPlaceholder && (
+              <Tag variant="amber" size="sm">
+                Draft Content
+              </Tag>
+            )}
+            <Tag variant="outline" size="sm">
+              {chapter.emotionalArc}
+            </Tag>
+          </div>
+        </CardHeader>
+
+        {/* Content & Outlined Numeral */}
+        <div className="flex items-start justify-between gap-6 mt-2">
+          <div className="space-y-2 flex-1">
+            <h2
+              id={`heading-${chapter.id}`}
+              className="text-fluid-h2 font-serif font-bold text-theme-text tracking-tight hover:text-chapter-accent transition-colors"
+            >
+              {chapter.title}
+            </h2>
+
+            <p className="text-sm font-serif italic text-theme-muted">{chapter.subtitle}</p>
+
+            <p className="text-fluid-body font-sans text-theme-text leading-relaxed pt-2">
+              {chapter.summary}
+            </p>
+          </div>
+
+          {/* Large Outlined Numeral */}
+          <div className="hidden sm:block shrink-0 pt-2 opacity-50 hover:opacity-100 transition-opacity">
+            <OutlinedNumeral num={chapterNumber} size="md" />
+          </div>
         </div>
 
-        {chapter.isPlaceholder && (
-          <span className="text-[11px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
-            Draft Content
-          </span>
-        )}
-      </div>
+        {/* Narration Excerpts */}
+        <div className="mt-8 pt-6 border-t border-theme-border space-y-4">
+          <div className="text-xs font-mono uppercase tracking-widest text-theme-muted">
+            Narration Audio & Text Excerpts
+          </div>
 
-      {/* Chapter Title & Subtitle */}
-      <h2
-        id={`heading-${chapter.id}`}
-        className="text-2xl sm:text-3xl font-serif font-bold text-zinc-100 tracking-tight group-hover:text-amber-200 transition-colors"
-      >
-        {chapter.title}
-      </h2>
-
-      <p className="text-sm font-medium text-zinc-400 mt-1 italic">{chapter.subtitle}</p>
-
-      {/* Summary */}
-      <p className="text-zinc-300 text-sm sm:text-base leading-relaxed mt-4">{chapter.summary}</p>
-
-      {/* Narration Excerpts */}
-      <div className="mt-6 pt-5 border-t border-canvas-border space-y-3">
-        <h3 className="text-xs font-mono uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-          <BookOpen className="w-3.5 h-3.5 text-amber-400" />
-          Narration Excerpt
-        </h3>
-        <div className="space-y-2">
-          {chapter.narration.map((item, idx) => {
-            const isTodo = item.text.startsWith('[TODO:');
-            return (
-              <blockquote
+          <div className="space-y-3">
+            {chapter.narration.map((item, idx) => (
+              <NarrationText
                 key={idx}
-                className={`text-sm pl-4 border-l-2 ${
-                  isTodo
-                    ? 'border-amber-400/60 bg-amber-950/20 text-amber-200 py-1 pr-2 rounded-r font-mono text-xs'
-                    : 'border-zinc-600 text-zinc-300 italic'
-                }`}
-              >
-                &ldquo;{item.text}&rdquo;
-                {item.note && (
-                  <span className="block text-[10px] text-zinc-400 mt-0.5 not-italic font-sans">
-                    — {item.note}
-                  </span>
-                )}
-              </blockquote>
-            );
-          })}
+                text={item.text}
+                note={item.note}
+                isDraft={item.text.startsWith('[TODO:')}
+              />
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Bridge to next */}
-      {chapter.bridgeToNext && (
-        <div className="mt-6 pt-4 border-t border-canvas-border/60 flex items-start gap-2 text-xs text-zinc-400">
-          <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-          <p>
-            <span className="font-semibold text-zinc-300">Narrative Bridge: </span>
-            {chapter.bridgeToNext}
-          </p>
-        </div>
-      )}
+        {/* Narrative Bridge */}
+        {chapter.bridgeToNext && (
+          <CardFooter>
+            <div className="flex items-start gap-2.5 text-xs text-theme-muted">
+              <Sparkles className="w-4 h-4 text-chapter-accent shrink-0 mt-0.5" />
+              <div>
+                <span className="font-semibold text-theme-text font-mono uppercase tracking-wider text-[11px]">
+                  Narrative Bridge &rarr;{' '}
+                </span>
+                <span className="italic">{chapter.bridgeToNext}</span>
+              </div>
+            </div>
+          </CardFooter>
+        )}
+      </Card>
     </article>
   );
 }

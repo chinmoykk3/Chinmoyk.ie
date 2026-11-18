@@ -2,16 +2,175 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   THE "EXPOSURE" DESIGN SYSTEM — Chinmoy Kalita
+   ========================================================================== */
+
 :root {
-  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  /* Default Light Mode tokens */
+  --color-bg: #FBF8F1;
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #F3EEE2;
+  --color-surface-subtle: #F7F3EA;
+  --color-text: #0B0B10;
+  --color-text-muted: #5B5B6B;
+  --color-border: rgba(11, 11, 16, 0.09);
+  --color-border-strong: rgba(11, 11, 16, 0.18);
+  --color-thread-amber: #B45309; /* AA compliant (4.8:1) against light surfaces */
+  --color-thread-amber-raw: #F59E0B;
+
+  /* Baseline chapter accent (Amber) */
+  --accent: #B45309;
+  --accent-raw: #F59E0B;
+  --wash: rgba(245, 158, 11, 0.05);
+
+  /* Exposure ambient illumination scale */
+  --exposure-illumination: 0.1;
 }
 
+.dark {
+  /* Dark Mode tokens */
+  --color-bg: #07070A;
+  --color-surface: #0F0F14;
+  --color-surface-elevated: #1A1A22;
+  --color-surface-subtle: #121218;
+  --color-text: #F4F1EA;
+  --color-text-muted: #9A9AA8;
+  --color-border: rgba(244, 241, 234, 0.08);
+  --color-border-strong: rgba(244, 241, 234, 0.16);
+  --color-thread-amber: #FFB020; /* High contrast (10.7:1) */
+  --color-thread-amber-raw: #FFB020;
+
+  /* Baseline chapter accent */
+  --accent: #FFB020;
+  --accent-raw: #FFB020;
+  --wash: radial-gradient(ellipse at 50% 0%, rgba(255, 176, 32, 0.08) 0%, transparent 70%);
+
+  --exposure-illumination: 0.0;
+}
+
+/* ==========================================================================
+   PER-CHAPTER THEMING VIA [data-chapter]
+   Accents: Cyan, Violet, Coral, Lime, Amber
+   ========================================================================== */
+
+/* --- CYAN (Chapter 01, Chapter 05) --- */
+[data-chapter='1'],
+[data-chapter='5'],
+[data-chapter='cyan'] {
+  --accent: #0891B2;
+  --accent-raw: #0891B2;
+  --wash: rgba(8, 145, 178, 0.05);
+}
+.dark [data-chapter='1'],
+.dark [data-chapter='5'],
+.dark [data-chapter='cyan'],
+[data-chapter='1'].dark,
+[data-chapter='5'].dark,
+[data-chapter='cyan'].dark {
+  --accent: #22D3EE;
+  --accent-raw: #22D3EE;
+  --wash: radial-gradient(ellipse at 50% 0%, rgba(34, 211, 238, 0.1) 0%, transparent 75%);
+}
+
+/* --- VIOLET (Chapter 02, Chapter 07) --- */
+[data-chapter='2'],
+[data-chapter='7'],
+[data-chapter='violet'] {
+  --accent: #6D4AFF;
+  --accent-raw: #6D4AFF;
+  --wash: rgba(109, 74, 255, 0.05);
+}
+.dark [data-chapter='2'],
+.dark [data-chapter='7'],
+.dark [data-chapter='violet'],
+[data-chapter='2'].dark,
+[data-chapter='7'].dark,
+[data-chapter='violet'].dark {
+  --accent: #8B6CFF;
+  --accent-raw: #8B6CFF;
+  --wash: radial-gradient(ellipse at 50% 0%, rgba(139, 108, 255, 0.1) 0%, transparent 75%);
+}
+
+/* --- CORAL (Chapter 03, Chapter 06) --- */
+[data-chapter='3'],
+[data-chapter='6'],
+[data-chapter='coral'] {
+  --accent: #E11D48;
+  --accent-raw: #F43F5E;
+  --wash: rgba(244, 63, 94, 0.05);
+}
+.dark [data-chapter='3'],
+.dark [data-chapter='6'],
+.dark [data-chapter='coral'],
+[data-chapter='3'].dark,
+[data-chapter='6'].dark,
+[data-chapter='coral'].dark {
+  --accent: #FF4D6D;
+  --accent-raw: #FF4D6D;
+  --wash: radial-gradient(ellipse at 50% 0%, rgba(255, 77, 109, 0.1) 0%, transparent 75%);
+}
+
+/* --- LIME (Chapter 04) --- */
+[data-chapter='4'],
+[data-chapter='lime'] {
+  --accent: #4D7C0F; /* High contrast AA pass (5.4:1) in light mode */
+  --accent-raw: #65A30D;
+  --wash: rgba(101, 163, 13, 0.05);
+}
+.dark [data-chapter='4'],
+.dark [data-chapter='lime'],
+[data-chapter='4'].dark,
+[data-chapter='lime'].dark {
+  --accent: #B6F23A;
+  --accent-raw: #B6F23A;
+  --wash: radial-gradient(ellipse at 50% 0%, rgba(182, 242, 58, 0.1) 0%, transparent 75%);
+}
+
+/* --- AMBER (Prologue, Epilogue, 0) --- */
+[data-chapter='0'],
+[data-chapter='prologue'],
+[data-chapter='epilogue'],
+[data-chapter='amber'] {
+  --accent: #B45309;
+  --accent-raw: #F59E0B;
+  --wash: rgba(245, 158, 11, 0.05);
+}
+.dark [data-chapter='0'],
+.dark [data-chapter='prologue'],
+.dark [data-chapter='epilogue'],
+.dark [data-chapter='amber'],
+[data-chapter='0'].dark,
+[data-chapter='prologue'].dark,
+[data-chapter='epilogue'].dark,
+[data-chapter='amber'].dark {
+  --accent: #FFB020;
+  --accent-raw: #FFB020;
+  --wash: radial-gradient(ellipse at 50% 0%, rgba(255, 176, 32, 0.1) 0%, transparent 75%);
+}
+
+/* ==========================================================================
+   GLOBAL BASE STYLING
+   ========================================================================== */
+
 html {
-  background-color: #090a0f;
-  color: #ededed;
+  background-color: var(--color-bg);
+  color: var(--color-text);
   scroll-behavior: smooth;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+/* Accessible visible focus ring for WCAG AA compliance */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 /* Reduced motion preference */
@@ -22,33 +181,58 @@ html {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
 }
 
-/* Focus styles for WCAG AA compliance */
-*:focus-visible {
-  outline: 2px solid #e5a93c;
-  outline-offset: 3px;
-}
-
-/* Custom subtle scrollbar */
+/* Custom accessible scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #090a0f;
+  background: var(--color-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-border-strong);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--accent);
 }
+
+/* ==========================================================================
+   12-COLUMN RESPONSIVE GRID UTILITIES
+   ========================================================================== */
+
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .grid-12 {
+    gap: 1rem;
+  }
+}
+
+.col-span-full { grid-column: 1 / -1; }
+.col-span-1 { grid-column: span 1 / span 1; }
+.col-span-2 { grid-column: span 2 / span 2; }
+.col-span-3 { grid-column: span 3 / span 3; }
+.col-span-4 { grid-column: span 4 / span 4; }
+.col-span-5 { grid-column: span 5 / span 5; }
+.col-span-6 { grid-column: span 6 / span 6; }
+.col-span-7 { grid-column: span 7 / span 7; }
+.col-span-8 { grid-column: span 8 / span 8; }
+.col-span-9 { grid-column: span 9 / span 9; }
+.col-span-10 { grid-column: span 10 / span 10; }
+.col-span-11 { grid-column: span 11 / span 11; }
+.col-span-12 { grid-column: span 12 / span 12; }

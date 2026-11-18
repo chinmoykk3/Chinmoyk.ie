@@ -3,47 +3,52 @@
 import React from 'react';
 import Link from 'next/link';
 import { chapters } from '@/content/chapters';
-import { ArrowDown, Compass, Play } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { ChapterLabel } from '@/components/ui/ChapterLabel';
+import { SectionWrapper } from '@/components/ui/SectionWrapper';
+import { Container } from '@/components/ui/Container';
+import { Compass, Play } from 'lucide-react';
 
 export function StoryHero() {
   return (
-    <section className="relative pt-12 pb-16 sm:pt-20 sm:pb-24 border-b border-canvas-border">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+    <SectionWrapper
+      chapter="prologue"
+      withWash
+      padding="lg"
+      className="border-b border-theme-border"
+    >
+      <Container size="md" className="text-center">
         {/* Accent Tag */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-300 text-xs font-mono mb-6">
-          <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-          Interactive First-Person Documentary
+        <div className="flex justify-center mb-6">
+          <ChapterLabel chapter="00" timecode="00:00:00" arc="Curiosity" variant="badge" />
         </div>
 
         {/* Main Title */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-black tracking-tight text-white leading-tight">
+        <h1 className="text-fluid-display font-serif font-black tracking-tight text-theme-text leading-tight">
           A STORY STILL <br className="hidden sm:inline" />
-          <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 bg-clip-text text-transparent">
-            UNFOLDING
-          </span>
+          <span className="text-chapter-accent">UNFOLDING</span>
         </h1>
 
-        <p className="mt-4 text-lg sm:text-xl font-serif text-zinc-300 max-w-2xl mx-auto italic">
+        <p className="mt-4 text-fluid-narration font-serif text-theme-muted max-w-2xl mx-auto italic">
           The Engineering, Design, and Research Odyssey of Chinmoy Kalita
         </p>
 
         {/* Narrative Arc Track */}
-        <div className="mt-10 p-4 rounded-xl bg-canvas-surface/60 border border-canvas-border backdrop-blur-sm">
-          <p className="text-[11px] font-mono uppercase tracking-widest text-zinc-400 mb-3">
-            Documentary Emotional Arc
+        <div className="mt-10 p-5 rounded-2xl bg-theme-surface border border-theme-border shadow-sm backdrop-blur-sm">
+          <p className="text-[11px] font-mono uppercase tracking-widest text-theme-muted mb-3">
+            The Exposure Arc · Darkness to Illumination
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
             {chapters.map((ch, idx) => (
               <React.Fragment key={ch.id}>
                 <a
                   href={`#${ch.id}`}
-                  className="px-2.5 py-1 rounded-md bg-canvas-card border border-canvas-border hover:border-amber-400/50 hover:text-amber-300 transition-all font-mono text-[11px]"
-                  style={{ borderLeftColor: ch.accent, borderLeftWidth: '3px' }}
+                  className="px-2.5 py-1 rounded-md bg-theme-surface-elevated border border-theme-border hover:border-theme-border-strong hover:text-chapter-accent transition-all font-mono text-[11px]"
                 >
                   {ch.emotionalArc}
                 </a>
                 {idx < chapters.length - 1 && (
-                  <span className="text-zinc-600 select-none">&rarr;</span>
+                  <span className="text-theme-border-strong select-none">&rarr;</span>
                 )}
               </React.Fragment>
             ))}
@@ -52,23 +57,21 @@ export function StoryHero() {
 
         {/* Action Controls */}
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-          <a
-            href="#prologue"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-semibold text-sm transition-all shadow-lg hover:shadow-amber-400/20"
-          >
-            <Play className="w-4 h-4 fill-current" />
-            Begin Documentary
+          <a href="#prologue">
+            <Button size="lg" variant="accent" className="shadow-lg">
+              <Play className="w-4 h-4 fill-current" />
+              Begin Documentary
+            </Button>
           </a>
 
-          <Link
-            href="/explore"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-canvas-border font-medium text-sm transition-all"
-          >
-            <Compass className="w-4 h-4 text-amber-400" />
-            Explore Projects Mode
+          <Link href="/explore">
+            <Button size="lg" variant="secondary">
+              <Compass className="w-4 h-4 text-chapter-accent" />
+              Explore Projects Mode
+            </Button>
           </Link>
         </div>
-      </div>
-    </section>
+      </Container>
+    </SectionWrapper>
   );
 }

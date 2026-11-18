@@ -3,6 +3,7 @@
 An interactive first-person documentary portfolio built with Next.js App Router, TypeScript, Tailwind CSS, Framer Motion, GSAP + ScrollTrigger, Lenis, and Three.js / React Three Fiber / Drei.
 
 ## The Narrative Arc
+
 - **Prologue**: Curiosity
 - **Chapter 01**: Discovery
 - **Chapter 02**: Experimentation
@@ -14,6 +15,7 @@ An interactive first-person documentary portfolio built with Next.js App Router,
 - **Epilogue**: A Story Still Unfolding
 
 ## Project Structure
+
 - `/app` — App Router routes:
   - `/` — Story Mode (the documentary journey)
   - `/explore` — Explore Mode Hub (10-point project specs, AI tracks, timeline)
@@ -40,6 +42,7 @@ An interactive first-person documentary portfolio built with Next.js App Router,
 - `/public/{media,fonts}` — Static media & webfonts
 
 ## Scripts
+
 ```bash
 # Start development server
 npm run dev
