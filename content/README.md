@@ -18,12 +18,12 @@ Accents: `prologue=gold, 01=gold, 02=all, 03=azure, 04=rose, 05=iris, 06=gold-em
 - [ ] **Prologue (Curiosity · gold)**:
   - `narration[1].text`: Replace `[TODO: Add personal opening memory/reflection about early fascination with machines, computers, or problem-solving]` with your authentic opening reflection.
 - [ ] **Chapter 01 (Curiosity · gold)**:
-  - `narration[0].text`: Core draft narration: *"I've always been fascinated by understanding how things work. But eventually, understanding wasn't enough. I wanted to create things myself."*
+  - `narration[0].text`: Core draft narration: _"I've always been fascinated by understanding how things work. But eventually, understanding wasn't enough. I wanted to create things myself."_
   - `curiositySlots[0]`: Fill slot 1: **What first sparked curiosity** (early hardware/system teardowns, questions).
   - `curiositySlots[1]`: Fill slot 2: **A first thing I built** (first real script, electronic project, game, or tool).
   - `curiositySlots[2]`: Fill slot 3: **What keeps me experimenting** (perpetual recursive drive to build).
 - [ ] **Chapter 02 (Convergence · all)**:
-  - `narration[0].text`: Core draft narration: *"I didn't want to choose between technology and creativity. I wanted to explore both."*
+  - `narration[0].text`: Core draft narration: _"I didn't want to choose between technology and creativity. I wanted to explore both."_
   - `convergingIdentities[0]`: Refine/personalize **The Builder** (azure) connection.
   - `convergingIdentities[1]`: Refine/personalize **The Engineer of Intelligence** (iris) connection.
   - `convergingIdentities[2]`: Refine/personalize **The Visual Thinker** (rose) connection.

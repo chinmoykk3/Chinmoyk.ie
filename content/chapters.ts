@@ -127,8 +127,7 @@ export const chapters: Chapter[] = [
     subtitle: 'Four disciplines converging into a single craft',
     emotionalArc: 'Convergence',
     accentKey: 'all',
-    summary:
-      "I didn't want to choose between technology and creativity. I wanted to explore both.",
+    summary: "I didn't want to choose between technology and creativity. I wanted to explore both.",
     narration: [
       {
         text: "I didn't want to choose between technology and creativity. I wanted to explore both.",

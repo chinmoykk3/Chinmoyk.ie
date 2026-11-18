@@ -4,6 +4,8 @@ import { projects } from '@/content/projects';
 import { OpeningExperience } from '@/components/story/OpeningExperience';
 import { StoryHero } from '@/components/story/StoryHero';
 import { ChapterCard } from '@/components/chapters/ChapterCard';
+import { Chapter01Curiosity } from '@/components/chapters/Chapter01Curiosity';
+import { Chapter02Worlds } from '@/components/chapters/Chapter02Worlds';
 import { ChapterRail } from '@/components/story/ChapterRail';
 import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Tag';
@@ -37,10 +39,16 @@ export default function StoryModePage() {
         </div>
 
         {/* Chapter List Rendering From Content Files */}
-        <div className="space-y-12">
-          {chapters.map((chapter, index) => (
-            <ChapterCard key={chapter.id} chapter={chapter} index={index} />
-          ))}
+        <div className="space-y-16">
+          {chapters.map((chapter, index) => {
+            if (chapter.id === 'chapter-01') {
+              return <Chapter01Curiosity key={chapter.id} chapter={chapter} />;
+            }
+            if (chapter.id === 'chapter-02') {
+              return <Chapter02Worlds key={chapter.id} chapter={chapter} />;
+            }
+            return <ChapterCard key={chapter.id} chapter={chapter} index={index} />;
+          })}
         </div>
 
         {/* Projects Bridge Preview */}
