@@ -99,7 +99,7 @@ export default async function Image() {
             letterSpacing: '0.05em',
           }}
         >
-          chinmoyk.ie
+          chinmoyk-ie.vercel.app
         </span>
         <div
           style={{

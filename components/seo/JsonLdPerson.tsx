@@ -6,11 +6,13 @@ export function JsonLdPerson() {
     .filter((s) => !s.url.includes('[TODO') && !s.url.startsWith('mailto:'))
     .map((s) => s.url);
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://chinmoyk-ie.vercel.app';
+
   const personSchema = {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: contactData.name,
-    url: 'https://chinmoyk.ie',
+    url: siteUrl,
     email: contactData.email,
     description: contactData.bioSnippet,
     ...(verifiedSocials.length > 0 ? { sameAs: verifiedSocials } : {}),

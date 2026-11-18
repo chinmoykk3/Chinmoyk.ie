@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { projects } from '@/content/projects';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://chinmoyk.ie';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://chinmoyk-ie.vercel.app';
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {

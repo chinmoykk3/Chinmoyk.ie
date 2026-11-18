@@ -9,8 +9,10 @@ import { JsonLdPerson } from '@/components/seo/JsonLdPerson';
 import { PrivacyAnalytics } from '@/components/analytics/PrivacyAnalytics';
 import { instrumentSerif, geistSans, geistMono } from '@/lib/fonts';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://chinmoyk-ie.vercel.app';
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://chinmoyk.ie'),
+  metadataBase: new URL(siteUrl),
   title: {
     default: 'Chinmoy Kalita — A Story Still Unfolding',
     template: '%s | Chinmoy Kalita',
@@ -34,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://chinmoyk.ie',
+    url: siteUrl,
     siteName: 'Chinmoy Kalita — A Story Still Unfolding',
     title: 'Chinmoy Kalita — A Story Still Unfolding',
     description:
