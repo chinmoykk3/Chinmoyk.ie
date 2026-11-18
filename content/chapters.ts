@@ -232,24 +232,23 @@ export const chapters: Chapter[] = [
   {
     id: 'chapter-05',
     number: 5,
-    title: 'Chapter 05: Uncharted Frontiers',
-    subtitle: 'Stepping into AI, decentralization, and complex domains',
+    title: 'Chapter 05: The World of Intelligence',
+    subtitle: 'Building and understanding intelligent systems, not merely consuming them',
     emotionalArc: 'Exploration',
     accentKey: 'iris',
-    summary:
-      'Diving into generative AI, decentralized protocols, and data-heavy institutional infrastructures.',
+    summary: 'I want to understand and build intelligent systems, not merely use AI tools.',
     narration: [
       {
-        text: 'True exploration requires stepping into domains where standard playbooks do not yet exist.',
-        note: 'DRAFT narration',
+        text: 'I want to understand and build intelligent systems, not merely use AI tools.',
+        note: 'DRAFT narration — intelligence thesis',
       },
       {
-        text: '[TODO: Highlight exploration in AI systems, decentralization (Sahyog Cryptos), or regional data platforms (IRDMS Assam)]',
-        note: 'PLACEHOLDER: Awaiting project background details',
+        text: '[TODO: Chinmoy to supply: Reflections on the transition from using AI APIs to engineering autonomous agentic workflows and local models]',
+        note: 'PLACEHOLDER: Awaiting authentic AI engineering reflection',
       },
     ],
     bridgeToNext:
-      'Every frontier explored transforms the builder, demanding deeper resilience and systematic growth.',
+      'Intelligence without real-world utility remains an experiment. The true crucible is taking these systems to people at scale.',
     isPlaceholder: true,
   },
   {

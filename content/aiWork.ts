@@ -15,9 +15,54 @@ export interface AIWorkCollection {
   experiments: AIWorkItem[];
   learning: AIWorkItem[];
   future: AIWorkItem[];
+  modelsAndTechnologies: string[];
+  researchQuestions: { id: string; question: string; context: string; isPlaceholder: boolean }[];
 }
 
 export const aiWork: AIWorkCollection = {
+  modelsAndTechnologies: [
+    'Transformer Attention Architectures & Positional Encodings',
+    'Autonomous Multi-Agent Orchestration (State Graphs & Tool Execution)',
+    'Local Inference & Quantization (GGUF, llama.cpp, WebGPU)',
+    'Evaluation & Grounding (Nyquist validation, benchmark harnesses)',
+    'Retrieval-Augmented Generation & Vector Topologies',
+    '[TODO: Chinmoy to confirm preferred models & tech stack]',
+  ],
+
+  researchQuestions: [
+    {
+      id: 'rq-1',
+      question:
+        'How do we design autonomous agent architectures that verify their own code with deterministic guarantees rather than probabilistic guessing?',
+      context:
+        'Exploring self-correcting loops, formal verification harnesses, and sandboxed test execution.',
+      isPlaceholder: true,
+    },
+    {
+      id: 'rq-2',
+      question:
+        'Can local-first, low-parameter SLMs replace cloud-dependent monolithic LLMs for privacy-sensitive personal workflows?',
+      context:
+        'Investigating quantization efficiency, edge memory bandwidth, and local contextual grounding.',
+      isPlaceholder: true,
+    },
+    {
+      id: 'rq-3',
+      question:
+        'How does user agency transform when an interface shifts from passive command execution to predictive cooperative orchestration?',
+      context:
+        'Examining the interaction boundary between human intent and autonomous background delegation.',
+      isPlaceholder: true,
+    },
+    {
+      id: 'rq-4',
+      question:
+        '[TODO: Chinmoy to supply core research question: e.g. edge inference, multimodal reasoning, or cognitive grounding]',
+      context: 'Awaiting authentic personal research hypothesis from Chinmoy.',
+      isPlaceholder: true,
+    },
+  ],
+
   completed: [
     {
       id: 'ai-doc-portfolio-copilot',
