@@ -7,4 +7,3 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useLenis();
   return <>{children}</>;
 }
-

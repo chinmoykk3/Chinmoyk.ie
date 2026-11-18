@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { href: '/', label: 'Story Mode', icon: Film, subtitle: 'The Documentary' },
   { href: '/explore', label: 'Explore Hub', icon: Compass, subtitle: 'Projects & Systems' },
   { href: '/design', label: 'Design' },
+  { href: '/motion-lab', label: 'Motion Lab' },
   { href: '/contact', label: 'Contact' },
 ];
 

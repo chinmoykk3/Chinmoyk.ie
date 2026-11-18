@@ -19,4 +19,3 @@ export const geistMono = Geist_Mono({
   variable: '--font-mono',
   display: 'swap',
 });
-

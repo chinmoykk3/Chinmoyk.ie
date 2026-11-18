@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Navbar } from '@/components/ui/Navbar';
 import { Footer } from '@/components/ui/Footer';
-import { SmoothScroll } from '@/components/motion/SmoothScroll';
+import { MotionProvider } from '@/components/motion/MotionProvider';
+import { ThreadSpine } from '@/components/motion/ThreadSpine';
 import { DocumentaryCanvas } from '@/components/three/DocumentaryCanvas';
 import { instrumentSerif, geistSans, geistMono } from '@/lib/fonts';
 
@@ -38,14 +39,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen bg-theme-bg text-theme-text antialiased selection:bg-theme-gold/30 selection:text-theme-text flex flex-col font-sans transition-colors duration-200">
-        <SmoothScroll>
+        <MotionProvider>
           <DocumentaryCanvas />
+          <ThreadSpine />
           <Navbar />
           <main id="main-content" className="flex-1 w-full">
             {children}
           </main>
           <Footer />
-        </SmoothScroll>
+        </MotionProvider>
       </body>
     </html>
   );

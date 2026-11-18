@@ -47,4 +47,3 @@ export function useLenis() {
 
   return lenisRef;
 }
-
