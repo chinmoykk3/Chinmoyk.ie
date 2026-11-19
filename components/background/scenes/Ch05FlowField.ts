@@ -1,4 +1,4 @@
-import { Scene, SceneSize, SceneState } from '../types';
+import { Scene, SceneSize, SceneState, RgbTuple } from '../types';
 import { rgba } from '../tokens';
 
 interface Streamline {
@@ -17,7 +17,7 @@ export class Ch05FlowFieldScene implements Scene {
   public title = 'Chapter 05: Flow Field';
 
   private streamlines: Streamline[] = [];
-  private maxStreamlines = 90; // Strictly under <= 120 requirement
+  private maxStreamlines = 84; // Strictly under ≤ 120 trails requirement
 
   public init(ctx: CanvasRenderingContext2D, size: SceneSize): void {
     this.resize(size);
@@ -25,7 +25,7 @@ export class Ch05FlowFieldScene implements Scene {
 
   public resize(size: SceneSize): void {
     const isMobile = size.width < 768;
-    this.maxStreamlines = isMobile ? 40 : 90;
+    this.maxStreamlines = isMobile ? 36 : 84;
 
     this.streamlines = [];
     for (let i = 0; i < this.maxStreamlines; i++) {
@@ -36,10 +36,10 @@ export class Ch05FlowFieldScene implements Scene {
         y,
         prevX: x,
         prevY: y,
-        speed: 38 + Math.random() * 45,
+        speed: 32 + Math.random() * 40,
         life: Math.random() * 4,
-        maxLife: 3 + Math.random() * 4,
-        alpha: 0.25 + Math.random() * 0.45,
+        maxLife: 3.5 + Math.random() * 3.5,
+        alpha: 0.2 + Math.random() * 0.4,
       });
     }
   }
@@ -48,26 +48,26 @@ export class Ch05FlowFieldScene implements Scene {
     const w = state.size.width;
     const h = state.size.height;
     const activeCount = Math.floor(this.maxStreamlines * (state.qualityLevel < 0.5 ? 0.5 : 1));
-    const t = state.time * 0.15;
+    const t = state.time * 0.12;
 
     for (let i = 0; i < activeCount; i++) {
       const s = this.streamlines[i];
       s.prevX = s.x;
       s.prevY = s.y;
 
-      // Evolving smooth trigonometric vector field angle
-      const scale = 0.0022;
+      // Gentle, sparse trigonometric flow field angle
+      const scale = 0.0018;
       const angle =
-        Math.sin(s.x * scale + t) * 2.2 +
-        Math.cos(s.y * scale * 1.2 - t) * 1.8 +
-        Math.sin((s.x + s.y) * scale * 0.5 + t * 0.7);
+        Math.sin(s.x * scale + t) * 2.0 +
+        Math.cos(s.y * scale * 1.1 - t) * 1.6 +
+        Math.sin((s.x + s.y) * scale * 0.4 + t * 0.6);
 
       s.x += Math.cos(angle) * s.speed * dt;
       s.y += Math.sin(angle) * s.speed * dt;
       s.life += dt;
 
-      // Respawn when life expires or particle wanders offscreen
-      if (s.life >= s.maxLife || s.x < -20 || s.x > w + 20 || s.y < -20 || s.y > h + 20) {
+      // Respawn when life expires or particle drifts out of bounds
+      if (s.life >= s.maxLife || s.x < -30 || s.x > w + 30 || s.y < -30 || s.y > h + 30) {
         s.x = Math.random() * w;
         s.y = Math.random() * h;
         s.prevX = s.x;
@@ -84,18 +84,17 @@ export class Ch05FlowFieldScene implements Scene {
 
     ctx.save();
 
-    if (theme === 'dark') {
-      ctx.globalCompositeOperation = 'lighter';
-    } else {
-      ctx.globalCompositeOperation = 'multiply';
-    }
+    const isDark = theme === 'dark';
+    ctx.globalCompositeOperation = isDark ? 'lighter' : 'multiply';
 
-    // Parallax
+    const irisRgb: RgbTuple = isDark ? accentColours.irisRgb : accentColours.irisTextSafeRgb;
+
+    // Subtle parallax (non-competing)
     if (!pointer.isTouch) {
-      ctx.translate(pointer.x * 8, pointer.y * 8);
+      ctx.translate(pointer.x * 6, pointer.y * 6);
     }
 
-    // Ambient radial iris glow
+    // 1. Faint ambient radial iris glow
     const centerGrad = ctx.createRadialGradient(
       width * 0.5,
       height * 0.5,
@@ -104,29 +103,29 @@ export class Ch05FlowFieldScene implements Scene {
       height * 0.5,
       Math.max(width, height) * 0.5
     );
-    const ambientAlpha = theme === 'dark' ? 0.09 : 0.06;
-    centerGrad.addColorStop(0, rgba(accentColours.irisRgb, ambientAlpha));
-    centerGrad.addColorStop(0.6, rgba(accentColours.irisRgb, ambientAlpha * 0.3));
-    centerGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    const ambientAlpha = isDark ? 0.07 : 0.05;
+    centerGrad.addColorStop(0, rgba(irisRgb, ambientAlpha));
+    centerGrad.addColorStop(0.55, rgba(irisRgb, ambientAlpha * 0.3));
+    centerGrad.addColorStop(1, rgba(irisRgb, 0));
     ctx.fillStyle = centerGrad;
     ctx.fillRect(0, 0, width, height);
 
-    // Draw streamlines
-    const stretchY = 1 + Math.min(Math.abs(scrollVelocity) * 0.001, 0.4);
-    ctx.lineWidth = 1.2;
+    // 2. Sparse, non-competing streamlines
+    const stretchY = 1 + Math.min(Math.abs(scrollVelocity) * 0.0008, 0.3);
+    ctx.lineWidth = isDark ? 1.0 : 1.2;
 
     for (let i = 0; i < activeCount; i++) {
       const s = this.streamlines[i];
 
-      // Smooth fade in and out during lifespan
+      // Smooth sine fade over lifespan
       const progress = s.life / s.maxLife;
       const fade = Math.sin(progress * Math.PI);
-      const alpha = s.alpha * fade * (theme === 'dark' ? 0.75 : 0.55);
+      const alpha = s.alpha * fade * (isDark ? 0.65 : 0.45);
 
       if (alpha < 0.01) continue;
 
       ctx.save();
-      ctx.strokeStyle = rgba(accentColours.irisRgb, alpha);
+      ctx.strokeStyle = rgba(irisRgb, alpha);
       ctx.beginPath();
       ctx.moveTo(s.prevX, s.prevY);
       ctx.lineTo(s.x, s.y);
@@ -135,10 +134,10 @@ export class Ch05FlowFieldScene implements Scene {
       }
       ctx.stroke();
 
-      // Faint particle head
-      ctx.fillStyle = rgba(accentColours.irisRgb, alpha * 1.3);
+      // Faint glowing head
+      ctx.fillStyle = rgba(irisRgb, alpha * 1.25);
       ctx.beginPath();
-      ctx.arc(s.x, s.y, 1.2, 0, Math.PI * 2);
+      ctx.arc(s.x, s.y, isDark ? 1.1 : 1.3, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.restore();
@@ -152,11 +151,10 @@ export class Ch05FlowFieldScene implements Scene {
     const { theme, accentColours } = state;
 
     ctx.save();
-    if (theme === 'dark') {
-      ctx.globalCompositeOperation = 'lighter';
-    } else {
-      ctx.globalCompositeOperation = 'multiply';
-    }
+    const isDark = theme === 'dark';
+    ctx.globalCompositeOperation = isDark ? 'lighter' : 'multiply';
+
+    const irisRgb: RgbTuple = isDark ? accentColours.irisRgb : accentColours.irisTextSafeRgb;
 
     const grad = ctx.createRadialGradient(
       width * 0.5,
@@ -166,8 +164,8 @@ export class Ch05FlowFieldScene implements Scene {
       height * 0.5,
       Math.min(width, height) * 0.4
     );
-    grad.addColorStop(0, rgba(accentColours.irisRgb, 0.09));
-    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    grad.addColorStop(0, rgba(irisRgb, 0.07));
+    grad.addColorStop(1, rgba(irisRgb, 0));
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, width, height);
     ctx.restore();
