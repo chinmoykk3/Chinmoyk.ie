@@ -1,7 +1,6 @@
 import React from 'react';
 import { chapters } from '@/content/chapters';
-import { OpeningExperience } from '@/components/story/OpeningExperience';
-import { StoryHero } from '@/components/story/StoryHero';
+import { CinematicOpening } from '@/components/story/CinematicOpening';
 import { Chapter01Curiosity } from '@/components/chapters/Chapter01Curiosity';
 import { Chapter02Worlds } from '@/components/chapters/Chapter02Worlds';
 import { Chapter03Real } from '@/components/chapters/Chapter03Real';
@@ -16,11 +15,8 @@ export default function StoryModePage() {
 
   return (
     <div className="w-full relative">
-      {/* Cinematic Opening Experience */}
-      <OpeningExperience />
-
-      {/* Narrative Hero (Prologue) */}
-      <StoryHero />
+      {/* Cinematic Opening (Full-viewport pinned scene on pure black #000000, Prologue) */}
+      <CinematicOpening />
 
       {/* Full-bleed Chapter Scenes: Scene, Not Card (Rule 1) */}
       <main className="w-full relative">
