@@ -43,7 +43,7 @@ export const chapters: Chapter[] = [
   {
     id: 'prologue',
     number: 0,
-    title: 'Prologue: The Spark',
+    title: 'The Spark',
     subtitle: 'Where questioning begins',
     emotionalArc: 'Curiosity',
     accentKey: 'gold',
@@ -66,7 +66,7 @@ export const chapters: Chapter[] = [
   {
     id: 'chapter-01',
     number: 1,
-    title: 'Chapter 01: It Started With Curiosity',
+    title: 'It Started With Curiosity',
     subtitle: 'The shift from observer to maker',
     emotionalArc: 'Curiosity',
     accentKey: 'gold',
@@ -116,26 +116,22 @@ export const chapters: Chapter[] = [
           '[TODO: Chinmoy to supply: what keeps me experimenting — e.g. the obsession with bringing imagined systems into tangible reality]',
       },
     ],
-    bridgeToNext:
-      'When you begin creating, you realize technology cannot exist in a vacuum. I found more than one world waiting to be bridged.',
+    bridgeToNext: 'Understanding was only the first step.',
     isPlaceholder: true,
   },
   {
     id: 'chapter-02',
     number: 2,
-    title: 'Chapter 02: I Found More Than One World',
+    title: 'I Found More Than One World',
     subtitle: 'Four disciplines converging into a single craft',
     emotionalArc: 'Convergence',
     accentKey: 'all',
-    summary: "I didn't want to choose between technology and creativity. I wanted to explore both.",
+    summary:
+      "I eventually realised that I didn't want to choose between technology and creativity. I wanted to explore both.",
     narration: [
       {
-        text: "I didn't want to choose between technology and creativity. I wanted to explore both.",
+        text: "I eventually realised that I didn't want to choose between technology and creativity. I wanted to explore both.",
         note: 'DRAFT narration — convergence thesis',
-      },
-      {
-        text: '[TODO: Chinmoy to supply: Reflections on refusing to be siloed into a single traditional developer box]',
-        note: 'PLACEHOLDER: Synthesis of disciplines',
       },
     ],
     convergingIdentities: [
@@ -179,14 +175,13 @@ export const chapters: Chapter[] = [
         isPlaceholder: true,
       },
     ],
-    bridgeToNext:
-      'When these disciplines converge, you don’t just write code — you begin to construct coherent worlds.',
+    bridgeToNext: 'Having found these worlds, I wanted to build something real.',
     isPlaceholder: true,
   },
   {
     id: 'chapter-03',
     number: 3,
-    title: 'Chapter 03: I Wanted To Build Something Real',
+    title: 'I Wanted To Build Something Real',
     subtitle: 'From exploratory scripts to concrete, deployed systems',
     emotionalArc: 'Creation',
     accentKey: 'azure',
@@ -209,7 +204,7 @@ export const chapters: Chapter[] = [
   {
     id: 'chapter-04',
     number: 4,
-    title: 'Chapter 04: Another Language Called Design',
+    title: 'Another Language Called Design',
     subtitle: 'Visual voice, typography, and the architecture of feeling',
     emotionalArc: 'Expression',
     accentKey: 'rose',
@@ -232,7 +227,7 @@ export const chapters: Chapter[] = [
   {
     id: 'chapter-05',
     number: 5,
-    title: 'Chapter 05: The World of Intelligence',
+    title: 'The World of Intelligence',
     subtitle: 'Building and understanding intelligent systems, not merely consuming them',
     emotionalArc: 'Exploration',
     accentKey: 'iris',
@@ -254,7 +249,7 @@ export const chapters: Chapter[] = [
   {
     id: 'chapter-06',
     number: 6,
-    title: 'Chapter 06: The Crucible of Scale',
+    title: 'The Crucible of Scale',
     subtitle: 'Refining craft through real-world constraints',
     emotionalArc: 'Growth',
     accentKey: 'gold-ember',
@@ -277,7 +272,7 @@ export const chapters: Chapter[] = [
   {
     id: 'chapter-07',
     number: 7,
-    title: 'Chapter 07: Horizon of Possibility',
+    title: 'Horizon of Possibility',
     subtitle: 'Active frontiers and future convictions',
     emotionalArc: 'Possibility',
     accentKey: 'ember',
@@ -299,7 +294,7 @@ export const chapters: Chapter[] = [
   {
     id: 'epilogue',
     number: 'Epilogue',
-    title: 'Epilogue: The Story Is Still Being Written',
+    title: 'The Story Is Still Being Written',
     subtitle: 'An unfinished narrative, an open invitation to build',
     emotionalArc: 'Possibility',
     accentKey: 'sunrise',

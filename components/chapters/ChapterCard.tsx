@@ -28,26 +28,27 @@ export function ChapterCard({ chapter, index }: { chapter: Chapter; index: numbe
       className="relative transition-all duration-300"
     >
       <Card withWash hoverEffect className="overflow-hidden">
-        {/* Chapter Header */}
+        {/* Chapter Header (Rule 2: One label only) */}
         <CardHeader>
           <div className="flex items-center gap-3">
-            <ChapterLabel
-              chapter={chapter.number}
-              timecode={`00:${String((index + 1) * 6).padStart(2, '0')}:00`}
-              arc={chapter.emotionalArc}
-            />
+            <span className="font-mono text-xs uppercase tracking-widest text-chapter-accent font-medium">
+              {typeof chapter.number === 'number'
+                ? chapter.number === 0
+                  ? 'PROLOGUE'
+                  : `CHAPTER 0${chapter.number}`
+                : String(chapter.number).toUpperCase()}
+            </span>
+            <span className="text-theme-muted/40 font-mono text-xs" aria-hidden="true">
+              ·
+            </span>
+            <span className="font-mono text-xs uppercase tracking-widest text-theme-muted">
+              {chapter.title}
+            </span>
           </div>
 
-          <div className="flex items-center gap-2">
-            {chapter.isPlaceholder && (
-              <Tag variant="ember" size="sm">
-                Draft Content
-              </Tag>
-            )}
-            <Tag variant="accent" size="sm">
-              {chapter.accentKey.toUpperCase()}
-            </Tag>
-          </div>
+          {process.env.NODE_ENV !== 'production' && chapter.isPlaceholder && (
+            <span className="text-[10px] font-mono text-theme-muted/60">[TODO: content]</span>
+          )}
         </CardHeader>
 
         {/* Content & Outlined Numeral */}
@@ -91,18 +92,12 @@ export function ChapterCard({ chapter, index }: { chapter: Chapter; index: numbe
           </div>
         </div>
 
-        {/* Narrative Bridge */}
+        {/* Narrative Bridge (Rule 5: Quiet first-person line, no box, no label) */}
         {chapter.bridgeToNext && (
-          <CardFooter>
-            <div className="flex items-start gap-2.5 text-xs text-theme-muted">
-              <Sparkles className="w-4 h-4 text-chapter-accent shrink-0 mt-0.5" />
-              <div>
-                <span className="font-semibold text-theme-text font-mono uppercase tracking-wider text-[11px]">
-                  Narrative Bridge &rarr;{' '}
-                </span>
-                <span className="italic">{chapter.bridgeToNext}</span>
-              </div>
-            </div>
+          <CardFooter className="pt-4 border-t border-theme-border/40">
+            <p className="text-xs sm:text-sm font-serif italic text-theme-muted">
+              &ldquo;{chapter.bridgeToNext}&rdquo;
+            </p>
           </CardFooter>
         )}
       </Card>

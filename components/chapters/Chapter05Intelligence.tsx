@@ -123,35 +123,34 @@ export function Chapter05Intelligence({ chapter }: Chapter05IntelligenceProps) {
           className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_20%,rgba(167,139,250,0.08)_0%,transparent_70%)]"
         />
 
-        {/* Chapter Metadata Header */}
+        {/* Chapter Metadata Header (Rule 2: One label only) */}
         <Container size="lg" className="relative z-10 w-full mb-12">
-          <div className="flex items-center justify-between border-b border-theme-border pb-4 flex-wrap gap-3">
-            <ChapterLabel chapter="05" timecode="00:30:00" arc={chapter.emotionalArc} />
-
-            <div className="flex items-center gap-2">
-              <Tag variant="iris" size="sm">
-                Autonomous Systems & Agents
-              </Tag>
-              <Tag variant="default" size="sm">
-                4 Honest Categories
-              </Tag>
+          <div className="flex items-center justify-between border-b border-theme-border/60 pb-4 flex-wrap gap-3">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-xs uppercase tracking-widest text-chapter-accent font-medium">
+                CHAPTER 05
+              </span>
+              <span className="text-theme-muted/40 font-mono text-xs" aria-hidden="true">
+                ·
+              </span>
+              <span className="font-mono text-xs uppercase tracking-widest text-theme-muted">
+                {chapter.title}
+              </span>
             </div>
           </div>
 
-          <div className="mt-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-            <div>
-              <h2
-                id="chapter-05-heading"
-                className="text-fluid-h1 font-serif font-black tracking-tight text-theme-text"
-              >
-                {chapter.title}
-              </h2>
-              <p className="text-sm font-serif italic text-theme-muted mt-1">{chapter.subtitle}</p>
-            </div>
-
-            <span className="text-xs font-mono text-theme-iris font-semibold tracking-wider uppercase">
-              DEEP ARCHITECTURAL RIGOR
-            </span>
+          <div className="mt-6">
+            <h2
+              id="chapter-05-heading"
+              className="text-fluid-h1 font-serif font-normal tracking-tight text-theme-text leading-[1.08]"
+            >
+              {chapter.title}
+            </h2>
+            {chapter.subtitle && (
+              <p className="text-fluid-narration font-serif italic text-theme-muted mt-2 max-w-[32ch] leading-[1.35]">
+                {chapter.subtitle}
+              </p>
+            )}
           </div>
         </Container>
 
@@ -352,9 +351,11 @@ export function Chapter05Intelligence({ chapter }: Chapter05IntelligenceProps) {
                   Research Questions I&apos;m Curious About
                 </h3>
               </div>
-              <span className="text-xs font-mono text-theme-ember font-semibold">
-                [Active Inquiry Placeholders]
-              </span>
+              {process.env.NODE_ENV !== 'production' && (
+                <span className="text-[10px] font-mono text-theme-muted/60">
+                  [TODO: chinmoy-research-questions]
+                </span>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
@@ -376,29 +377,11 @@ export function Chapter05Intelligence({ chapter }: Chapter05IntelligenceProps) {
           </div>
         </Container>
 
-        {/* Narrative Bridge to Chapter 06 */}
-        <Container size="lg" className="relative z-10 w-full pt-4">
-          <div className="p-4 rounded-2xl bg-theme-surface border border-theme-border flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-start gap-3">
-              <Sparkles className="w-5 h-5 text-chapter-accent shrink-0 mt-0.5" />
-              <div>
-                <div className="text-[11px] font-mono uppercase tracking-widest text-theme-muted">
-                  Narrative Bridge &rarr; Movement VI
-                </div>
-                <p className="text-xs sm:text-sm font-serif italic text-theme-text mt-0.5">
-                  &ldquo;{chapter.bridgeToNext}&rdquo;
-                </p>
-              </div>
-            </div>
-
-            <a
-              href="#chapter-06"
-              className="inline-flex items-center gap-1.5 text-xs font-mono text-chapter-accent hover:underline font-semibold"
-            >
-              <span>Continue to Chapter 06</span>
-              <ArrowDown className="w-3.5 h-3.5" />
-            </a>
-          </div>
+        {/* Narrative Bridge to Chapter 06 (Rule 5: Quiet first-person line, no box, no label) */}
+        <Container size="lg" className="relative z-10 w-full pt-12 pb-4">
+          <p className="text-sm sm:text-base font-serif italic text-theme-muted text-center sm:text-left">
+            &ldquo;{chapter.bridgeToNext}&rdquo;
+          </p>
         </Container>
       </div>
     </article>

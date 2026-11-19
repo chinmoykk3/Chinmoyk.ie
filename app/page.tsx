@@ -1,27 +1,20 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import { chapters } from '@/content/chapters';
-import { projects } from '@/content/projects';
 import { OpeningExperience } from '@/components/story/OpeningExperience';
 import { StoryHero } from '@/components/story/StoryHero';
 import { ChapterCard } from '@/components/chapters/ChapterCard';
 import { ChapterRail } from '@/components/story/ChapterRail';
-import { Container } from '@/components/ui/Container';
-import { Tag } from '@/components/ui/Tag';
-import { Card } from '@/components/ui/Card';
-import Link from 'next/link';
 
 function ChapterSkeleton({ title, number }: { title: string; number: string }) {
   return (
-    <div className="py-16 my-8 animate-pulse border border-theme-border/40 rounded-3xl p-8 sm:p-12 bg-theme-surface/40 space-y-4">
-      <div className="flex items-center gap-3">
-        <span className="text-[11px] font-mono uppercase tracking-widest px-2.5 py-1 rounded bg-theme-surface-subtle text-theme-muted font-semibold">
+    <div className="min-h-[80svh] w-full flex items-center justify-center p-8 animate-pulse text-center">
+      <div className="space-y-4 max-w-md mx-auto">
+        <span className="text-[11px] font-mono uppercase tracking-widest text-theme-muted font-semibold">
           CHAPTER {number}
         </span>
-        <div className="h-4 w-28 bg-theme-surface-subtle rounded" />
+        <h3 className="text-2xl sm:text-3xl font-serif text-theme-text/70">{title}</h3>
       </div>
-      <h3 className="text-2xl sm:text-3xl font-serif font-bold text-theme-text/80">{title}</h3>
-      <div className="h-12 w-full max-w-xl bg-theme-surface-subtle/50 rounded" />
     </div>
   );
 }
@@ -61,91 +54,33 @@ export default function StoryModePage() {
       {/* Desktop Chapter Rail (Synced to continuous scroll with arrow-key jumping) */}
       <ChapterRail />
 
-      {/* Narrative Hero */}
+      {/* Narrative Hero (Prologue) */}
       <StoryHero />
 
-      {/* Chapters Container */}
-      <Container size="md" className="py-16 space-y-12">
-        <div className="flex items-center justify-between border-b border-theme-border pb-4 flex-wrap gap-2">
-          <div>
-            <h2 className="text-fluid-h2 font-serif font-bold text-theme-text">The Chapters</h2>
-            <p className="text-xs sm:text-sm text-theme-muted mt-1">
-              8 chronological movements from initial curiosity to future possibilities
-            </p>
-          </div>
-          <Tag variant="gold" size="md">
-            {chapters.length} Movements Indexed
-          </Tag>
-        </div>
-
-        {/* Chapter List Rendering From Content Files */}
-        <div className="space-y-16">
-          {chapters.map((chapter, index) => {
-            if (chapter.id === 'chapter-01') {
-              return <Chapter01Curiosity key={chapter.id} chapter={chapter} />;
-            }
-            if (chapter.id === 'chapter-02') {
-              return <Chapter02Worlds key={chapter.id} chapter={chapter} />;
-            }
-            if (chapter.id === 'chapter-03') {
-              return <Chapter03Real key={chapter.id} chapter={chapter} />;
-            }
-            if (chapter.id === 'chapter-04') {
-              return <Chapter04Design key={chapter.id} chapter={chapter} />;
-            }
-            if (chapter.id === 'chapter-05') {
-              return <Chapter05Intelligence key={chapter.id} chapter={chapter} />;
-            }
-            if (chapter.id === 'epilogue') {
-              return <EpilogueSection key={chapter.id} chapter={chapter} />;
-            }
-            return <ChapterCard key={chapter.id} chapter={chapter} index={index} />;
-          })}
-        </div>
-
-        {/* Projects Bridge Preview */}
-        <div className="mt-20">
-          <Card withWash elevated className="space-y-6">
-            <div className="flex items-center justify-between flex-wrap gap-4 border-b border-theme-border pb-4">
-              <div>
-                <Tag variant="ember" size="sm">
-                  Connected Artifacts
-                </Tag>
-                <h3 className="text-2xl font-serif font-bold text-theme-text mt-2">
-                  Featured Projects in this Story
-                </h3>
-              </div>
-              <Link
-                href="/explore"
-                className="text-xs font-mono font-semibold text-theme-gold hover:underline"
-              >
-                View all {projects.length} projects in Explore Hub &rarr;
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {projects.map((proj) => (
-                <Link
-                  key={proj.id}
-                  href={`/projects/${proj.slug}`}
-                  className="p-5 rounded-xl bg-theme-surface border border-theme-border hover:border-theme-border-strong transition-all group"
-                >
-                  <div className="flex items-center justify-between text-xs font-mono text-theme-muted mb-2">
-                    <span>{proj.category}</span>
-                    <Tag variant="status" size="sm">
-                      {proj.status}
-                    </Tag>
-                  </div>
-                  <h4 className="text-base font-serif font-semibold text-theme-text group-hover:text-chapter-accent transition-colors">
-                    {proj.title}
-                  </h4>
-                  <p className="text-xs text-theme-muted mt-1 line-clamp-2">{proj.tagline}</p>
-                </Link>
-              ))}
-            </div>
-          </Card>
-        </div>
-      </Container>
+      {/* Full-bleed Chapter Scenes: Scene, Not Card (Rule 1) */}
+      <main className="w-full relative">
+        {chapters.map((chapter, index) => {
+          if (chapter.id === 'chapter-01') {
+            return <Chapter01Curiosity key={chapter.id} chapter={chapter} />;
+          }
+          if (chapter.id === 'chapter-02') {
+            return <Chapter02Worlds key={chapter.id} chapter={chapter} />;
+          }
+          if (chapter.id === 'chapter-03') {
+            return <Chapter03Real key={chapter.id} chapter={chapter} />;
+          }
+          if (chapter.id === 'chapter-04') {
+            return <Chapter04Design key={chapter.id} chapter={chapter} />;
+          }
+          if (chapter.id === 'chapter-05') {
+            return <Chapter05Intelligence key={chapter.id} chapter={chapter} />;
+          }
+          if (chapter.id === 'epilogue') {
+            return <EpilogueSection key={chapter.id} chapter={chapter} />;
+          }
+          return <ChapterCard key={chapter.id} chapter={chapter} index={index} />;
+        })}
+      </main>
     </div>
   );
 }

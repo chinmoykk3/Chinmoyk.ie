@@ -1,66 +1,50 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { chapters } from '@/content/chapters';
 import { Button } from '@/components/ui/Button';
-import { ChapterLabel } from '@/components/ui/ChapterLabel';
-import { SectionWrapper } from '@/components/ui/SectionWrapper';
-import { Container } from '@/components/ui/Container';
-import { Compass, Play, Film } from 'lucide-react';
+import { Play, Compass, ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export function StoryHero() {
+  const [indexOpen, setIndexOpen] = useState(false);
+
   return (
-    <SectionWrapper
+    <section
       id="prologue"
-      chapter="prologue"
-      accent="gold"
-      withWash
-      padding="lg"
-      className="border-b border-theme-border"
+      data-chapter="0"
+      data-accent="gold"
+      className="relative w-full min-h-[90svh] flex flex-col justify-center items-center px-6 sm:px-12 py-24 text-center select-none"
     >
-      <Container size="md" className="text-center">
-        {/* Accent Tag */}
-        <div className="flex justify-center mb-6">
-          <ChapterLabel chapter="00" timecode="00:00:00" arc="Curiosity" variant="badge" />
+      <div className="max-w-4xl mx-auto space-y-8">
+        {/* Single minimal chapter identifier */}
+        <div className="flex items-center justify-center gap-3">
+          <span className="font-mono text-xs uppercase tracking-widest text-chapter-accent font-medium">
+            PROLOGUE
+          </span>
+          <span className="text-theme-muted/40 font-mono text-xs" aria-hidden="true">
+            ·
+          </span>
+          <span className="font-mono text-xs uppercase tracking-widest text-theme-muted">
+            The Spark
+          </span>
         </div>
 
-        {/* Main Title */}
-        <h1 className="text-fluid-display font-serif font-black tracking-tight text-theme-text leading-tight">
-          A STORY STILL <br className="hidden sm:inline" />
-          <span className="text-chapter-accent">UNFOLDING</span>
+        {/* Cinematic Main Title */}
+        <h1 className="text-fluid-display font-serif font-normal tracking-tight text-theme-text leading-[1.05]">
+          A Story Still <br className="hidden sm:inline" />
+          <span className="italic text-chapter-accent font-normal">Unfolding</span>
         </h1>
 
-        <p className="mt-4 text-fluid-narration font-serif text-theme-muted max-w-2xl mx-auto italic">
-          The Engineering, Design, and Research Odyssey of Chinmoy Kalita
+        {/* Premise Narration */}
+        <p className="text-fluid-narration font-serif italic text-theme-muted max-w-2xl mx-auto leading-[1.35]">
+          The engineering, design, and research odyssey of Chinmoy Kalita.
         </p>
 
-        {/* Narrative Arc Track */}
-        <div className="mt-10 p-5 rounded-2xl bg-theme-surface border border-theme-border shadow-sm backdrop-blur-sm">
-          <p className="text-[11px] font-mono uppercase tracking-widest text-theme-muted mb-3">
-            The Exposure Sunrise Arc · Curiosity to Possibility
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
-            {chapters.map((ch, idx) => (
-              <React.Fragment key={ch.id}>
-                <a
-                  href={`#${ch.id}`}
-                  data-accent={ch.accentKey}
-                  className="px-2.5 py-1 rounded-md bg-theme-surface-elevated border border-theme-border hover:border-theme-border-strong hover:text-chapter-accent transition-all font-mono text-[11px]"
-                >
-                  {ch.emotionalArc} ({ch.accentKey})
-                </a>
-                {idx < chapters.length - 1 && (
-                  <span className="text-theme-border-strong select-none">&rarr;</span>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-
-        {/* Action Controls */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-          <a href="#prologue">
+        {/* Primary Story Actions */}
+        <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
+          <a href="#chapter-01">
             <Button size="lg" variant="accent" className="shadow-lg">
               <Play className="w-4 h-4 fill-current" />
               Begin Documentary
@@ -73,22 +57,53 @@ export function StoryHero() {
               Explore Projects Mode
             </Button>
           </Link>
-
-          <Button
-            size="lg"
-            variant="ghost"
-            onClick={() => {
-              if (typeof window !== 'undefined') {
-                window.dispatchEvent(new Event('ck_replay_intro'));
-              }
-            }}
-            className="text-theme-muted hover:text-theme-text"
-          >
-            <Film className="w-4 h-4 text-theme-gold" />
-            Replay Intro
-          </Button>
         </div>
-      </Container>
-    </SectionWrapper>
+
+        {/* Collapsed-by-default real chapter index */}
+        <div className="pt-10 max-w-xl mx-auto">
+          <button
+            type="button"
+            onClick={() => setIndexOpen(!indexOpen)}
+            aria-expanded={indexOpen}
+            className="inline-flex items-center gap-2 font-mono text-xs text-theme-muted hover:text-theme-text transition-colors"
+          >
+            <span>Movement Index ({chapters.length} Chapters)</span>
+            <ChevronDown
+              className={cn(
+                'w-3.5 h-3.5 transition-transform duration-200',
+                indexOpen && 'rotate-180'
+              )}
+            />
+          </button>
+
+          {indexOpen && (
+            <nav
+              aria-label="Story chapter index"
+              className="mt-6 text-left border-t border-theme-border/60 pt-4 divide-y divide-theme-border/40"
+            >
+              {chapters.map((ch, idx) => (
+                <a
+                  key={ch.id}
+                  href={`#${ch.id}`}
+                  onClick={() => setIndexOpen(false)}
+                  className="flex items-baseline justify-between py-2.5 text-xs font-mono group hover:text-chapter-accent transition-colors"
+                >
+                  <span className="text-theme-muted group-hover:text-chapter-accent">
+                    {idx === 0
+                      ? '00 · Prologue'
+                      : idx === chapters.length - 1
+                        ? 'EP · Epilogue'
+                        : `0${idx} · ${ch.title}`}
+                  </span>
+                  <span className="text-theme-muted/50 font-serif italic text-[11px]">
+                    {ch.emotionalArc}
+                  </span>
+                </a>
+              ))}
+            </nav>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }

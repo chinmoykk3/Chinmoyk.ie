@@ -57,45 +57,40 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
       />
 
       <div className="relative z-10 w-full py-20 lg:py-28 flex flex-col justify-between">
-        {/* Top Movement Metadata */}
+        {/* Top Movement Metadata (Rule 2: One label only) */}
         <Container size="lg" className="w-full mb-12">
-          <div className="flex items-center justify-between border-b border-theme-border pb-4 flex-wrap gap-3">
-            <ChapterLabel chapter="E" timecode="00:48:00" arc={chapter.emotionalArc} />
-
-            <div className="flex items-center gap-2">
-              <Tag variant="gold" size="sm">
-                Movement VIII
-              </Tag>
-              <Tag variant="default" size="sm">
-                Sunrise Horizon · Possibility
-              </Tag>
+          <div className="flex items-center justify-between border-b border-theme-border/60 pb-4 flex-wrap gap-3">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-xs uppercase tracking-widest text-chapter-accent font-medium">
+                EPILOGUE
+              </span>
+              <span className="text-theme-muted/40 font-mono text-xs" aria-hidden="true">
+                ·
+              </span>
+              <span className="font-mono text-xs uppercase tracking-widest text-theme-muted">
+                {chapter.title}
+              </span>
             </div>
           </div>
 
-          <div className="mt-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-            <div>
-              <h2
-                id="epilogue-heading"
-                className="text-fluid-h1 font-serif font-black tracking-tight text-theme-text"
-              >
-                {chapter.title}
-              </h2>
-              <p className="text-sm font-serif italic text-theme-muted mt-1">{chapter.subtitle}</p>
-            </div>
-
-            <span className="text-xs font-mono text-theme-gold font-semibold tracking-wider uppercase">
-              ACTIVE UNFINISHED HORIZON
-            </span>
+          <div className="mt-6">
+            <h2
+              id="epilogue-heading"
+              className="text-fluid-h1 font-serif font-normal tracking-tight text-theme-text leading-[1.08]"
+            >
+              {chapter.title}
+            </h2>
+            {chapter.subtitle && (
+              <p className="text-fluid-narration font-serif italic text-theme-muted mt-2 max-w-[32ch] leading-[1.35]">
+                {chapter.subtitle}
+              </p>
+            )}
           </div>
         </Container>
 
         {/* Central Narration Statement */}
         <Container size="md" className="w-full text-center space-y-6 my-8">
-          <span className="text-[11px] font-mono uppercase tracking-[0.25em] text-theme-gold font-semibold px-3 py-1 rounded-full border border-theme-gold/30 bg-theme-surface/70 backdrop-blur-md inline-block">
-            The Horizon Thesis
-          </span>
-
-          <blockquote className="text-fluid-narration sm:text-2xl font-serif italic text-theme-text leading-snug max-w-2xl mx-auto">
+          <blockquote className="text-fluid-narration sm:text-2xl font-serif italic text-theme-text leading-[1.35] max-w-2xl mx-auto">
             &ldquo;I don&apos;t know exactly where this journey will lead me. And perhaps
             that&apos;s what makes it interesting. There are still ideas to explore, problems to
             solve and things to create.&rdquo;

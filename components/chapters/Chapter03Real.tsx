@@ -89,32 +89,19 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
             className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(2,132,199,0.08)_0%,transparent_70%)]"
           />
 
-          {/* Chapter Header */}
+          {/* Chapter Header (Rule 2: One label only) */}
           <Container size="lg" className="relative z-10 w-full mb-8">
-            <div className="flex items-center justify-between border-b border-theme-border pb-4 flex-wrap gap-3">
-              <ChapterLabel chapter="03" timecode="00:18:00" arc={chapter.emotionalArc} />
-
-              <div className="flex items-center gap-2">
-                <Tag variant="azure" size="sm">
-                  {projects.length} System Case Studies
-                </Tag>
-                <Tag variant="default" size="sm">
-                  10-Point Engineering Framework
-                </Tag>
-              </div>
-            </div>
-
-            <div className="mt-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-              <div>
-                <h2
-                  id="chapter-03-heading"
-                  className="text-fluid-h1 font-serif font-black tracking-tight text-theme-text"
-                >
+            <div className="flex items-center justify-between border-b border-theme-border/60 pb-4 flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-xs uppercase tracking-widest text-chapter-accent font-medium">
+                  CHAPTER 03
+                </span>
+                <span className="text-theme-muted/40 font-mono text-xs" aria-hidden="true">
+                  ·
+                </span>
+                <span className="font-mono text-xs uppercase tracking-widest text-theme-muted">
                   {chapter.title}
-                </h2>
-                <p className="text-sm font-serif italic text-theme-muted mt-1">
-                  {chapter.subtitle}
-                </p>
+                </span>
               </div>
 
               <div className="text-xs font-mono text-theme-muted hidden lg:flex items-center gap-2">
@@ -122,6 +109,20 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
                 <span className="text-theme-border-strong">·</span>
                 <span>USE &larr; &rarr; TO NAVIGATE</span>
               </div>
+            </div>
+
+            <div className="mt-6">
+              <h2
+                id="chapter-03-heading"
+                className="text-fluid-h1 font-serif font-normal tracking-tight text-theme-text leading-[1.08]"
+              >
+                {chapter.title}
+              </h2>
+              {chapter.subtitle && (
+                <p className="text-fluid-narration font-serif italic text-theme-muted mt-2 max-w-[32ch] leading-[1.35]">
+                  {chapter.subtitle}
+                </p>
+              )}
             </div>
           </Container>
 
@@ -152,29 +153,11 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
             </Container>
           </div>
 
-          {/* Narrative Bridge to Chapter 04 */}
-          <Container size="lg" className="relative z-10 w-full pt-8">
-            <div className="p-4 rounded-2xl bg-theme-surface border border-theme-border flex items-center justify-between flex-wrap gap-3">
-              <div className="flex items-start gap-3">
-                <Sparkles className="w-5 h-5 text-chapter-accent shrink-0 mt-0.5" />
-                <div>
-                  <div className="text-[11px] font-mono uppercase tracking-widest text-theme-muted">
-                    Narrative Bridge &rarr; Movement IV
-                  </div>
-                  <p className="text-xs sm:text-sm font-serif italic text-theme-text mt-0.5">
-                    &ldquo;{chapter.bridgeToNext}&rdquo;
-                  </p>
-                </div>
-              </div>
-
-              <a
-                href="#chapter-04"
-                className="inline-flex items-center gap-1.5 text-xs font-mono text-chapter-accent hover:underline font-semibold"
-              >
-                <span>Continue to Chapter 04</span>
-                <ArrowDown className="w-3.5 h-3.5" />
-              </a>
-            </div>
+          {/* Narrative Bridge to Chapter 04 (Rule 5: Quiet first-person line, no box, no label) */}
+          <Container size="lg" className="relative z-10 w-full pt-12 pb-4">
+            <p className="text-sm sm:text-base font-serif italic text-theme-muted text-center sm:text-left">
+              &ldquo;{chapter.bridgeToNext}&rdquo;
+            </p>
           </Container>
         </div>
       </div>

@@ -3,13 +3,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Chapter } from '@/content/chapters';
 import { useMotion } from '@/hooks/useMotion';
-import { ChapterLabel } from '@/components/ui/ChapterLabel';
-import { Container } from '@/components/ui/Container';
-import { Tag } from '@/components/ui/Tag';
-import { Card } from '@/components/ui/Card';
-import { Sparkles, ArrowDown, HelpCircle } from 'lucide-react';
 import { DirectorsCommentary } from '@/components/polish/DirectorsCommentary';
-import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { cn } from '@/lib/utils';
 
@@ -19,7 +13,7 @@ export interface Chapter01CuriosityProps {
 
 export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
   const { motionEnabled, prefersReducedMotion } = useMotion();
-  const sceneRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef<HTMLElement>(null);
   const pinContentRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -31,34 +25,9 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
     'I wanted to create things myself.',
   ];
 
-  const slots = chapter.curiositySlots || [
-    {
-      id: 'slot-spark',
-      label: 'THE SPARK',
-      question: 'What first sparked curiosity?',
-      visualType: 'gear' as const,
-      placeholder:
-        '[TODO: Chinmoy to supply: what first sparked curiosity — e.g. taking apart electronics, questioning how machines think]',
-    },
-    {
-      id: 'slot-first-build',
-      label: 'FIRST CREATION',
-      question: 'A first thing I built',
-      visualType: 'circuit' as const,
-      placeholder:
-        '[TODO: Chinmoy to supply: a first thing I built — e.g. an early C script, electronic circuit, game prototype, or web tool]',
-    },
-    {
-      id: 'slot-fuel',
-      label: 'PERPETUAL DRIVE',
-      question: 'What keeps me experimenting?',
-      visualType: 'sketch' as const,
-      placeholder:
-        '[TODO: Chinmoy to supply: what keeps me experimenting — e.g. the obsession with bringing imagined systems into tangible reality]',
-    },
-  ];
+  const slots = chapter.curiositySlots || [];
+  const isDev = process.env.NODE_ENV !== 'production';
 
-  // GSAP ScrollTrigger for pinned scrubbed narrative progression
   useEffect(() => {
     const triggerEl = sceneRef.current;
     const contentEl = pinContentRef.current;
@@ -72,10 +41,10 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
     const trigger = ScrollTrigger.create({
       trigger: triggerEl,
       start: 'top top',
-      end: '+=160%',
+      end: '+=180%',
       pin: contentEl,
       pinSpacing: true,
-      scrub: 0.6,
+      scrub: 0.5,
       onUpdate: (self) => {
         setScrollProgress(self.progress);
       },
@@ -86,337 +55,212 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
     };
   }, [isReduced]);
 
-  // Derived progress milestones
-  // 0.00 - 0.35: SubtitleReveal narration plays
-  // 0.30 - 0.55: Slot 1 (Gear) resolves & draws
-  // 0.50 - 0.75: Slot 2 (Circuit) resolves & draws
-  // 0.70 - 0.95: Slot 3 (Sketch) resolves & draws
-  // 0.85 - 1.00: BridgeToNext reveals
+  // Phase windows for the 3 narration moments and sketches
+  // Line 1 & Gear: 0.08 - 0.38
+  // Line 2 & Circuit: 0.38 - 0.68
+  // Line 3 & Sketch: 0.68 - 0.92
+  // Bridge line: 0.88 - 1.00
 
-  const activeNarrationIndex = isReduced
-    ? narrationLines.length - 1
-    : Math.min(
-        narrationLines.length - 1,
-        Math.floor((scrollProgress / 0.4) * narrationLines.length)
-      );
-
-  const getSlotProgress = (index: number) => {
+  const getPhaseProgress = (start: number, end: number) => {
     if (isReduced) return 1;
-    const starts = [0.25, 0.48, 0.7];
-    const ends = [0.48, 0.7, 0.92];
-    const s = starts[index];
-    const e = ends[index];
-    if (scrollProgress < s) return 0;
-    if (scrollProgress > e) return 1;
-    return (scrollProgress - s) / (e - s);
+    if (scrollProgress < start) return 0;
+    if (scrollProgress > end) return 1;
+    return (scrollProgress - start) / (end - start);
   };
+
+  const gearProgress = getPhaseProgress(0.08, 0.38);
+  const circuitProgress = getPhaseProgress(0.38, 0.68);
+  const sketchProgress = getPhaseProgress(0.68, 0.92);
+  const bridgeProgress = getPhaseProgress(0.85, 1.0);
 
   return (
     <article
+      ref={sceneRef}
       id={chapter.id}
       data-chapter="1"
       data-accent="gold"
-      aria-labelledby="chapter-01-heading"
-      className="relative w-full border-t border-theme-border transition-colors duration-300"
+      aria-label="Chapter 01: It Started With Curiosity"
+      className="relative w-full border-t border-theme-border/40 transition-colors duration-300"
     >
-      <div ref={sceneRef} className="relative w-full">
-        <div
-          ref={pinContentRef}
-          className="w-full min-h-screen py-16 flex flex-col justify-between bg-theme-bg/95 relative overflow-hidden"
-        >
-          {/* Subtle Golden Radial Wash */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_20%,var(--wash),transparent_70%)] opacity-80"
-          />
+      <div
+        ref={pinContentRef}
+        className="w-full min-h-[100svh] flex flex-col justify-between py-12 sm:py-16 px-6 sm:px-12 relative overflow-hidden"
+      >
+        {/* Top: Chapter Identity (Rule 2: One label only) */}
+        <header className="relative z-10 max-w-4xl mx-auto w-full flex items-baseline justify-between">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-xs uppercase tracking-widest text-chapter-accent font-medium">
+              CHAPTER 01
+            </span>
+            <span className="text-theme-muted/40 font-mono text-xs" aria-hidden="true">
+              ·
+            </span>
+            <span className="font-mono text-xs uppercase tracking-widest text-theme-muted">
+              {chapter.title}
+            </span>
+          </div>
 
-          {/* Chapter Metadata Header */}
-          <Container size="lg" className="relative z-10 w-full">
-            <div className="flex items-center justify-between border-b border-theme-border pb-4 flex-wrap gap-3">
-              <ChapterLabel chapter="01" timecode="00:06:00" arc={chapter.emotionalArc} />
+          <div className="flex items-center gap-3">
+            <DirectorsCommentary id="chapter-01" />
+          </div>
+        </header>
 
-              <div className="flex items-center gap-2">
-                <Tag variant="ember" size="sm">
-                  3 Open Inquiries
-                </Tag>
-                <Tag variant="gold" size="sm">
-                  INTIMATE & HUMAN
-                </Tag>
-              </div>
-            </div>
+        {/* Center: Full-bleed scrubbed narration + inline gold line art */}
+        <div className="relative z-10 max-w-3xl mx-auto w-full my-auto py-12">
+          {/* Accessible screen-reader text in natural reading order */}
+          <div className="sr-only">
+            <h2>{chapter.title}</h2>
+            <p>{narrationLines.join(' ')}</p>
+            <p>{chapter.bridgeToNext}</p>
+          </div>
 
-            <div className="mt-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-              <h2
-                id="chapter-01-heading"
-                className="text-fluid-h1 font-serif font-black tracking-tight text-theme-text"
-              >
-                {chapter.title}
-              </h2>
-              <span className="text-xs font-mono text-theme-muted uppercase tracking-wider">
-                Movement I · Observation to Creation
-              </span>
-            </div>
-          </Container>
-
-          {/* Main Stage: Subtitle Narration + Interactive 3-Slot Visual Progression */}
-          <Container size="lg" className="relative z-10 w-full my-auto py-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              {/* Left Column (5 cols): Scrubbed Subtitle Narration */}
-              <div className="lg:col-span-5 space-y-6">
-                <div className="text-xs font-mono uppercase tracking-widest text-chapter-accent font-semibold flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-chapter-accent animate-pulse" />
-                  Voiceover Narration
-                </div>
-
-                {/* Screen-reader order: clean cohesive text without live scroll spamming */}
-                <div className="sr-only">
-                  <p>{narrationLines.join(' ')}</p>
-                </div>
-
-                <div aria-hidden="true" className="space-y-4 font-serif italic">
-                  {narrationLines.map((line, idx) => {
-                    const isPassed = isReduced || idx <= activeNarrationIndex;
-                    const isCurrent = isReduced || idx === activeNarrationIndex;
-
-                    return (
-                      <p
-                        key={idx}
-                        className={cn(
-                          'text-fluid-narration sm:text-2xl transition-all duration-300 leading-snug',
-                          isCurrent
-                            ? 'text-theme-text font-medium opacity-100 translate-x-1'
-                            : isPassed
-                              ? 'text-theme-muted opacity-50'
-                              : 'text-theme-muted/30 opacity-20'
-                        )}
-                      >
-                        &ldquo;{line}&rdquo;
-                      </p>
-                    );
-                  })}
-                </div>
-
-                <p className="text-xs font-sans text-theme-muted leading-relaxed pt-2">
-                  This movement is not an inventory of credentials, but an intimate reflection on
-                  what turns an inquisitive observer into a deliberate builder.
-                </p>
-
-                {/* Progress bar indicator */}
-                <div className="w-full bg-theme-border rounded-full h-1 overflow-hidden">
-                  <div
-                    className="bg-chapter-accent h-full transition-all duration-150"
-                    style={{ width: `${Math.round(scrollProgress * 100)}%` }}
+          {/* Visual Presentation */}
+          <div aria-hidden="true" className="space-y-12 sm:space-y-16">
+            {/* Line 1: Understanding */}
+            <div className="relative">
+              {/* Subtle gold line sketch: gear drawing on paper */}
+              <div className="pointer-events-none absolute -left-12 -top-8 w-28 h-28 text-chapter-accent opacity-25 -z-10">
+                <svg
+                  viewBox="0 0 100 100"
+                  className="w-full h-full"
+                  style={{
+                    transform: `rotate(${gearProgress * 60}deg)`,
+                  }}
+                >
+                  <path
+                    d="M45,12 L55,12 L57,20 L66,24 L73,19 L80,26 L75,33 L79,42 L87,44 L87,54 L79,56 L75,65 L80,72 L73,79 L66,74 L57,78 L55,86 L45,86 L43,78 L34,74 L27,79 L20,72 L25,65 L21,56 L13,54 L13,44 L21,42 L25,33 L20,26 L27,19 L34,24 L43,20 Z"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeDasharray="320"
+                    strokeDashoffset={isReduced ? 0 : Math.max(0, 320 * (1 - gearProgress))}
+                    strokeLinecap="round"
                   />
-                </div>
-
-                {/* Director's Behind-The-Scenes Commentary */}
-                <DirectorsCommentary id="chapter-01" />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="12"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeDasharray="100"
+                    strokeDashoffset={isReduced ? 0 : Math.max(0, 100 * (1 - gearProgress))}
+                  />
+                </svg>
               </div>
 
-              {/* Right Column (7 cols): The 3 Curiosity Slots with Drawing SVG Diagrams */}
-              <div className="lg:col-span-7 space-y-4">
-                {slots.map((slot, index) => {
-                  const progress = getSlotProgress(index);
-                  const isVisible = isReduced || progress > 0.05;
-                  const dashoffset = isReduced ? 0 : Math.max(0, 320 * (1 - progress));
-
-                  return (
-                    <Card
-                      key={slot.id}
-                      className={cn(
-                        'p-5 transition-all duration-500 border rounded-2xl relative overflow-hidden',
-                        isVisible
-                          ? 'opacity-100 translate-y-0 border-theme-border bg-theme-surface/90 shadow-md'
-                          : 'opacity-25 translate-y-4 border-transparent bg-theme-surface/20'
-                      )}
-                    >
-                      <div className="flex items-start gap-4">
-                        {/* Dynamic Drawing SVG Diagram */}
-                        <div
-                          aria-hidden="true"
-                          className="w-14 h-14 shrink-0 rounded-xl bg-theme-surface-elevated border border-theme-border flex items-center justify-center text-chapter-accent"
-                        >
-                          {slot.visualType === 'gear' && (
-                            <svg
-                              viewBox="0 0 100 100"
-                              className="w-10 h-10 transition-transform duration-300"
-                              style={{
-                                transform: `rotate(${progress * 90}deg)`,
-                              }}
-                            >
-                              <path
-                                d="M45,12 L55,12 L57,20 L66,24 L73,19 L80,26 L75,33 L79,42 L87,44 L87,54 L79,56 L75,65 L80,72 L73,79 L66,74 L57,78 L55,86 L45,86 L43,78 L34,74 L27,79 L20,72 L25,65 L21,56 L13,54 L13,44 L21,42 L25,33 L20,26 L27,19 L34,24 L43,20 Z"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="3"
-                                strokeDasharray="320"
-                                strokeDashoffset={dashoffset}
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <circle
-                                cx="50"
-                                cy="50"
-                                r="12"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2.5"
-                                strokeDasharray="100"
-                                strokeDashoffset={dashoffset}
-                              />
-                              <circle
-                                cx="50"
-                                cy="50"
-                                r="4"
-                                fill="currentColor"
-                                opacity={progress}
-                              />
-                            </svg>
-                          )}
-
-                          {slot.visualType === 'circuit' && (
-                            <svg viewBox="0 0 100 100" className="w-10 h-10">
-                              <path
-                                d="M12,50 L38,50 L52,24 L76,24 L86,34 L86,66 L70,82 L38,82 L26,70"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="3"
-                                strokeDasharray="320"
-                                strokeDashoffset={dashoffset}
-                                strokeLinecap="round"
-                              />
-                              <path
-                                d="M52,24 L52,14 L68,14"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeDasharray="100"
-                                strokeDashoffset={dashoffset}
-                              />
-                              <circle
-                                cx="12"
-                                cy="50"
-                                r="3.5"
-                                fill="currentColor"
-                                opacity={progress}
-                              />
-                              <circle
-                                cx="86"
-                                cy="66"
-                                r="3.5"
-                                fill="currentColor"
-                                opacity={progress}
-                              />
-                              <circle
-                                cx="26"
-                                cy="70"
-                                r="3.5"
-                                fill="currentColor"
-                                opacity={progress}
-                              />
-                            </svg>
-                          )}
-
-                          {slot.visualType === 'sketch' && (
-                            <svg viewBox="0 0 100 100" className="w-10 h-10">
-                              <path
-                                d="M16,78 C30,22 70,22 84,78"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="3"
-                                strokeDasharray="320"
-                                strokeDashoffset={dashoffset}
-                                strokeLinecap="round"
-                              />
-                              <path
-                                d="M10,50 L90,50"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeDasharray="4 4"
-                                opacity={progress * 0.7}
-                              />
-                              <circle
-                                cx="50"
-                                cy="50"
-                                r="26"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeDasharray="200"
-                                strokeDashoffset={dashoffset}
-                              />
-                              <circle
-                                cx="50"
-                                cy="50"
-                                r="3"
-                                fill="currentColor"
-                                opacity={progress}
-                              />
-                            </svg>
-                          )}
-                        </div>
-
-                        {/* Slot Information */}
-                        <div className="space-y-1.5 flex-1">
-                          <div className="flex items-center justify-between text-[11px] font-mono">
-                            <span className="text-chapter-accent font-semibold tracking-wider uppercase">
-                              Slot 0{index + 1} · {slot.label}
-                            </span>
-                            <span className="text-theme-ember font-medium flex items-center gap-1">
-                              <HelpCircle className="w-3 h-3" />
-                              [TODO: Chinmoy to supply]
-                            </span>
-                          </div>
-
-                          <h3 className="font-serif font-bold text-base text-theme-text">
-                            {slot.question}
-                          </h3>
-
-                          <div className="p-2.5 rounded-lg bg-theme-surface-elevated/70 border border-theme-border/70 text-xs font-mono text-theme-muted leading-relaxed">
-                            {slot.placeholder}
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-                  );
-                })}
-              </div>
-            </div>
-          </Container>
-
-          {/* Narrative Bridge to Chapter 02 */}
-          <Container size="lg" className="relative z-10 w-full pt-4">
-            <div
-              className={cn(
-                'p-4 rounded-2xl bg-theme-surface border border-theme-border flex items-center justify-between flex-wrap gap-3 transition-all duration-500',
-                isReduced || scrollProgress > 0.8
-                  ? 'opacity-100 translate-y-0'
-                  : 'opacity-40 translate-y-2'
-              )}
-            >
-              <div className="flex items-start gap-3">
-                <Sparkles className="w-5 h-5 text-chapter-accent shrink-0 mt-0.5" />
-                <div>
-                  <div className="text-[11px] font-mono uppercase tracking-widest text-theme-muted">
-                    Narrative Bridge &rarr; Movement II
-                  </div>
-                  <p className="text-xs sm:text-sm font-serif italic text-theme-text mt-0.5">
-                    &ldquo;{chapter.bridgeToNext}&rdquo;
-                  </p>
-                </div>
-              </div>
-
-              <a
-                href="#chapter-02"
-                className="inline-flex items-center gap-1.5 text-xs font-mono text-chapter-accent hover:underline font-semibold"
+              <p
+                className={cn(
+                  'font-serif text-fluid-narration sm:text-3xl max-w-[28ch] leading-[1.35] transition-opacity duration-300',
+                  gearProgress > 0.15
+                    ? 'text-theme-text opacity-100'
+                    : 'text-theme-muted opacity-30'
+                )}
               >
-                <span>Continue to Chapter 02</span>
-                <ArrowDown className="w-3.5 h-3.5" />
-              </a>
+                &ldquo;{narrationLines[0]}&rdquo;
+              </p>
             </div>
-          </Container>
+
+            {/* Line 2: Not enough */}
+            <div className="relative sm:pl-8">
+              {/* Gold circuit trace sketch */}
+              <div className="pointer-events-none absolute right-0 -top-6 w-32 h-24 text-chapter-accent opacity-25 -z-10">
+                <svg viewBox="0 0 120 80" className="w-full h-full">
+                  <path
+                    d="M10,40 L40,40 L55,15 L85,15 L95,35 L95,65 L80,75 L45,75"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeDasharray="260"
+                    strokeDashoffset={isReduced ? 0 : Math.max(0, 260 * (1 - circuitProgress))}
+                    strokeLinecap="round"
+                  />
+                  <circle cx="10" cy="40" r="3" fill="currentColor" opacity={circuitProgress} />
+                  <circle cx="95" cy="65" r="3" fill="currentColor" opacity={circuitProgress} />
+                </svg>
+              </div>
+
+              <p
+                className={cn(
+                  'font-serif text-fluid-narration sm:text-3xl max-w-[28ch] leading-[1.35] transition-opacity duration-300',
+                  circuitProgress > 0.15
+                    ? 'text-theme-text opacity-100'
+                    : 'text-theme-muted opacity-25'
+                )}
+              >
+                &ldquo;{narrationLines[1]}&rdquo;
+              </p>
+            </div>
+
+            {/* Line 3: Create things myself */}
+            <div className="relative sm:pl-16">
+              {/* Compass / sketch arc */}
+              <div className="pointer-events-none absolute -left-6 -top-4 w-28 h-28 text-chapter-accent opacity-25 -z-10">
+                <svg viewBox="0 0 100 100" className="w-full h-full">
+                  <path
+                    d="M20,80 C30,25 70,25 80,80"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeDasharray="200"
+                    strokeDashoffset={isReduced ? 0 : Math.max(0, 200 * (1 - sketchProgress))}
+                    strokeLinecap="round"
+                  />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeDasharray="140"
+                    strokeDashoffset={isReduced ? 0 : Math.max(0, 140 * (1 - sketchProgress))}
+                  />
+                </svg>
+              </div>
+
+              <p
+                className={cn(
+                  'font-serif text-fluid-narration sm:text-3xl max-w-[28ch] leading-[1.35] transition-opacity duration-300',
+                  sketchProgress > 0.15
+                    ? 'text-theme-text opacity-100 font-medium'
+                    : 'text-theme-muted opacity-25'
+                )}
+              >
+                &ldquo;{narrationLines[2]}&rdquo;
+              </p>
+            </div>
+          </div>
+
+          {/* Dev-only quiet chips for confirmed personal claims (Rule 4) */}
+          {isDev && slots.length > 0 && (
+            <aside
+              aria-label="Development status"
+              className="mt-12 flex flex-wrap gap-2 text-[10px] font-mono text-theme-muted/60"
+            >
+              {slots.map((s) => (
+                <span
+                  key={s.id}
+                  className="px-2 py-0.5 rounded border border-theme-border/50 bg-theme-surface/50"
+                >
+                  [TODO: {s.id}]
+                </span>
+              ))}
+            </aside>
+          )}
         </div>
+
+        {/* Bottom: Narrative Bridge (Rule 5: Quiet first-person line, no box, no label) */}
+        <footer className="relative z-10 max-w-3xl mx-auto w-full pt-4">
+          <p
+            className={cn(
+              'text-sm sm:text-base font-serif italic text-theme-muted text-center sm:text-left transition-opacity duration-300',
+              bridgeProgress > 0.2 ? 'opacity-90' : 'opacity-40'
+            )}
+          >
+            &ldquo;{chapter.bridgeToNext}&rdquo;
+          </p>
+        </footer>
       </div>
     </article>
   );
