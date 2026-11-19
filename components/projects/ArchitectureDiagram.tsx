@@ -3,8 +3,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { ArchitectureNode } from '@/content/projects';
 import { useMotion } from '@/hooks/useMotion';
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
-import gsap from 'gsap';
+import { CheckCircle2, Cpu } from 'lucide-react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { cn } from '@/lib/utils';
 
@@ -20,6 +19,9 @@ export function ArchitectureDiagram({ nodes, projectTitle, className }: Architec
   const [progress, setProgress] = useState(0);
 
   const isReduced = prefersReducedMotion || !motionEnabled;
+  const showDebugLabel =
+    process.env.NODE_ENV !== 'production' &&
+    process.env.NEXT_PUBLIC_DEBUG_CONTENT === '1';
 
   useEffect(() => {
     const el = containerRef.current;
@@ -47,11 +49,9 @@ export function ArchitectureDiagram({ nodes, projectTitle, className }: Architec
 
   const p = isReduced ? 1 : progress;
 
-  // Nodes render in order 0 -> 4
-  // Phase 1 (p: 0 -> 0.4): Nodes illuminate
-  // Phase 2 (p: 0.4 -> 1.0): Interconnecting bus paths draw from node to node
-
-  const connectionProgress = Math.max(0, Math.min(1, (p - 0.3) / 0.7));
+  // Phase 1 (p: 0 -> 0.35): Nodes illuminate sequentially
+  // Phase 2 (p: 0.35 -> 1.0): Interconnecting bus draws from node to node
+  const connectionProgress = Math.max(0, Math.min(1, (p - 0.35) / 0.65));
 
   return (
     <div
@@ -61,30 +61,32 @@ export function ArchitectureDiagram({ nodes, projectTitle, className }: Architec
         className
       )}
     >
-      {/* Top Banner: Explicitly Labelled Placeholder */}
+      {/* Top Banner */}
       <div className="flex items-center justify-between flex-wrap gap-3 border-b border-theme-border pb-4">
         <div>
           <span className="text-[10px] font-mono uppercase tracking-widest text-theme-azure font-semibold block">
             System Topology Architecture
           </span>
-          <h3 className="font-serif font-bold text-lg text-theme-text mt-0.5">
-            {projectTitle} · Data & Execution Flow
+          <h3 className="font-serif font-normal text-lg sm:text-xl text-theme-text mt-0.5">
+            {projectTitle} · Data &amp; Execution Topology
           </h3>
         </div>
 
-        {/* Mandatory Label: [Diagram placeholder] */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-theme-ember/10 border border-theme-ember/30 text-theme-ember text-xs font-mono font-semibold">
-          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-          <span>[Diagram placeholder]</span>
-        </div>
+        {/* Dev-only placeholder label: only visible when NEXT_PUBLIC_DEBUG_CONTENT=1 */}
+        {showDebugLabel && (
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-theme-surface-elevated border border-theme-border text-theme-muted text-[11px] font-mono">
+            <Cpu className="w-3 h-3 text-theme-azure shrink-0" />
+            <span>TODO: Architecture topology diagram</span>
+          </div>
+        )}
       </div>
 
-      {/* Interactive Self-Drawing SVG Architectural Canvas */}
-      <div className="relative w-full py-4 flex flex-col items-center">
-        {/* Horizontal Node Flow for Desktop, Staggered Flow for Mobile */}
+      {/* Interactive Self-Drawing Architectural Canvas */}
+      <div className="relative w-full py-2 flex flex-col items-center">
+        {/* Responsive Node Cards */}
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
           {nodes.map((node, index) => {
-            const nodeThreshold = index * 0.12;
+            const nodeThreshold = index * 0.1;
             const isNodeActive = isReduced || p >= nodeThreshold;
 
             return (
@@ -107,15 +109,17 @@ export function ArchitectureDiagram({ nodes, projectTitle, className }: Architec
                 </div>
 
                 <div className="space-y-1">
-                  <div className="font-serif font-bold text-sm text-theme-text">{node.label}</div>
+                  <div className="font-serif font-normal text-sm sm:text-base text-theme-text">
+                    {node.label}
+                  </div>
                   <div className="text-[11px] font-mono text-theme-muted">{node.sublabel}</div>
                 </div>
 
                 <div className="mt-3 pt-2 border-t border-theme-border/60 flex items-center justify-between text-[10px] font-mono text-theme-muted">
-                  <span>State: Synchronized</span>
+                  <span>State: Active</span>
                   <CheckCircle2
                     className={cn(
-                      'w-3 h-3 transition-colors',
+                      'w-3.5 h-3.5 transition-colors duration-300',
                       isNodeActive ? 'text-theme-azure' : 'text-theme-border'
                     )}
                   />
@@ -125,49 +129,47 @@ export function ArchitectureDiagram({ nodes, projectTitle, className }: Architec
           })}
         </div>
 
-        {/* Interconnection Vector Line (Desktop Connecting Pipe) */}
+        {/* Interconnection Vector Line (Desktop Connecting Bus) */}
         <div aria-hidden="true" className="w-full my-4 hidden lg:block relative h-6">
           <svg viewBox="0 0 800 24" className="w-full h-full overflow-visible">
-            {/* Background connection route */}
+            {/* Background dashed route */}
             <line
-              x1="50"
+              x1="60"
               y1="12"
-              x2="750"
+              x2="740"
               y2="12"
               stroke="var(--color-border)"
-              strokeWidth="2"
+              strokeWidth="1.5"
               strokeDasharray="4 4"
             />
-            {/* Animated drawing connection */}
+            {/* Animated drawing connection line */}
             <line
-              x1="50"
+              x1="60"
               y1="12"
-              x2="750"
+              x2="740"
               y2="12"
               stroke="var(--color-azure)"
-              strokeWidth="2.5"
-              strokeDasharray="700"
-              strokeDashoffset={isReduced ? 0 : Math.max(0, 700 * (1 - connectionProgress))}
+              strokeWidth="2"
+              strokeDasharray="680"
+              strokeDashoffset={isReduced ? 0 : Math.max(0, 680 * (1 - connectionProgress))}
               strokeLinecap="round"
             />
-            {/* Pulse packets */}
-            {connectionProgress > 0.1 && (
+            {/* Pulse packet travelling along connection */}
+            {connectionProgress > 0.05 && connectionProgress < 0.98 && (
               <circle
-                cx={50 + 700 * connectionProgress}
+                cx={60 + 680 * connectionProgress}
                 cy="12"
-                r="4"
+                r="3.5"
                 fill="var(--color-azure)"
-                className="animate-ping"
               />
             )}
           </svg>
         </div>
 
-        {/* Narrative Flow Description */}
+        {/* Descriptive Architecture Summary */}
         <p className="text-xs text-theme-muted text-center max-w-xl mx-auto pt-2 leading-relaxed">
-          The diagram illustrates the linear and bidirectional flow from the client ingress tier
-          through the verification and routing gateway, executing state transitions on the
-          underlying store.
+          The topology demonstrates client ingress through the service gateway, executing
+          deterministic state synchronization against the verified data store.
         </p>
       </div>
     </div>
