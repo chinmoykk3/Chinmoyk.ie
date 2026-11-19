@@ -46,31 +46,31 @@ export class Ch02FourOrbsScene implements Scene {
     const orbs = [
       {
         name: 'azure',
-        rgb: accentColours.azureRgb,
+        rgb: theme === 'dark' ? accentColours.azureRgb : accentColours.azureTextSafeRgb,
         x: cx - spreadX + f1,
         y: cy - spreadY + f2,
       },
       {
         name: 'iris',
-        rgb: accentColours.irisRgb,
+        rgb: theme === 'dark' ? accentColours.irisRgb : accentColours.irisTextSafeRgb,
         x: cx + spreadX + f2,
         y: cy - spreadY + f3,
       },
       {
         name: 'rose',
-        rgb: accentColours.roseRgb,
+        rgb: theme === 'dark' ? accentColours.roseRgb : accentColours.roseTextSafeRgb,
         x: cx - spreadX + f3,
         y: cy + spreadY + f4,
       },
       {
         name: 'ember',
-        rgb: accentColours.emberRgb,
+        rgb: theme === 'dark' ? accentColours.emberRgb : accentColours.emberTextSafeRgb,
         x: cx + spreadX + f4,
         y: cy + spreadY + f1,
       },
     ];
 
-    const maxAlpha = theme === 'dark' ? 0.16 : 0.11;
+    const maxAlpha = theme === 'dark' ? 0.16 : 0.12;
 
     // Draw four discipline orbs
     for (const orb of orbs) {
@@ -91,10 +91,11 @@ export class Ch02FourOrbsScene implements Scene {
       const nucleusRadius = baseRadius * (0.8 + nucleusRatio * 0.4);
       const nucleusAlpha = nucleusRatio * (theme === 'dark' ? 0.18 : 0.12);
 
+      const goldRgb = theme === 'dark' ? accentColours.goldRgb : accentColours.goldTextSafeRgb;
       const nucleusGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, nucleusRadius);
-      nucleusGrad.addColorStop(0, rgba(accentColours.goldRgb, nucleusAlpha));
-      nucleusGrad.addColorStop(0.5, rgba(accentColours.goldRgb, nucleusAlpha * 0.35));
-      nucleusGrad.addColorStop(1, rgba(accentColours.goldRgb, 0));
+      nucleusGrad.addColorStop(0, rgba(goldRgb, nucleusAlpha));
+      nucleusGrad.addColorStop(0.5, rgba(goldRgb, nucleusAlpha * 0.35));
+      nucleusGrad.addColorStop(1, rgba(goldRgb, 0));
 
       ctx.fillStyle = nucleusGrad;
       ctx.beginPath();
@@ -126,7 +127,7 @@ export class Ch02FourOrbsScene implements Scene {
     grad.addColorStop(0, rgba(accentColours.goldRgb, alpha));
     grad.addColorStop(0.4, rgba(accentColours.irisRgb, alpha * 0.6));
     grad.addColorStop(0.8, rgba(accentColours.azureRgb, alpha * 0.3));
-    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    grad.addColorStop(1, theme === 'dark' ? 'rgba(0, 0, 0, 0)' : 'rgba(255, 248, 236, 0)');
 
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, width, height);

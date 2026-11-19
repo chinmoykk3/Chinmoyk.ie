@@ -3,9 +3,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Chapter } from '@/content/chapters';
 import { useMotion } from '@/hooks/useMotion';
-import { DirectorsCommentary } from '@/components/polish/DirectorsCommentary';
+import { ChapterTitleCard } from '@/components/motion/ChapterTitleCard';
 import { Content } from '@/components/content/Content';
-import { getContentText } from '@/content/schema';
+import { isContentRenderable } from '@/content/schema';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { cn } from '@/lib/utils';
 
@@ -32,6 +32,7 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
     process.env.NODE_ENV !== 'production' &&
     process.env.NEXT_PUBLIC_DEBUG_CONTENT === '1';
 
+  // Pinned scroll trigger for the narrative scrub
   useEffect(() => {
     const triggerEl = sceneRef.current;
     const contentEl = pinContentRef.current;
@@ -45,10 +46,10 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
     const trigger = ScrollTrigger.create({
       trigger: triggerEl,
       start: 'top top',
-      end: '+=100%',
+      end: '+=120%',
       pin: contentEl,
       pinSpacing: true,
-      scrub: 0.4,
+      scrub: 0.5,
       onUpdate: (self) => {
         setScrollProgress(self.progress);
       },
@@ -59,17 +60,18 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
     };
   }, [isReduced]);
 
-  const getPhaseProgress = (start: number, end: number) => {
+  // Phase progression for scrubbed reveals
+  const getPhase = (start: number, end: number) => {
     if (isReduced) return 1;
     if (scrollProgress < start) return 0;
     if (scrollProgress > end) return 1;
     return (scrollProgress - start) / (end - start);
   };
 
-  const gearProgress = getPhaseProgress(0.08, 0.38);
-  const circuitProgress = getPhaseProgress(0.38, 0.68);
-  const sketchProgress = getPhaseProgress(0.68, 0.92);
-  const bridgeProgress = getPhaseProgress(0.85, 1.0);
+  const line1Progress = getPhase(0.05, 0.35);
+  const line2Progress = getPhase(0.35, 0.65);
+  const line3Progress = getPhase(0.65, 0.90);
+  const bridgeProgress = getPhase(0.85, 1.0);
 
   return (
     <article
@@ -84,27 +86,19 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
         ref={pinContentRef}
         className="w-full min-h-[100svh] flex flex-col justify-between py-12 sm:py-16 px-6 sm:px-12 relative overflow-hidden"
       >
-        {/* Top: Chapter Identity (Rule 2: One label only) */}
-        <header className="relative z-10 max-w-4xl mx-auto w-full flex items-baseline justify-between">
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-xs uppercase tracking-widest text-chapter-accent font-medium">
-              CHAPTER 01
-            </span>
-            <span className="text-theme-muted/40 font-mono text-xs" aria-hidden="true">
-              ·
-            </span>
-            <span className="font-mono text-xs uppercase tracking-widest text-theme-muted">
-              <Content value={chapter.title} />
-            </span>
-          </div>
+        {/* Top: ChapterTitleCard (Rule 2: One label only, gold accent) */}
+        <div className="relative z-10 max-w-4xl mx-auto w-full">
+          <ChapterTitleCard
+            number={1}
+            title={chapter.title}
+            subtitle={chapter.subtitle}
+            arc={chapter.emotionalArc}
+            accentKey="gold"
+          />
+        </div>
 
-          <div className="flex items-center gap-3">
-            <DirectorsCommentary id="chapter-01" />
-          </div>
-        </header>
-
-        {/* Center: Full-bleed scrubbed narration + inline gold line art */}
-        <div className="relative z-10 max-w-3xl mx-auto w-full my-auto py-12">
+        {/* Center: Pinned scrubbed narration + gold thinking-on-paper SVG sketches (≤ 35% opacity) */}
+        <div className="relative z-10 max-w-3xl mx-auto w-full my-auto py-8">
           {/* Accessible screen-reader text */}
           <div className="sr-only">
             <h2><Content value={chapter.title} /></h2>
@@ -112,25 +106,26 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
             <p><Content value={chapter.bridge} /></p>
           </div>
 
-          {/* Visual Presentation */}
+          {/* Visual line-by-line scrub with inline gold sketches */}
           <div aria-hidden="true" className="space-y-12 sm:space-y-16">
-            {/* Line 1: Understanding */}
+            {/* Line 1: Understanding & Gear sketch */}
             <div className="relative">
-              <div className="pointer-events-none absolute -left-12 -top-8 w-28 h-28 text-chapter-accent opacity-25 -z-10">
+              {/* Gold SVG Gear sketch (≤ 35% opacity behind text) */}
+              <div className="pointer-events-none absolute -left-8 -top-8 w-28 h-28 text-theme-gold opacity-25 -z-10">
                 <svg
                   viewBox="0 0 100 100"
                   className="w-full h-full"
                   style={{
-                    transform: `rotate(${gearProgress * 60}deg)`,
+                    transform: `rotate(${line1Progress * 45}deg)`,
                   }}
                 >
                   <path
                     d="M45,12 L55,12 L57,20 L66,24 L73,19 L80,26 L75,33 L79,42 L87,44 L87,54 L79,56 L75,65 L80,72 L73,79 L66,74 L57,78 L55,86 L45,86 L43,78 L34,74 L27,79 L20,72 L25,65 L21,56 L13,54 L13,44 L21,42 L25,33 L20,26 L27,19 L34,24 L43,20 Z"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="1.75"
                     strokeDasharray="320"
-                    strokeDashoffset={isReduced ? 0 : Math.max(0, 320 * (1 - gearProgress))}
+                    strokeDashoffset={isReduced ? 0 : Math.max(0, 320 * (1 - line1Progress))}
                     strokeLinecap="round"
                   />
                   <circle
@@ -139,87 +134,88 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
                     r="12"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="1.75"
                     strokeDasharray="100"
-                    strokeDashoffset={isReduced ? 0 : Math.max(0, 100 * (1 - gearProgress))}
+                    strokeDashoffset={isReduced ? 0 : Math.max(0, 100 * (1 - line1Progress))}
                   />
                 </svg>
               </div>
 
               <p
                 className={cn(
-                  'font-serif text-fluid-narration sm:text-3xl max-w-[28ch] leading-[1.35] transition-all duration-300',
-                  gearProgress > 0.05
+                  'font-serif text-fluid-narration sm:text-3xl max-w-[32ch] leading-[1.38] transition-all duration-300',
+                  line1Progress > 0.05
                     ? 'text-theme-text opacity-100'
-                    : 'text-theme-text/85 opacity-90'
+                    : 'text-theme-muted opacity-40'
                 )}
               >
                 &ldquo;{narrationLines[0]}&rdquo;
               </p>
             </div>
 
-            {/* Line 2: Not enough */}
+            {/* Line 2: Understanding wasn't enough & Circuit trace sketch */}
             <div className="relative sm:pl-8">
-              <div className="pointer-events-none absolute right-0 -top-6 w-32 h-24 text-chapter-accent opacity-25 -z-10">
+              {/* Gold SVG Circuit trace sketch (≤ 35% opacity behind text) */}
+              <div className="pointer-events-none absolute right-0 -top-6 w-36 h-24 text-theme-gold opacity-25 -z-10">
                 <svg viewBox="0 0 120 80" className="w-full h-full">
                   <path
                     d="M10,40 L40,40 L55,15 L85,15 L95,35 L95,65 L80,75 L45,75"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="1.75"
                     strokeDasharray="260"
-                    strokeDashoffset={isReduced ? 0 : Math.max(0, 260 * (1 - circuitProgress))}
+                    strokeDashoffset={isReduced ? 0 : Math.max(0, 260 * (1 - line2Progress))}
                     strokeLinecap="round"
                   />
-                  <circle cx="10" cy="40" r="3" fill="currentColor" opacity={circuitProgress} />
-                  <circle cx="95" cy="65" r="3" fill="currentColor" opacity={circuitProgress} />
+                  <circle cx="10" cy="40" r="3" fill="currentColor" opacity={line2Progress} />
+                  <circle cx="95" cy="65" r="3" fill="currentColor" opacity={line2Progress} />
                 </svg>
               </div>
 
               <p
                 className={cn(
-                  'font-serif text-fluid-narration sm:text-3xl max-w-[28ch] leading-[1.35] transition-all duration-300',
-                  circuitProgress > 0.15
+                  'font-serif text-fluid-narration sm:text-3xl max-w-[32ch] leading-[1.38] transition-all duration-300',
+                  line2Progress > 0.15
                     ? 'text-theme-text opacity-100'
-                    : 'text-theme-muted opacity-70'
+                    : 'text-theme-muted opacity-40'
                 )}
               >
                 &ldquo;{narrationLines[1]}&rdquo;
               </p>
             </div>
 
-            {/* Line 3: Create things myself */}
+            {/* Line 3: Create things myself & Pencil sketch lines */}
             <div className="relative sm:pl-16">
-              <div className="pointer-events-none absolute -left-6 -top-4 w-28 h-28 text-chapter-accent opacity-25 -z-10">
+              {/* Gold SVG Pencil lines sketch (≤ 35% opacity behind text) */}
+              <div className="pointer-events-none absolute -left-6 -top-4 w-32 h-28 text-theme-gold opacity-25 -z-10">
                 <svg viewBox="0 0 100 100" className="w-full h-full">
                   <path
-                    d="M20,80 C30,25 70,25 80,80"
+                    d="M15,80 C25,25 65,25 85,75"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="1.75"
                     strokeDasharray="200"
-                    strokeDashoffset={isReduced ? 0 : Math.max(0, 200 * (1 - sketchProgress))}
+                    strokeDashoffset={isReduced ? 0 : Math.max(0, 200 * (1 - line3Progress))}
                     strokeLinecap="round"
                   />
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="20"
+                  <path
+                    d="M30,85 C45,45 75,45 90,85"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeDasharray="140"
-                    strokeDashoffset={isReduced ? 0 : Math.max(0, 140 * (1 - sketchProgress))}
+                    strokeWidth="1.25"
+                    strokeDasharray="160"
+                    strokeDashoffset={isReduced ? 0 : Math.max(0, 160 * (1 - line3Progress))}
+                    strokeLinecap="round"
                   />
                 </svg>
               </div>
 
               <p
                 className={cn(
-                  'font-serif text-fluid-narration sm:text-3xl max-w-[28ch] leading-[1.35] transition-all duration-300',
-                  sketchProgress > 0.15
+                  'font-serif text-fluid-narration sm:text-3xl max-w-[32ch] leading-[1.38] transition-all duration-300',
+                  line3Progress > 0.15
                     ? 'text-theme-text opacity-100 font-medium'
-                    : 'text-theme-muted opacity-60'
+                    : 'text-theme-muted opacity-40'
                 )}
               >
                 &ldquo;{narrationLines[2]}&rdquo;
@@ -227,30 +223,36 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
             </div>
           </div>
 
-          {/* Dev-only quiet chips for confirmed personal claims (Rule 4) */}
-          {showDebugChips && slots.length > 0 && (
-            <aside
-              aria-label="Development status"
-              className="mt-12 flex flex-wrap gap-2 text-[10px] font-mono text-theme-muted/60"
-            >
-              {slots.map((s) => (
-                <span
-                  key={s.id}
-                  className="px-2 py-0.5 rounded border border-theme-border/50 bg-theme-surface/50"
-                >
-                  TODO: {s.id}
-                </span>
-              ))}
-            </aside>
-          )}
+          {/* Three optional personal slots from /content: skipped silently if empty or placeholder */}
+          <div className="mt-12 space-y-3">
+            {slots.map((slot) => {
+              const hasConfirmedContent = isContentRenderable(slot.question);
+              if (!hasConfirmedContent && !showDebugChips) return null;
+
+              return (
+                <div key={slot.id} className="text-xs font-mono text-theme-muted flex items-center gap-2">
+                  {hasConfirmedContent && (
+                    <span className="text-theme-text font-serif italic text-sm">
+                      <Content value={slot.question} />
+                    </span>
+                  )}
+                  {showDebugChips && !hasConfirmedContent && (
+                    <span className="px-2 py-0.5 rounded border border-theme-border/50 bg-theme-surface/50 text-[10px]">
+                      TODO: {slot.id}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Bottom: Narrative Bridge (Rule 5: Quiet first-person line) */}
+        {/* Bottom: Unlabeled quiet first-person narrative bridge line (Rule 5) */}
         <footer className="relative z-10 max-w-3xl mx-auto w-full pt-4">
           <p
             className={cn(
               'text-sm sm:text-base font-serif italic text-theme-muted text-center sm:text-left transition-opacity duration-300',
-              bridgeProgress > 0.2 ? 'opacity-90' : 'opacity-40'
+              bridgeProgress > 0.2 || isReduced ? 'opacity-90' : 'opacity-30'
             )}
           >
             &ldquo;<Content value={chapter.bridge} />&rdquo;

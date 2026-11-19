@@ -3,8 +3,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Chapter } from '@/content/chapters';
 import { useMotion } from '@/hooks/useMotion';
-import { DirectorsCommentary } from '@/components/polish/DirectorsCommentary';
+import { ChapterTitleCard } from '@/components/motion/ChapterTitleCard';
 import { Content } from '@/components/content/Content';
+import { isContentRenderable } from '@/content/schema';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { cn } from '@/lib/utils';
 
@@ -19,7 +20,6 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
   const [convergenceProgress, setConvergenceProgress] = useState(0);
 
   const isReduced = prefersReducedMotion || !motionEnabled;
-
   const narration = chapter.narration[0];
 
   const identities = [
@@ -28,7 +28,7 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
       role: 'The Builder',
       accentVar: 'var(--color-azure)',
       textColor: 'text-theme-azure',
-      accentKey: 'azure' as const,
+      quadrant: 'top-left',
       description: 'Architecting resilient full-stack systems and production foundations.',
       feedsOthers:
         'Lays the robust infrastructure and scalable mechanics that turn abstract reasoning into reliable products.',
@@ -38,7 +38,7 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
       role: 'The Engineer of Intelligence',
       accentVar: 'var(--color-iris)',
       textColor: 'text-theme-iris',
-      accentKey: 'iris' as const,
+      quadrant: 'top-right',
       description:
         'Designing autonomous agent workflows, machine learning models, and cognitive systems.',
       feedsOthers:
@@ -49,18 +49,18 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
       role: 'The Visual Thinker',
       accentVar: 'var(--color-rose)',
       textColor: 'text-theme-rose',
-      accentKey: 'rose' as const,
+      quadrant: 'bottom-left',
       description:
         'Crafting spatial interfaces, fluid motion choreography, and tactile typography.',
       feedsOthers:
-        'Gives intelligent systems a human, emotional voice, turning invisible logic into intuitive clarity.',
+        'Gives intelligent systems a human voice, turning invisible logic into intuitive clarity.',
     },
     {
       id: 'the-explorer',
       role: 'The Explorer',
       accentVar: 'var(--color-ember)',
       textColor: 'text-theme-ember',
-      accentKey: 'ember' as const,
+      quadrant: 'bottom-right',
       description:
         'Investigating decentralized topologies, civic technology, and community resilience.',
       feedsOthers:
@@ -81,7 +81,7 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
     const trigger = ScrollTrigger.create({
       trigger: triggerEl,
       start: 'top top',
-      end: '+=120%',
+      end: '+=130%',
       pin: contentEl,
       pinSpacing: true,
       scrub: 0.5,
@@ -97,6 +97,10 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
 
   const p = isReduced ? 1 : convergenceProgress;
 
+  // The 4 identities appear sequentially in the opening half, then converge inward
+  // Convergence factor: 0 (spread out) to 1 (merged into unified nucleus)
+  const convergeFactor = Math.max(0, Math.min(1, (p - 0.35) / 0.65));
+
   return (
     <article
       ref={sceneRef}
@@ -110,113 +114,142 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
         ref={pinContentRef}
         className="w-full min-h-[100svh] flex flex-col justify-between py-12 sm:py-16 px-6 sm:px-12 relative overflow-hidden"
       >
-        {/* Top: Chapter Identity (Rule 2: One label only) */}
-        <header className="relative z-10 max-w-5xl mx-auto w-full flex items-baseline justify-between">
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-xs uppercase tracking-widest text-chapter-accent font-medium">
-              CHAPTER 02
-            </span>
-            <span className="text-theme-muted/40 font-mono text-xs" aria-hidden="true">
-              ·
-            </span>
-            <span className="font-mono text-xs uppercase tracking-widest text-theme-muted">
-              <Content value={chapter.title} />
-            </span>
-          </div>
+        {/* Top: ChapterTitleCard (Rule 2: One label only, "all" accent convergence) */}
+        <div className="relative z-10 max-w-5xl mx-auto w-full">
+          <ChapterTitleCard
+            number={2}
+            title={chapter.title}
+            subtitle={chapter.subtitle}
+            arc={chapter.emotionalArc}
+            accentKey="all"
+          />
+        </div>
 
-          <div className="flex items-center gap-3">
-            <DirectorsCommentary id="chapter-02" />
-          </div>
-        </header>
-
-        {/* Center: Narration + SVG Convergence Visual + Identity Details */}
+        {/* Center: The Convergence Story Beat (NOT skill cards, NOT a list) */}
         <div className="relative z-10 max-w-5xl mx-auto w-full my-auto py-8">
           <div className="sr-only">
             <h2><Content value={chapter.title} /></h2>
             <p><Content value={narration} /></p>
+            {identities.map((item) => (
+              <div key={item.id}>
+                <h3>{item.role}</h3>
+                <p>{item.description}</p>
+                <p>{item.feedsOthers}</p>
+              </div>
+            ))}
             <p><Content value={chapter.bridge} /></p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            {/* Left: Narration and Convergence Visual */}
-            <div className="lg:col-span-6 space-y-6">
-              <p className="font-serif text-fluid-narration sm:text-3xl text-theme-text max-w-[28ch] leading-[1.35]">
-                &ldquo;<Content value={narration} />&rdquo;
-              </p>
+          {/* Central Narration Statement */}
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
+            <p
+              className={cn(
+                'font-serif text-fluid-narration sm:text-3xl text-theme-text leading-[1.38] transition-all duration-700',
+                p > 0.4 || isReduced ? 'opacity-100 scale-100' : 'opacity-60 scale-[0.98]'
+              )}
+            >
+              &ldquo;<Content value={narration} />&rdquo;
+            </p>
+          </div>
 
-              {/* 4 Glowing Forms Convergence Stage */}
-              <div
-                aria-hidden="true"
-                className="relative w-full aspect-square max-w-[340px] mx-auto border border-theme-border/50 rounded-full flex items-center justify-center p-6 bg-theme-surface/40 backdrop-blur-xs"
-              >
-                {/* Center Core Gold Thread Node */}
-                <div
-                  className="w-4 h-4 rounded-full bg-theme-gold transition-all duration-300"
-                  style={{
-                    boxShadow: `0 0 ${16 + p * 32}px var(--color-gold)`,
-                    transform: `scale(${1 + p * 0.4})`,
-                  }}
-                />
+          {/* Spatial Convergence Stage: 4 Glowing Forms converging into one central gold nucleus */}
+          <div
+            aria-hidden="true"
+            className="relative w-full max-w-3xl mx-auto h-[320px] sm:h-[400px] flex items-center justify-center select-none"
+          >
+            {/* Continuous Gold Thread Line passing vertically through the epicenter */}
+            <div
+              className={cn(
+                'absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[2px] transition-opacity duration-700',
+                p > 0.2 || isReduced ? 'opacity-40' : 'opacity-10'
+              )}
+              style={{
+                background:
+                  'linear-gradient(to bottom, transparent, var(--color-thread), transparent)',
+              }}
+            />
 
-                {/* 4 Satellites converging inward */}
-                {identities.map((item, idx) => {
-                  const angle = (idx * Math.PI) / 2 - Math.PI / 4;
-                  const maxRadius = 120;
-                  const currentRadius = maxRadius * (1 - p * 0.72);
-                  const x = Math.cos(angle) * currentRadius;
-                  const y = Math.sin(angle) * currentRadius;
-
-                  return (
-                    <div
-                      key={item.id}
-                      className="absolute w-3.5 h-3.5 rounded-full transition-transform duration-100 ease-out flex items-center justify-center"
-                      style={{
-                        transform: `translate(${x}px, ${y}px)`,
-                        backgroundColor: item.accentVar,
-                        boxShadow: `0 0 14px ${item.accentVar}`,
-                      }}
-                    />
-                  );
-                })}
-              </div>
+            {/* Central Converged Nucleus: emerges as the 4 identities merge */}
+            <div
+              className="absolute z-20 w-8 h-8 rounded-full transition-all duration-500 ease-out flex items-center justify-center"
+              style={{
+                backgroundColor: 'var(--color-thread)',
+                boxShadow: `0 0 ${20 + convergeFactor * 45}px var(--color-gold)`,
+                transform: `scale(${0.5 + convergeFactor * 0.9})`,
+                opacity: 0.3 + convergeFactor * 0.7,
+              }}
+            >
+              <div className="w-2.5 h-2.5 rounded-full bg-theme-bg" />
             </div>
 
-            {/* Right: Identities List */}
-            <div className="lg:col-span-6 space-y-4">
-              {identities.map((item, idx) => {
-                const isActive = p > idx * 0.22;
-                return (
+            {/* Four Glowing Forms appearing in 4 quadrants and converging */}
+            {identities.map((item, idx) => {
+              // Quad layout angles: 0: top-left (-135deg), 1: top-right (-45deg), 2: bottom-left (135deg), 3: bottom-right (45deg)
+              const angles = [-2.356, -0.785, 2.356, 0.785];
+              const angle = angles[idx];
+
+              // Maximum spread distance from center
+              const maxDistX = 220;
+              const maxDistY = 130;
+
+              // Distance shrinks as convergeFactor moves to 1
+              const currentX = Math.cos(angle) * maxDistX * (1 - convergeFactor * 0.85);
+              const currentY = Math.sin(angle) * maxDistY * (1 - convergeFactor * 0.85);
+
+              // Staggered reveal in the first phase
+              const isRevealed = p >= idx * 0.1 || isReduced;
+
+              return (
+                <div
+                  key={item.id}
+                  className={cn(
+                    'absolute flex flex-col items-center pointer-events-none transition-all duration-300 ease-out',
+                    isRevealed ? 'opacity-100' : 'opacity-0 scale-75'
+                  )}
+                  style={{
+                    transform: `translate(${currentX}px, ${currentY}px)`,
+                  }}
+                >
+                  {/* Glowing Core Orb */}
                   <div
-                    key={item.id}
+                    className="w-5 h-5 rounded-full mb-2 transition-transform duration-300"
+                    style={{
+                      backgroundColor: item.accentVar,
+                      boxShadow: `0 0 20px ${item.accentVar}`,
+                      transform: `scale(${1 - convergeFactor * 0.25})`,
+                    }}
+                  />
+
+                  {/* Identity Name & Description (fades into nucleus label during total merge) */}
+                  <div
                     className={cn(
-                      'p-4 rounded-xl border transition-all duration-300',
-                      isActive
-                        ? 'border-theme-border bg-theme-surface/60 shadow-sm'
-                        : 'border-transparent opacity-60'
+                      'text-center max-w-[190px] sm:max-w-[220px] transition-opacity duration-300',
+                      convergeFactor > 0.85 ? 'opacity-25' : 'opacity-100'
                     )}
                   >
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className={cn('text-xs font-mono uppercase font-semibold', item.textColor)}>
-                        {item.role}
-                      </span>
-                    </div>
-                    <p className="text-xs text-theme-text mb-1 leading-relaxed">{item.description}</p>
-                    <p className="text-xs font-serif italic text-theme-muted/80 leading-relaxed max-w-[42ch]">
+                    <span className={cn('block font-mono text-xs uppercase font-bold tracking-wider', item.textColor)}>
+                      {item.role}
+                    </span>
+                    <span className="block text-[11px] font-sans text-theme-text/80 leading-tight mt-0.5">
+                      {item.description}
+                    </span>
+                    {/* Quiet line on how it feeds the others (from /content) */}
+                    <span className="block text-[10px] font-serif italic text-theme-muted/80 leading-tight mt-1">
                       &ldquo;{item.feedsOthers}&rdquo;
-                    </p>
+                    </span>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* Bottom: Narrative Bridge (Rule 5: Quiet first-person line) */}
+        {/* Bottom: Unlabeled quiet first-person narrative bridge line (Rule 5) */}
         <footer className="relative z-10 max-w-5xl mx-auto w-full pt-4">
           <p
             className={cn(
               'text-sm sm:text-base font-serif italic text-theme-muted text-center sm:text-left transition-opacity duration-300',
-              p > 0.8 || isReduced ? 'opacity-90' : 'opacity-40'
+              p > 0.75 || isReduced ? 'opacity-90' : 'opacity-30'
             )}
           >
             &ldquo;<Content value={chapter.bridge} />&rdquo;
