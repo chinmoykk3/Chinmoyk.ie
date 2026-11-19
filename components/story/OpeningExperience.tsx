@@ -16,16 +16,8 @@ export function OpeningExperience() {
   // 4: Narration subtitle fades in ("Every story starts somewhere...")
   // 5: Gold point stretches downward + "Begin the story ↓" cue appears
   const [stage, setStage] = useState<number>(0);
-  const [isDismissed, setIsDismissed] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        return sessionStorage.getItem('ck_intro_viewed') === 'true';
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  });
+  const [mounted, setMounted] = useState<boolean>(false);
+  const [isDismissed, setIsDismissed] = useState<boolean>(true);
   const [isShortened, setIsShortened] = useState<boolean>(false);
   const [grainUrl, setGrainUrl] = useState<string>('');
   const timersRef = useRef<NodeJS.Timeout[]>([]);
@@ -35,6 +27,19 @@ export function OpeningExperience() {
   const clearAllTimers = useCallback(() => {
     timersRef.current.forEach((t) => clearTimeout(t));
     timersRef.current = [];
+  }, []);
+
+  // Client-only mount detection & session verification
+  useEffect(() => {
+    setMounted(true);
+    try {
+      const viewed = sessionStorage.getItem('ck_intro_viewed') === 'true';
+      if (!viewed) {
+        setIsDismissed(false);
+      }
+    } catch {
+      setIsDismissed(false);
+    }
   }, []);
 
   // Dismiss immediately on user scroll gesture or keyboard navigation
@@ -143,9 +148,10 @@ export function OpeningExperience() {
   );
 
   useEffect(() => {
+    if (!mounted || isDismissed) return;
     startSequence();
     return () => clearAllTimers();
-  }, [startSequence, clearAllTimers]);
+  }, [mounted, isDismissed, startSequence, clearAllTimers]);
 
   // Support global replay event
   useEffect(() => {
@@ -192,8 +198,8 @@ export function OpeningExperience() {
     }
   }, [lenis, motionEnabled]);
 
-  // If dismissed and scrolled past, keep accessible overlay unmounted or minimized
-  if (isDismissed) {
+  // Client-only guard: on SSR & initial hydration renders null, guaranteeing zero mismatch
+  if (!mounted || isDismissed) {
     return null;
   }
 

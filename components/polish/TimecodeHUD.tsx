@@ -1,15 +1,20 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMotion } from '@/hooks/useMotion';
 import { usePolish } from './PolishContext';
 import { cn } from '@/lib/utils';
 
 export function TimecodeHUD() {
+  const [mounted, setMounted] = useState(false);
   const { scrollProgress } = useMotion();
   const { reduceEffects, activeChapterKey } = usePolish();
 
-  if (reduceEffects) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || reduceEffects) return null;
 
   // Derive running documentary timecode from scroll progress (assuming a 48:00 documentary timeline)
   const totalSeconds = Math.floor(Math.max(0, Math.min(1, scrollProgress)) * 48 * 60);

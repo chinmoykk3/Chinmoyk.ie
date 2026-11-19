@@ -232,16 +232,6 @@ export function BackgroundStage({
     onFpsUpdate,
   ]);
 
-  if (!mounted) {
-    // SSR / initial static placeholder
-    return (
-      <div
-        aria-hidden="true"
-        className={cn('fixed inset-0 z-0 pointer-events-none bg-theme-bg', className)}
-      />
-    );
-  }
-
   return (
     <div
       aria-hidden="true"
@@ -250,7 +240,10 @@ export function BackgroundStage({
       {/* Primary Fixed Canvas */}
       <canvas
         ref={canvasRef}
-        className="fixed inset-0 w-full h-full pointer-events-none transition-opacity duration-300"
+        className={cn(
+          'fixed inset-0 w-full h-full pointer-events-none transition-opacity duration-300',
+          !mounted && 'opacity-0'
+        )}
       />
 
       {/* Configurable Content Scrim: Guarantees WCAG AA Body Text Contrast (≤ 35% opacity behind content) */}

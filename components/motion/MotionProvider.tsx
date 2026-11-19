@@ -76,16 +76,26 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
 
     lenisRef.current = lenis;
 
+    let lastProgress = -1;
+    let scheduledRaf: number | null = null;
+
     // Connect Lenis scroll to ScrollTrigger
     lenis.on('scroll', (e: { progress: number; scroll: number }) => {
       ScrollTrigger.update();
-      setScrollProgress(e.progress);
+
+      const p = Math.min(1, Math.max(0, e.progress));
 
       // Drive the --exposure token smoothly from scroll progress (0.0 to 1.0)
-      document.documentElement.style.setProperty(
-        '--exposure',
-        Math.min(1, Math.max(0, e.progress)).toFixed(3)
-      );
+      document.documentElement.style.setProperty('--exposure', p.toFixed(3));
+
+      // Throttle React state updates to avoid re-render loops & Maximum update depth exceeded
+      if (Math.abs(p - lastProgress) >= 0.002 || p === 0 || p === 1) {
+        lastProgress = p;
+        if (scheduledRaf !== null) cancelAnimationFrame(scheduledRaf);
+        scheduledRaf = requestAnimationFrame(() => {
+          setScrollProgress(p);
+        });
+      }
     });
 
     // Single synchronized RAF ticker
@@ -97,6 +107,7 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      if (scheduledRaf !== null) cancelAnimationFrame(scheduledRaf);
       gsap.ticker.remove(tickerCallback);
       lenis.destroy();
       lenisRef.current = null;
