@@ -80,7 +80,8 @@ export class EpilogueSunriseScene implements Scene {
     const rayCount = 5;
 
     for (let i = 0; i < rayCount; i++) {
-      const angle = -Math.PI * 0.5 + ((i - (rayCount - 1) / 2) * 0.24) + Math.sin(time * 0.2 + i) * 0.05;
+      const angle =
+        -Math.PI * 0.5 + (i - (rayCount - 1) / 2) * 0.24 + Math.sin(time * 0.2 + i) * 0.05;
       const rayLength = height * 1.1;
 
       const endX1 = sunCenterX + Math.cos(angle - 0.06) * rayLength;
@@ -88,7 +89,12 @@ export class EpilogueSunriseScene implements Scene {
       const endX2 = sunCenterX + Math.cos(angle + 0.06) * rayLength;
       const endY2 = sunCenterY + Math.sin(angle + 0.06) * rayLength;
 
-      const rayGrad = ctx.createLinearGradient(sunCenterX, sunCenterY, (endX1 + endX2) / 2, (endY1 + endY2) / 2);
+      const rayGrad = ctx.createLinearGradient(
+        sunCenterX,
+        sunCenterY,
+        (endX1 + endX2) / 2,
+        (endY1 + endY2) / 2
+      );
       const rayAlpha = (theme === 'dark' ? 0.045 : 0.03) * (0.8 + Math.sin(time * 0.4 + i) * 0.2);
       rayGrad.addColorStop(0, rgba(accentColours.goldRgb, rayAlpha));
       rayGrad.addColorStop(0.6, rgba(accentColours.emberRgb, rayAlpha * 0.4));

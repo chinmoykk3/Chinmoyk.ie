@@ -70,12 +70,7 @@ export class GrainLayer {
     }
 
     ctx.fillStyle = this.pattern;
-    ctx.fillRect(
-      -this.shiftX,
-      -this.shiftY,
-      state.size.width + 128,
-      state.size.height + 128
-    );
+    ctx.fillRect(-this.shiftX, -this.shiftY, state.size.width + 128, state.size.height + 128);
     ctx.restore();
   }
 

@@ -12,6 +12,7 @@ import { Compass, Play, Film } from 'lucide-react';
 export function StoryHero() {
   return (
     <SectionWrapper
+      id="prologue"
       chapter="prologue"
       accent="gold"
       withWash

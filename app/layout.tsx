@@ -4,7 +4,7 @@ import { Navbar } from '@/components/ui/Navbar';
 import { Footer } from '@/components/ui/Footer';
 import { MotionProvider } from '@/components/motion/MotionProvider';
 import { ThreadSpine } from '@/components/motion/ThreadSpine';
-import { DocumentaryCanvas } from '@/components/three/DocumentaryCanvas';
+import { BackgroundStage } from '@/components/background/BackgroundStage';
 import { JsonLdPerson } from '@/components/seo/JsonLdPerson';
 import { PrivacyAnalytics } from '@/components/analytics/PrivacyAnalytics';
 import { instrumentSerif, geistSans, geistMono } from '@/lib/fonts';
@@ -82,7 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </noscript>
         <MotionProvider>
-          <DocumentaryCanvas />
+          <BackgroundStage />
           <ThreadSpine />
           <Navbar />
           <main id="main-content" className="flex-1 w-full">

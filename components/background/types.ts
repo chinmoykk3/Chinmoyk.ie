@@ -1,13 +1,5 @@
 export type ChapterKey =
-  | 'prologue'
-  | 'ch01'
-  | 'ch02'
-  | 'ch03'
-  | 'ch04'
-  | 'ch05'
-  | 'ch06'
-  | 'ch07'
-  | 'epilogue';
+  'prologue' | 'ch01' | 'ch02' | 'ch03' | 'ch04' | 'ch05' | 'ch06' | 'ch07' | 'epilogue';
 
 export type ThemeMode = 'dark' | 'light';
 
