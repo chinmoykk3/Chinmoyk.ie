@@ -6,8 +6,11 @@ import type Lenis from 'lenis';
 export interface MotionContextType {
   prefersReducedMotion: boolean;
   motionEnabled: boolean;
+  reduceEffects: boolean;
   setMotionEnabled: (enabled: boolean) => void;
   toggleMotion: () => void;
+  setReduceEffects: (enabled: boolean) => void;
+  toggleReduceEffects: () => void;
   scrollProgress: number;
   lenis: Lenis | null;
 }
@@ -15,8 +18,11 @@ export interface MotionContextType {
 export const MotionContext = createContext<MotionContextType>({
   prefersReducedMotion: false,
   motionEnabled: true,
+  reduceEffects: false,
   setMotionEnabled: () => {},
   toggleMotion: () => {},
+  setReduceEffects: () => {},
+  toggleReduceEffects: () => {},
   scrollProgress: 0,
   lenis: null,
 });

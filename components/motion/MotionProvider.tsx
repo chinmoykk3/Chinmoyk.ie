@@ -16,10 +16,11 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [motionEnabled, setMotionEnabled] = useState(true);
+  const [reduceEffects, setReduceEffects] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const lenisRef = useRef<Lenis | null>(null);
 
-  // 1. Detect OS prefers-reduced-motion & restore user manual motion preference
+  // 1. Detect OS prefers-reduced-motion & load stored preferences
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
@@ -29,6 +30,11 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
       setMotionEnabled(savedMotion === 'true');
     } else if (mediaQuery.matches) {
       setMotionEnabled(false);
+    }
+
+    const savedReduceEffects = localStorage.getItem('reduce_effects');
+    if (savedReduceEffects !== null) {
+      setReduceEffects(savedReduceEffects === 'true');
     }
 
     const handleChange = (e: MediaQueryListEvent) => {
@@ -51,19 +57,63 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
     handleSetMotionEnabled(!motionEnabled);
   }, [motionEnabled, handleSetMotionEnabled]);
 
-  // 2. Setup Lenis & GSAP ScrollTrigger single RAF loop
-  const effectiveMotion = motionEnabled && !prefersReducedMotion;
+  const handleSetReduceEffects = useCallback((enabled: boolean) => {
+    setReduceEffects(enabled);
+    localStorage.setItem('reduce_effects', String(enabled));
+  }, []);
 
+  const toggleReduceEffects = useCallback(() => {
+    handleSetReduceEffects(!reduceEffects);
+  }, [reduceEffects, handleSetReduceEffects]);
+
+  // Effective motion flag: true only if OS prefers motion, user enabled motion, and effects are not reduced
+  const effectiveMotion = motionEnabled && !prefersReducedMotion && !reduceEffects;
+
+  // 2. Setup Lenis + GSAP ScrollTrigger on single RAF loop, or native scroll fallback
   useEffect(() => {
+    let scheduledRaf: number | null = null;
+    let lastProgress = -1;
+
+    const updateExposureAndProgress = (p: number) => {
+      const clamped = Math.min(1, Math.max(0, p));
+      // Drive the --exposure token smoothly from scroll progress (0.0 to 1.0)
+      document.documentElement.style.setProperty('--exposure', clamped.toFixed(3));
+
+      if (Math.abs(clamped - lastProgress) >= 0.002 || clamped === 0 || clamped === 1) {
+        lastProgress = clamped;
+        if (scheduledRaf !== null) cancelAnimationFrame(scheduledRaf);
+        scheduledRaf = requestAnimationFrame(() => {
+          setScrollProgress(clamped);
+        });
+      }
+    };
+
     if (!effectiveMotion) {
+      // Under reduced motion: no Lenis smoothing, no inertia
       if (lenisRef.current) {
         lenisRef.current.destroy();
         lenisRef.current = null;
       }
       ScrollTrigger.refresh();
-      return;
+
+      // Native scroll handler for reduced motion mode
+      const handleNativeScroll = () => {
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        const current = window.scrollY;
+        const p = total > 0 ? current / total : 0;
+        updateExposureAndProgress(p);
+      };
+
+      window.addEventListener('scroll', handleNativeScroll, { passive: true });
+      handleNativeScroll();
+
+      return () => {
+        if (scheduledRaf !== null) cancelAnimationFrame(scheduledRaf);
+        window.removeEventListener('scroll', handleNativeScroll);
+      };
     }
 
+    // Lenis Smooth Scroll Configuration
     const lenis = new Lenis({
       duration: 0.85,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -76,29 +126,13 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
 
     lenisRef.current = lenis;
 
-    let lastProgress = -1;
-    let scheduledRaf: number | null = null;
-
-    // Connect Lenis scroll to ScrollTrigger
+    // Connect Lenis scroll to ScrollTrigger and exposure update
     lenis.on('scroll', (e: { progress: number; scroll: number }) => {
       ScrollTrigger.update();
-
-      const p = Math.min(1, Math.max(0, e.progress));
-
-      // Drive the --exposure token smoothly from scroll progress (0.0 to 1.0)
-      document.documentElement.style.setProperty('--exposure', p.toFixed(3));
-
-      // Throttle React state updates to avoid re-render loops & Maximum update depth exceeded
-      if (Math.abs(p - lastProgress) >= 0.002 || p === 0 || p === 1) {
-        lastProgress = p;
-        if (scheduledRaf !== null) cancelAnimationFrame(scheduledRaf);
-        scheduledRaf = requestAnimationFrame(() => {
-          setScrollProgress(p);
-        });
-      }
+      updateExposureAndProgress(e.progress);
     });
 
-    // Single synchronized RAF ticker
+    // Single synchronized GSAP ticker
     const tickerCallback = (time: number) => {
       lenis.raf(time * 1000);
     };
@@ -114,10 +148,12 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
     };
   }, [effectiveMotion]);
 
-  // 3. Handle route changes cleanly & refresh ScrollTrigger
+  // 3. Route change teardown & ScrollTrigger refresh
   useEffect(() => {
     if (lenisRef.current) {
       lenisRef.current.scrollTo(0, { immediate: true });
+    } else if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
     }
 
     const timer = setTimeout(() => {
@@ -135,9 +171,13 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
       });
     }
 
-    window.addEventListener('load', () => ScrollTrigger.refresh());
+    const handleLoad = () => {
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener('load', handleLoad);
     return () => {
-      window.removeEventListener('load', () => ScrollTrigger.refresh());
+      window.removeEventListener('load', handleLoad);
     };
   }, []);
 
@@ -146,8 +186,11 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
       value={{
         prefersReducedMotion,
         motionEnabled: effectiveMotion,
+        reduceEffects,
         setMotionEnabled: handleSetMotionEnabled,
         toggleMotion,
+        setReduceEffects: handleSetReduceEffects,
+        toggleReduceEffects,
         scrollProgress,
         lenis: lenisRef.current,
       }}

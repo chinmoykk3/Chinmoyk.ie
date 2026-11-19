@@ -8,11 +8,14 @@ import { SubtitleReveal } from '@/components/motion/SubtitleReveal';
 import { FocusPullText } from '@/components/motion/FocusPullText';
 import { ChapterTitleCard } from '@/components/motion/ChapterTitleCard';
 import { PinnedScene } from '@/components/motion/PinnedScene';
+import { SvgDraw } from '@/components/motion/SvgDraw';
+import { ThreadSpine } from '@/components/motion/ThreadSpine';
 import { Tag } from '@/components/ui/Tag';
 import { Button } from '@/components/ui/Button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
+import { Card, CardTitle, CardDescription } from '@/components/ui/Card';
 import { useMotion } from '@/hooks/useMotion';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
+import { useChapterProgress } from '@/hooks/useChapterProgress';
 import {
   Gauge,
   Eye,
@@ -21,19 +24,30 @@ import {
   Sparkles,
   Camera,
   Activity,
-  Pin,
-  CheckCircle2,
-  AlertTriangle,
+  PenTool,
+  Compass,
 } from 'lucide-react';
 
 export default function MotionLabPage() {
-  const { motionEnabled, prefersReducedMotion, toggleMotion, scrollProgress } = useMotion();
+  const {
+    motionEnabled,
+    prefersReducedMotion,
+    reduceEffects,
+    toggleMotion,
+    toggleReduceEffects,
+    scrollProgress,
+  } = useMotion();
+
   const demoSectionRef = useRef<HTMLDivElement>(null);
   const elementProgress = useScrollProgress(demoSectionRef);
+  const chapterProgress = useChapterProgress('motion-lab-chapter-target');
   const [pinnedProgress, setPinnedProgress] = useState(0);
 
   return (
     <div className="w-full pb-32">
+      {/* Thread Spine integration */}
+      <ThreadSpine />
+
       {/* Hero header */}
       <SectionWrapper
         chapter="prologue"
@@ -49,16 +63,28 @@ export default function MotionLabPage() {
                 DEV LABORATORY · MOTION INFRASTRUCTURE
               </Tag>
 
-              {/* Global Motion Toggle */}
-              <Button
-                variant={motionEnabled ? 'accent' : 'secondary'}
-                size="sm"
-                onClick={toggleMotion}
-                className="flex items-center gap-2"
-              >
-                <Activity className="w-4 h-4" />
-                {motionEnabled ? 'Motion: Enabled' : 'Motion: Reduced / Disabled'}
-              </Button>
+              {/* Motion & Effects Toggles */}
+              <div className="flex flex-wrap items-center gap-3">
+                <Button
+                  variant={motionEnabled ? 'accent' : 'secondary'}
+                  size="sm"
+                  onClick={toggleMotion}
+                  className="flex items-center gap-2"
+                >
+                  <Activity className="w-4 h-4" />
+                  {motionEnabled ? 'Motion: Enabled' : 'Motion: Reduced'}
+                </Button>
+
+                <Button
+                  variant={reduceEffects ? 'accent' : 'secondary'}
+                  size="sm"
+                  onClick={toggleReduceEffects}
+                  className="flex items-center gap-2"
+                >
+                  <Layers className="w-4 h-4" />
+                  {reduceEffects ? 'Reduce Effects: ON' : 'Reduce Effects: OFF'}
+                </Button>
+              </div>
             </div>
 
             <h1 className="text-fluid-h1 font-serif font-black text-theme-text tracking-tight">
@@ -71,9 +97,9 @@ export default function MotionLabPage() {
             </p>
 
             {/* Live Telemetry Bar */}
-            <div className="p-4 rounded-xl bg-theme-surface border border-theme-border grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
+            <div className="p-4 rounded-xl bg-theme-surface border border-theme-border grid grid-cols-2 sm:grid-cols-5 gap-4 text-xs font-mono">
               <div>
-                <span className="text-theme-muted block">Global Scroll Progress</span>
+                <span className="text-theme-muted block">Scroll Progress</span>
                 <span className="text-sm font-bold text-chapter-accent tabular-nums">
                   {(scrollProgress * 100).toFixed(1)}%
                 </span>
@@ -85,19 +111,29 @@ export default function MotionLabPage() {
                 </span>
               </div>
               <div>
-                <span className="text-theme-muted block">OS Reduced Motion</span>
+                <span className="text-theme-muted block">OS Prefers Reduced</span>
                 <span className="text-sm font-bold text-theme-text">
                   {prefersReducedMotion ? 'ACTIVE' : 'OFF'}
                 </span>
               </div>
               <div>
-                <span className="text-theme-muted block">Effective Motion State</span>
+                <span className="text-theme-muted block">Reduce Effects</span>
+                <span
+                  className={`text-sm font-bold ${
+                    reduceEffects ? 'text-theme-ember' : 'text-theme-muted'
+                  }`}
+                >
+                  {reduceEffects ? 'ACTIVE' : 'OFF'}
+                </span>
+              </div>
+              <div>
+                <span className="text-theme-muted block">Effective State</span>
                 <span
                   className={`text-sm font-bold ${
                     motionEnabled ? 'text-theme-azure' : 'text-theme-ember'
                   }`}
                 >
-                  {motionEnabled ? 'ACTIVE (SMOOTH)' : 'REDUCED FALLBACK'}
+                  {motionEnabled ? 'SMOOTH' : 'FALLBACK'}
                 </span>
               </div>
             </div>
@@ -198,8 +234,8 @@ export default function MotionLabPage() {
             </h2>
           </div>
           <p className="text-xs font-mono text-theme-muted">
-            Scroll past this container to watch text pull into focus from 10px focal lens blur to
-            razor crispness.
+            Scroll past this container to watch text pull into focus from 12px focal lens blur to
+            razor crispness with a subtle 35mm film grain overlay.
           </p>
 
           <Card elevated className="p-8 sm:p-12 text-center space-y-4">
@@ -208,7 +244,7 @@ export default function MotionLabPage() {
                 &ldquo;Form follows understanding.&rdquo;
               </div>
               <p className="text-sm font-serif italic text-theme-rose mt-2">
-                Simulating 35mm anomorphic lens depth-of-field transition
+                Simulating 35mm anamorphic lens depth-of-field transition
               </p>
             </FocusPullText>
           </Card>
@@ -221,14 +257,14 @@ export default function MotionLabPage() {
           <div className="flex items-center gap-2">
             <Film className="w-5 h-5 text-theme-iris" />
             <h2 className="text-2xl font-serif font-bold text-theme-text">
-              4. &lt;ChapterTitleCard&gt; Film Title Card With Live Timecode
+              4. &lt;ChapterTitleCard&gt; Film Title Card With One Label (Rule 2)
             </h2>
           </div>
 
           <ChapterTitleCard
             number={5}
-            title="Uncharted Frontiers"
-            subtitle="Stepping into AI, decentralization, and complex systems"
+            title="The World of Intelligence"
+            subtitle="Autonomous agents, generative models, and intelligent workflows"
             arc="Exploration"
             accentKey="iris"
             baseTimeSeconds={1420}
@@ -279,13 +315,116 @@ export default function MotionLabPage() {
         </PinnedScene>
       </SectionWrapper>
 
-      {/* 6. useScrollProgress LOCAL ELEMENT TRACKING */}
+      {/* 6. SVG DRAW PRIMITIVE */}
+      <SectionWrapper padding="md">
+        <Container size="md" className="space-y-6">
+          <div className="flex items-center gap-2">
+            <PenTool className="w-5 h-5 text-theme-gold" />
+            <h2 className="text-2xl font-serif font-bold text-theme-text">
+              6. &lt;SvgDraw&gt; Stroke-Dashoffset Vector Drawing
+            </h2>
+          </div>
+          <p className="text-xs font-mono text-theme-muted">
+            Bound to scroll progress or triggered in-view. Fully drawn immediately under reduced motion.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Scroll-scrubbed SVG Draw */}
+            <Card elevated className="p-8 flex flex-col items-center justify-center space-y-4 text-center">
+              <Tag variant="gold" size="sm">
+                triggerOn=&quot;scroll&quot;
+              </Tag>
+              <SvgDraw
+                triggerOn="scroll"
+                path="M 20 80 Q 150 10 280 80 T 540 80"
+                viewBox="0 0 560 120"
+                className="w-full h-28 text-chapter-accent"
+                strokeWidth={3}
+              />
+              <CardDescription>
+                Sinusoidal narrative bezier path scrubbed proportionally by scroll progression.
+              </CardDescription>
+            </Card>
+
+            {/* In-view Triggered SVG Draw */}
+            <Card elevated className="p-8 flex flex-col items-center justify-center space-y-4 text-center">
+              <Tag variant="azure" size="sm">
+                triggerOn=&quot;inView&quot;
+              </Tag>
+              <SvgDraw
+                triggerOn="inView"
+                path="M 40 100 L 120 20 L 200 100 L 280 20 L 360 100"
+                viewBox="0 0 400 120"
+                className="w-full h-28 text-theme-azure"
+                strokeWidth={3}
+              />
+              <CardDescription>
+                Geometric pulse path drawn once upon entering the viewport with ease-out physics.
+              </CardDescription>
+            </Card>
+          </div>
+        </Container>
+      </SectionWrapper>
+
+      {/* 7. CHAPTER TARGET & USE CHAPTER PROGRESS */}
+      <SectionWrapper
+        id="motion-lab-chapter-target"
+        chapter="7"
+        accent="ember"
+        withWash
+        padding="md"
+      >
+        <Container size="md" className="space-y-6">
+          <div className="flex items-center gap-2">
+            <Compass className="w-5 h-5 text-theme-ember" />
+            <h2 className="text-2xl font-serif font-bold text-theme-text">
+              7. useChapterProgress Hook Telemetry
+            </h2>
+          </div>
+
+          <div className="p-8 rounded-2xl bg-theme-surface border border-theme-border space-y-4">
+            <Tag variant="ember" size="sm">
+              TARGET CHAPTER ID: &quot;motion-lab-chapter-target&quot;
+            </Tag>
+            <div className="grid grid-cols-3 gap-4 text-xs font-mono">
+              <div>
+                <span className="text-theme-muted block">Chapter Progress</span>
+                <span className="text-lg font-bold text-theme-text tabular-nums">
+                  {(chapterProgress.progress * 100).toFixed(1)}%
+                </span>
+              </div>
+              <div>
+                <span className="text-theme-muted block">In Viewport</span>
+                <span
+                  className={`text-lg font-bold ${
+                    chapterProgress.isInView ? 'text-theme-ember' : 'text-theme-muted'
+                  }`}
+                >
+                  {chapterProgress.isInView ? 'ACTIVE' : 'INACTIVE'}
+                </span>
+              </div>
+              <div>
+                <span className="text-theme-muted block">Passed Viewport</span>
+                <span
+                  className={`text-lg font-bold ${
+                    chapterProgress.isPassed ? 'text-emerald-500' : 'text-theme-muted'
+                  }`}
+                >
+                  {chapterProgress.isPassed ? 'TRUE' : 'FALSE'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </SectionWrapper>
+
+      {/* 8. useScrollProgress LOCAL ELEMENT TRACKING */}
       <SectionWrapper padding="md">
         <Container size="md" className="space-y-6">
           <div className="flex items-center gap-2">
             <Gauge className="w-5 h-5 text-theme-gold" />
             <h2 className="text-2xl font-serif font-bold text-theme-text">
-              6. useScrollProgress Hook Telemetry
+              8. useScrollProgress Hook Telemetry
             </h2>
           </div>
 
