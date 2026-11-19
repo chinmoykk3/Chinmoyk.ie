@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useMotion } from '@/hooks/useMotion';
 import { chapters, AccentKey } from '@/content/chapters';
 import { Content } from '@/components/content/Content';
@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 export function ThreadSpine() {
   const { scrollProgress, motionEnabled } = useMotion();
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
+  const nodeRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const chapterList = chapters.visible ? chapters.visible() : chapters;
   const chapterCount = chapterList.length;
@@ -39,6 +40,32 @@ export function ThreadSpine() {
     const el = document.getElementById(chapterId);
     if (el) {
       el.scrollIntoView({ behavior: motionEnabled ? 'smooth' : 'auto' });
+      if (typeof window !== 'undefined') {
+        window.history.pushState(null, '', `#${chapterId}`);
+      }
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    let targetIndex = -1;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      targetIndex = Math.min(chapterCount - 1, index + 1);
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      targetIndex = Math.max(0, index - 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      targetIndex = 0;
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      targetIndex = chapterCount - 1;
+    }
+
+    if (targetIndex !== -1 && targetIndex !== index) {
+      const targetChapter = chapterList[targetIndex];
+      scrollToChapter(targetChapter.id);
+      nodeRefs.current[targetIndex]?.focus();
     }
   };
 
@@ -133,9 +160,14 @@ export function ThreadSpine() {
               return (
                 <button
                   key={ch.id}
+                  ref={(el) => {
+                    nodeRefs.current[idx] = el;
+                  }}
                   type="button"
                   data-accent={nodeAccent}
                   onClick={() => scrollToChapter(ch.id)}
+                  onKeyDown={(e) => handleKeyDown(e, idx)}
+                  aria-current={isActive ? 'step' : undefined}
                   aria-label={`Jump to ${titleStr} (${ch.emotionalArc})`}
                   className="group relative flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-chapter-accent rounded-full -ml-[1px]"
                 >
@@ -151,15 +183,15 @@ export function ThreadSpine() {
                     )}
                   />
 
-                  {/* Hover Tooltip / Title Card */}
+                  {/* Hover/Focus Tooltip ONLY (Rule 2: labels appear ONLY on hover/focus) */}
                   <div
                     className={cn(
                       'pointer-events-none absolute left-7 px-2.5 py-1 rounded-md text-[11px] font-mono tracking-wider whitespace-nowrap opacity-0 transition-opacity duration-200 border border-theme-border bg-theme-surface shadow-md',
-                      'group-hover:opacity-100 group-focus-visible:opacity-100',
-                      isActive && 'opacity-100 text-chapter-accent font-semibold'
+                      'group-hover:opacity-100 group-focus-visible:opacity-100 focus-visible:opacity-100',
+                      isActive ? 'text-chapter-accent font-semibold' : 'text-theme-text'
                     )}
                   >
-                    <span className="font-semibold">{ch.number === 0 ? 'P' : ch.number}: </span>
+                    <span className="font-semibold">{ch.number === 0 ? 'P' : `0${ch.number}`}: </span>
                     <Content value={ch.title} />
                   </div>
                 </button>

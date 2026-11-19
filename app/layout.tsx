@@ -4,6 +4,7 @@ import { Navbar } from '@/components/ui/Navbar';
 import { Footer } from '@/components/ui/Footer';
 import { MotionProvider } from '@/components/motion/MotionProvider';
 import { ThreadSpine } from '@/components/motion/ThreadSpine';
+import { PageTransition } from '@/components/motion/PageTransition';
 import { BackgroundStage } from '@/components/background/BackgroundStage';
 import { PolishProvider } from '@/components/polish/PolishContext';
 import { Preloader } from '@/components/polish/Preloader';
@@ -96,7 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <ThreadSpine />
             <Navbar />
             <main id="main-content" className="relative z-10 flex-1 w-full">
-              {children}
+              <PageTransition>{children}</PageTransition>
             </main>
             <LowerThird />
             <TimecodeHUD />

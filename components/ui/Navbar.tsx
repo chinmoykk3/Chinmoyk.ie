@@ -3,17 +3,19 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu } from 'lucide-react';
+import { Menu, ListOrdered } from 'lucide-react';
 import { CKWordmark } from '@/components/ui/CKWordmark';
 import { ModeSwitch } from '@/components/ui/ModeSwitch';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { PolishControls } from '@/components/polish/PolishControls';
 import { MobileNavMenu } from '@/components/ui/MobileNavMenu';
+import { ChapterIndexModal } from '@/components/ui/ChapterIndexModal';
 import { cn } from '@/lib/utils';
 
 export function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [indexOpen, setIndexOpen] = useState(false);
 
   return (
     <>
@@ -25,7 +27,7 @@ export function Navbar() {
         Skip to main content
       </a>
 
-      <header className="sticky top-0 z-40 w-full bg-theme-bg/95 backdrop-blur-xs border-b border-theme-border transition-colors duration-200">
+      <header className="sticky top-0 z-40 w-full bg-theme-bg/90 backdrop-blur-md border-b border-theme-border transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           {/* Left: Minimal Custom Typographic Wordmark */}
           <div className="flex items-center gap-3">
@@ -37,8 +39,19 @@ export function Navbar() {
             <ModeSwitch />
           </div>
 
-          {/* Right: Quick Links, Theme Toggle & Mobile Menu Trigger */}
+          {/* Right: Chapter Index, Quick Links, Theme Toggle & Mobile Menu Trigger */}
           <div className="flex items-center space-x-2 sm:space-x-3">
+            {/* Compact Chapter Index Button (collapsed by default, opens overlay) */}
+            <button
+              type="button"
+              onClick={() => setIndexOpen(true)}
+              aria-label="Open chapter index"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono text-theme-muted hover:text-theme-text bg-theme-surface border border-theme-border hover:bg-theme-surface-elevated hover:border-theme-border-strong focus:outline-none focus-visible:ring-2 focus-visible:ring-chapter-accent transition-colors shadow-xs"
+            >
+              <ListOrdered className="w-3.5 h-3.5 text-chapter-accent" />
+              <span>Index</span>
+            </button>
+
             {/* Desktop secondary links */}
             <nav
               aria-label="Secondary Navigation"
@@ -84,6 +97,9 @@ export function Navbar() {
           </div>
         </div>
       </header>
+
+      {/* Compact Chapter Index Modal Overlay */}
+      <ChapterIndexModal isOpen={indexOpen} onClose={() => setIndexOpen(false)} />
 
       {/* Safe-Area Aware Full-Screen Mobile Navigation Overlay */}
       <MobileNavMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />

@@ -80,20 +80,20 @@ export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
           <ModeSwitch className="w-full justify-around py-1.5" />
         </div>
 
-        {/* Chapter Journey Matrix */}
+        {/* Chapter Index */}
         <div className="py-4 space-y-3">
           <div className="text-xs font-mono uppercase tracking-widest text-theme-muted">
-            The Documentary Movements
+            Chapter Index
           </div>
 
           <div className="space-y-1.5">
-            {(chapters.visible ? chapters.visible() : chapters).map((ch, idx) => {
+            {(chapters.visible ? chapters.visible() : chapters).map((ch) => {
               const formattedNum =
                 typeof ch.number === 'number'
                   ? ch.number === 0
                     ? 'Prologue'
-                    : `0${ch.number}`
-                  : ch.number;
+                    : `Chapter 0${ch.number}`
+                  : String(ch.number);
 
               return (
                 <Link
@@ -103,19 +103,19 @@ export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
                   data-accent={ch.accentKey}
                   className="flex items-center justify-between p-3 rounded-xl bg-theme-surface border border-theme-border hover:border-theme-border-strong hover:bg-theme-surface-elevated transition-all group focus:outline-none focus-visible:ring-2 focus-visible:ring-chapter-accent"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-0 pr-2">
                     <span className="w-2 h-2 rounded-full bg-chapter-accent shrink-0" />
-                    <div>
-                      <div className="font-serif font-bold text-sm text-theme-text group-hover:text-chapter-accent transition-colors">
-                        <Content value={ch.title} />
+                    <div className="min-w-0">
+                      <div className="text-[11px] font-mono text-theme-muted uppercase tracking-wider">
+                        {formattedNum} · {ch.emotionalArc}
                       </div>
-                      <div className="text-[11px] font-mono text-theme-muted">
-                        Movement {formattedNum} · {ch.emotionalArc}
+                      <div className="font-serif font-bold text-sm text-theme-text group-hover:text-chapter-accent transition-colors truncate">
+                        <Content value={ch.title} />
                       </div>
                     </div>
                   </div>
 
-                  <ChevronRight className="w-4 h-4 text-theme-muted group-hover:text-chapter-accent transition-colors" />
+                  <ChevronRight className="w-4 h-4 text-theme-muted shrink-0 group-hover:text-chapter-accent transition-colors" />
                 </Link>
               );
             })}
