@@ -1,5 +1,6 @@
 import { ChapterKey, Scene, SceneSize, SceneState, ThemeMode } from './types';
 import { getAccentColours } from './tokens';
+import { chapters } from '@/content/chapters';
 import { GrainLayer } from './layers/Grain';
 import { VignetteLayer } from './layers/Vignette';
 import { PrologueDustScene } from './scenes/PrologueDust';
@@ -87,6 +88,21 @@ export class SceneManager {
   public recalculateChapterBounds(): void {
     if (typeof document === 'undefined') return;
 
+    // Filter chapterSequence to skip chapter-07 if hidden by content logic
+    const visibleChapters = chapters.visible ? chapters.visible() : chapters;
+    const isCh07Visible = visibleChapters.some((c) => c.id === 'chapter-07');
+    this.chapterSequence = [
+      'prologue',
+      'ch01',
+      'ch02',
+      'ch03',
+      'ch04',
+      'ch05',
+      'ch06',
+      ...(isCh07Visible ? ['ch07' as const] : []),
+      'epilogue',
+    ];
+
     const domMap: Record<ChapterKey, string> = {
       prologue: 'prologue',
       ch01: 'chapter-01',
@@ -120,6 +136,7 @@ export class SceneManager {
 
     if (bounds.length > 0) {
       this.chapterBounds = bounds;
+      this.chapterSequence = newSequence;
     }
   }
 
@@ -290,7 +307,7 @@ export class SceneManager {
    */
   private drawBackgroundBase(state: SceneState): void {
     const { width, height } = this.size;
-    const { theme, exposure } = state;
+    const { theme, exposure, accentColours } = state;
 
     if (theme === 'dark') {
       const maxLift = 15;
@@ -298,7 +315,7 @@ export class SceneManager {
       // Confirm R=G=B (zero navy/indigo tint)
       this.ctx.fillStyle = `rgb(${step}, ${step}, ${step})`;
     } else {
-      this.ctx.fillStyle = 'rgb(250, 248, 245)';
+      this.ctx.fillStyle = accentColours.bg || 'rgb(255, 248, 236)';
     }
 
     this.ctx.fillRect(0, 0, width, height);
@@ -313,13 +330,16 @@ export class SceneManager {
 
     if (avg > this.frameDurationThreshold) {
       this.degradedTime += dt;
-      // If frame time stays above threshold for 2 seconds, step down quality
+      // If frame time stays above 6ms threshold for 2 seconds: reduce counts → disable grain → static frame
       if (this.degradedTime > 2.0) {
-        if (this.qualityLevel === 1.0) {
-          this.qualityLevel = 0.5; // Half element count
+        if (this.qualityLevel >= 0.9) {
+          this.qualityLevel = 0.66; // Step 1: Reduce counts to 50%
           this.degradedTime = 0;
-        } else if (this.qualityLevel === 0.5) {
-          this.qualityLevel = 0.0; // Fall back to static frame
+        } else if (this.qualityLevel >= 0.5) {
+          this.qualityLevel = 0.33; // Step 2: Disable film grain
+          this.degradedTime = 0;
+        } else if (this.qualityLevel > 0.0) {
+          this.qualityLevel = 0.0; // Step 3: Fall back to static frame
           this.degradedTime = 0;
         }
       }

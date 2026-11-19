@@ -78,6 +78,8 @@ export class PrologueDustScene implements Scene {
     const coneY = height * 0.35;
     const coneRadius = Math.max(width, height) * 0.45;
 
+    const moteRgb = theme === 'dark' ? accentColours.goldRgb : accentColours.goldTextSafeRgb;
+
     const coneGrad = ctx.createRadialGradient(coneX, coneY, 0, coneX, coneY, coneRadius);
     if (theme === 'dark') {
       coneGrad.addColorStop(0, rgba(accentColours.goldRgb, 0.08));
@@ -85,9 +87,9 @@ export class PrologueDustScene implements Scene {
       coneGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.globalCompositeOperation = 'lighter';
     } else {
-      coneGrad.addColorStop(0, rgba(accentColours.goldRgb, 0.06));
-      coneGrad.addColorStop(0.5, rgba(accentColours.goldRgb, 0.02));
-      coneGrad.addColorStop(1, 'rgba(250, 248, 245, 0)');
+      coneGrad.addColorStop(0, rgba(accentColours.goldTextSafeRgb, 0.08));
+      coneGrad.addColorStop(0.5, rgba(accentColours.goldTextSafeRgb, 0.025));
+      coneGrad.addColorStop(1, 'rgba(255, 248, 236, 0)');
       ctx.globalCompositeOperation = 'multiply';
     }
 
@@ -96,7 +98,7 @@ export class PrologueDustScene implements Scene {
 
     // 3. Draw drifting dust motes with scroll velocity stretch
     const stretchY = 1 + Math.min(Math.abs(scrollVelocity) * 0.0012, 0.5);
-    const activeCount = Math.floor(this.maxMotes * (state.qualityLevel < 0.5 ? 0.5 : 1));
+    const activeCount = Math.floor(this.maxMotes * (state.qualityLevel < 0.9 ? 0.5 : 1));
 
     for (let i = 0; i < activeCount; i++) {
       const m = this.motes[i];
@@ -116,7 +118,7 @@ export class PrologueDustScene implements Scene {
 
       ctx.beginPath();
       ctx.arc(0, 0, m.baseRadius, 0, Math.PI * 2);
-      ctx.fillStyle = rgba(accentColours.goldRgb, radiance);
+      ctx.fillStyle = rgba(moteRgb, radiance);
       ctx.fill();
 
       // Soft glow aura for larger motes in dark mode
@@ -152,8 +154,8 @@ export class PrologueDustScene implements Scene {
       coneGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.globalCompositeOperation = 'lighter';
     } else {
-      coneGrad.addColorStop(0, rgba(accentColours.goldRgb, 0.05));
-      coneGrad.addColorStop(1, 'rgba(250, 248, 245, 0)');
+      coneGrad.addColorStop(0, rgba(accentColours.goldTextSafeRgb, 0.06));
+      coneGrad.addColorStop(1, 'rgba(255, 248, 236, 0)');
       ctx.globalCompositeOperation = 'multiply';
     }
 

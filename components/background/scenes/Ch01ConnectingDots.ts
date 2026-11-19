@@ -61,7 +61,8 @@ export class Ch01ConnectingDotsScene implements Scene {
   public draw(ctx: CanvasRenderingContext2D, state: SceneState): void {
     const { width, height } = state.size;
     const { pointer, theme, accentColours } = state;
-    const activeCount = Math.floor(this.maxDots * (state.qualityLevel < 0.5 ? 0.5 : 1));
+    const activeCount = Math.floor(this.maxDots * (state.qualityLevel < 0.9 ? 0.5 : 1));
+    const goldColor = theme === 'dark' ? accentColours.goldRgb : accentColours.goldTextSafeRgb;
 
     ctx.save();
 
@@ -82,7 +83,7 @@ export class Ch01ConnectingDotsScene implements Scene {
     const mouseActive = !pointer.isTouch && pointer.active;
 
     // 1. Draw connection lines between nearby dots
-    ctx.lineWidth = 0.8;
+    ctx.lineWidth = theme === 'dark' ? 0.8 : 1.0;
     for (let i = 0; i < activeCount; i++) {
       const a = this.dots[i];
 
@@ -98,7 +99,7 @@ export class Ch01ConnectingDotsScene implements Scene {
           const proximity = 1 - Math.sqrt(distSq) / this.linkDistance;
           const lineAlpha = proximity * 0.22 * (theme === 'dark' ? 1 : 0.85);
 
-          ctx.strokeStyle = rgba(accentColours.goldRgb, lineAlpha);
+          ctx.strokeStyle = rgba(goldColor, lineAlpha);
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
@@ -115,7 +116,7 @@ export class Ch01ConnectingDotsScene implements Scene {
 
         if (distSqM < cursorMaxDistSq) {
           const proximity = 1 - Math.sqrt(distSqM) / (this.linkDistance * 1.35);
-          ctx.strokeStyle = rgba(accentColours.goldRgb, proximity * 0.35);
+          ctx.strokeStyle = rgba(goldColor, proximity * 0.35);
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(mousePixelX, mousePixelY);
@@ -127,7 +128,7 @@ export class Ch01ConnectingDotsScene implements Scene {
     // 2. Draw dots
     for (let i = 0; i < activeCount; i++) {
       const d = this.dots[i];
-      ctx.fillStyle = rgba(accentColours.goldRgb, d.alpha);
+      ctx.fillStyle = rgba(goldColor, d.alpha);
       ctx.beginPath();
       ctx.arc(d.x, d.y, d.radius, 0, Math.PI * 2);
       ctx.fill();
@@ -135,7 +136,7 @@ export class Ch01ConnectingDotsScene implements Scene {
 
     // Subtle cursor node
     if (mouseActive) {
-      ctx.fillStyle = rgba(accentColours.goldRgb, 0.4);
+      ctx.fillStyle = rgba(goldColor, 0.4);
       ctx.beginPath();
       ctx.arc(mousePixelX, mousePixelY, 2.5, 0, Math.PI * 2);
       ctx.fill();
@@ -147,6 +148,7 @@ export class Ch01ConnectingDotsScene implements Scene {
   public drawStatic(ctx: CanvasRenderingContext2D, state: SceneState): void {
     const { width, height } = state.size;
     const { theme, accentColours } = state;
+    const goldColor = theme === 'dark' ? accentColours.goldRgb : accentColours.goldTextSafeRgb;
 
     ctx.save();
     if (theme === 'dark') {
@@ -166,7 +168,7 @@ export class Ch01ConnectingDotsScene implements Scene {
     ];
 
     ctx.lineWidth = 0.8;
-    ctx.strokeStyle = rgba(accentColours.goldRgb, 0.12);
+    ctx.strokeStyle = rgba(goldColor, 0.14);
     ctx.beginPath();
     ctx.moveTo(sampleCoords[0][0], sampleCoords[0][1]);
     for (let i = 1; i < sampleCoords.length; i++) {
@@ -176,7 +178,7 @@ export class Ch01ConnectingDotsScene implements Scene {
     ctx.stroke();
 
     for (const [x, y] of sampleCoords) {
-      ctx.fillStyle = rgba(accentColours.goldRgb, 0.35);
+      ctx.fillStyle = rgba(goldColor, 0.35);
       ctx.beginPath();
       ctx.arc(x, y, 2.2, 0, Math.PI * 2);
       ctx.fill();

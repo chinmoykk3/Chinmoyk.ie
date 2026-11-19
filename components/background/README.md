@@ -111,6 +111,25 @@ export class MyNewScene implements Scene {
 
 ## Design Token & Contrast Rules
 
-- **Zero Inline Hex Values**: Never hardcode hex codes like `#FFFFFF` in `.ts` or `.tsx` files. Always read from `state.accentColours` (e.g. `accentColours.goldRgb`, `accentColours.azureRgb`) and use the `rgba(rgb, alpha)` helper.
+- **Zero Inline Hex Values**: Never hardcode hex codes like `#FFFFFF` in `.ts` or `.tsx` files. Always read from `state.accentColours` (e.g. `accentColours.goldRgb`, `accentColours.goldTextSafeRgb`) and use the `rgba(rgb, alpha)` helper.
 - **Pure Dark Neutral Rule**: In dark mode, no neutral tone may have a blue channel higher than red or green ($R = G = B$).
+- **Light Mode Text-Safe Accents**: Use `accentColours.*TextSafeRgb` in light mode for ink lines and text to guarantee AA contrast against the cream background.
 - **WCAG AA Compliance**: Keep background opacity behind readable text blocks below ~35% via `<BackgroundStage scrimOpacity={0.18} />`.
+
+---
+
+## Performance & Resilience Rules
+
+- **DPR Cap**: Capped at `1.5` (`Math.min(window.devicePixelRatio || 1, 1.5)`) to prevent GPU overhead on high-DPI screens.
+- **Element Budgets**: Desktop $\le 120$ elements per scene; mobile $\le 50$ elements per scene.
+- **Mobile Frame Throttling**: 30fps cap on mobile devices to preserve battery and thermal performance.
+- **Adaptive Quality**: If rolling average frame render time exceeds 6ms for 2 seconds:
+  1. Reduce element count to 50% (`qualityLevel = 0.66`)
+  2. Disable 35mm film grain (`qualityLevel = 0.33`)
+  3. Fall back to static composed frame (`qualityLevel = 0.0`)
+- **Pause on Inactivity**: Canvas loop completely halts when `document.hidden` is true (`visibilitychange`).
+- **Resilience Fallbacks**:
+  - `prefers-reduced-motion` or `Save-Data` $\to$ static composed frame (`drawStatic`)
+  - Canvas context failure $\to$ CSS radial gradient wash
+  - No-JS $\to$ progressive `.no-js` and `<noscript>` CSS gradient washes per chapter
+

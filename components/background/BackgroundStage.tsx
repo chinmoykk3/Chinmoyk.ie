@@ -32,6 +32,7 @@ export function BackgroundStage({
   const { resolvedTheme } = useTheme();
 
   const [mounted, setMounted] = useState(false);
+  const [canvasError, setCanvasError] = useState(false);
   const pointerRef = useRef<PointerState>({
     x: 0,
     y: 0,
@@ -117,11 +118,21 @@ export function BackgroundStage({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d', {
-      alpha: false, // Opaque backing store for peak GPU compositing
-      desynchronized: true, // Lower latency
-    });
-    if (!ctx) return;
+    let ctx: CanvasRenderingContext2D | null = null;
+    try {
+      ctx = canvas.getContext('2d', {
+        alpha: false, // Opaque backing store for peak GPU compositing
+        desynchronized: true, // Lower latency
+      });
+    } catch {
+      setCanvasError(true);
+      return;
+    }
+
+    if (!ctx) {
+      setCanvasError(true);
+      return;
+    }
 
     const manager = new SceneManager(ctx);
     managerRef.current = manager;
@@ -242,9 +253,30 @@ export function BackgroundStage({
         ref={canvasRef}
         className={cn(
           'fixed inset-0 w-full h-full pointer-events-none transition-opacity duration-300',
-          !mounted && 'opacity-0'
+          (!mounted || canvasError) && 'opacity-0'
         )}
       />
+
+      {/* Fallback for Canvas Failure */}
+      {canvasError && (
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 w-full h-full pointer-events-none transition-colors duration-300"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 50% 30%, var(--wash) 0%, transparent 70%)',
+          }}
+        />
+      )}
+
+      {/* No-JS Progressive Fallback */}
+      <noscript>
+        <div
+          className="fixed inset-0 w-full h-full pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 50% 30%, var(--wash) 0%, transparent 70%)',
+          }}
+        />
+      </noscript>
 
       {/* Configurable Content Scrim: Guarantees WCAG AA Body Text Contrast (≤ 35% opacity behind content) */}
       <div

@@ -189,14 +189,16 @@ export default function BackgroundLabPage() {
                 className="text-xs font-mono uppercase tracking-wider text-theme-text font-semibold flex items-center gap-1.5"
               >
                 <Zap className="w-3.5 h-3.5 text-theme-rose" />
-                <span>Particle Budget</span>
+                <span>Element Budget</span>
               </label>
               <span className="text-xs font-mono text-theme-rose font-bold">
-                {qualityLevel === 1.0
-                  ? '100% (High)'
-                  : qualityLevel === 0.5
-                    ? '50% (Med)'
-                    : '0% (Static)'}
+                {qualityLevel >= 0.9
+                  ? '100% (Full + Grain)'
+                  : qualityLevel >= 0.5
+                    ? `${Math.round(qualityLevel * 100)}% (Reduced)`
+                    : qualityLevel > 0.0
+                      ? `${Math.round(qualityLevel * 100)}% (No Grain)`
+                      : '0% (Static Frame)'}
               </span>
             </div>
             <input
@@ -204,14 +206,14 @@ export default function BackgroundLabPage() {
               type="range"
               min="0"
               max="1"
-              step="0.5"
+              step="0.05"
               value={qualityLevel}
               onChange={(e) => setQualityLevel(parseFloat(e.target.value))}
               className="w-full accent-chapter-accent cursor-pointer"
             />
             <p className="text-[11px] font-sans text-theme-muted leading-relaxed">
-              Desktop cap $\le 120$ elements, mobile cap $\le 50$. Adaptive downscaling kicks in if
-              frame time exceeds 6ms.
+              Desktop cap $\le 120$ elements, mobile $\le 50$. Adaptive downscaling triggers if
+              frame time exceeds 6ms for 2s (counts $\to$ grain $\to$ static).
             </p>
           </Card>
 

@@ -418,4 +418,19 @@ blockquote.font-serif {
   transform: none !important;
 }
 
+/* No-JS: CSS gradient wash per chapter scene fallback (Requirement 9) */
+.no-js [data-chapter] {
+  background-image: var(--wash) !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+}
+
+.no-js #prologue {
+  background-image: radial-gradient(circle at 50% 30%, rgba(255, 200, 87, 0.08) 0%, transparent 70%) !important;
+}
+
+.light.no-js #prologue {
+  background-image: radial-gradient(circle at 50% 30%, rgba(255, 176, 0, 0.06) 0%, transparent 70%) !important;
+}
+
 
