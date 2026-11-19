@@ -14,6 +14,11 @@ import { isContentRenderable } from '@/content/schema';
 import { ArrowUpRight, Layers } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export interface Chapter03RealProps {
   chapter: Chapter;
