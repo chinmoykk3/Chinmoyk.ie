@@ -6,7 +6,7 @@ import { designWork, designWorks } from '@/content/designWork';
 import { aiWork } from '@/content/aiWork';
 import { contactData } from '@/content/contact';
 import { timeline } from '@/content/timeline';
-import { beyond } from '@/content/beyond';
+import { beyond, hasBeyondContent } from '@/content/beyond';
 import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Tag';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/Card';
@@ -465,39 +465,42 @@ export default function ExplorePage() {
         </div>
       </section>
 
-      {/* Beyond & Future Horizons Section */}
-      <section className="space-y-6 pt-12 border-t border-theme-border">
-        <div className="flex items-center gap-2">
-          <Compass className="w-5 h-5 text-theme-azure" />
-          <h2 className="text-2xl font-serif font-bold text-theme-text">
-            Beyond: Active Investigations &amp; Principles
-          </h2>
-        </div>
+      {/* Beyond & Future Horizons Section (Hidden if empty) */}
+      {hasBeyondContent() && (
+        <section className="space-y-6 pt-12 border-t border-theme-border">
+          <div className="flex items-center gap-2">
+            <Compass className="w-5 h-5 text-theme-ember" />
+            <h2 className="text-2xl font-serif font-bold text-theme-text">
+              Beyond the Work: Influences &amp; Craft
+            </h2>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {beyond
-            .filter((item) => isContentRenderable(item.title))
-            .map((item) => (
-              <Card key={item.id} className="space-y-3">
-                <div className="flex items-center justify-between text-xs font-mono">
-                  <Tag variant="azure" size="sm">
-                    {item.category}
-                  </Tag>
-                </div>
-                <CardTitle className="text-lg">
-                  <Content value={item.title} />
-                </CardTitle>
-                <CardDescription>
-                  <Content value={item.description} />
-                </CardDescription>
-                <div className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-muted">
-                  <span className="font-semibold text-theme-text">Investigation: </span>
-                  <Content value={item.currentInvestigation} />
-                </div>
-              </Card>
-            ))}
-        </div>
-      </section>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {beyond
+              .filter((item) => isContentRenderable(item.title))
+              .map((item) => (
+                <Card key={item.id} className="space-y-3">
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <Tag variant="ember" size="sm">
+                      {item.category}
+                    </Tag>
+                  </div>
+                  <CardTitle className="text-lg">
+                    <Content value={item.title} />
+                  </CardTitle>
+                  <CardDescription>
+                    <Content value={item.description} />
+                  </CardDescription>
+                  {item.caption && isContentRenderable(item.caption) && (
+                    <div className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-muted">
+                      <Content value={item.caption} />
+                    </div>
+                  )}
+                </Card>
+              ))}
+          </div>
+        </section>
+      )}
 
       {/* Timeline Section */}
       <section className="space-y-6 pt-12 border-t border-theme-border">

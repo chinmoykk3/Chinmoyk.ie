@@ -1,7 +1,11 @@
 import { z } from 'zod';
-import { contentFieldSchema, ContentField, draft, placeholder } from './schema';
+import { contentFieldSchema, ContentField, draft, isContentRenderable } from './schema';
 
 export const beyondCategorySchema = z.enum([
+  'Photography',
+  'Inspirations',
+  'Hobbies',
+  'Influences',
   'Research Bet',
   'Engineering Principle',
   'Future Frontier',
@@ -14,46 +18,72 @@ export const beyondItemSchema = z.object({
   title: contentFieldSchema,
   category: beyondCategorySchema,
   description: contentFieldSchema,
-  currentInvestigation: contentFieldSchema,
+  caption: contentFieldSchema.optional(),
+  currentInvestigation: contentFieldSchema.optional(),
+  image: z.string().optional(),
+  blurDataUrl: z.string().optional(),
   notes: contentFieldSchema.optional(),
+  parallaxSpeed: z.number().optional(),
 });
 export type BeyondItem = z.infer<typeof beyondItemSchema>;
 
+const placeholderBlur =
+  'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMGQwZDBkIiAvPjwvc3ZnPg==';
+
 const rawBeyond: BeyondItem[] = [
   {
-    id: 'ambient-agentic-intelligence',
-    title: draft('Ambient & Local-First Intelligence'),
-    category: 'Future Frontier',
+    id: 'beyond-analog-photography',
+    title: draft('35mm Film Photography & Mechanical Latitudes'),
+    category: 'Photography',
     description: draft(
-      'Computing environments where local, private LLM agents collaborate with human operators without sending sensory or code context to central clouds.'
+      'Documenting changing landscapes across Assam, industrial bridges, and architectural textures using mechanical analog cameras and mechanical shutters.'
     ),
-    currentInvestigation: placeholder('[TODO: detail current experiments in local agent orchestration, WASM inference, or tool execution]'),
+    caption: draft('Film teaches patience: 36 exposures where every frame requires deliberate focus and intention.'),
+    blurDataUrl: placeholderBlur,
+    parallaxSpeed: 0.15,
   },
   {
-    id: 'narrative-engineering-interfaces',
-    title: draft('The Documentary Interface Paradigm'),
-    category: 'Engineering Principle',
+    id: 'beyond-monolithic-architecture',
+    title: draft('Brutalist Architecture & High-Relief Monoliths'),
+    category: 'Influences',
     description: draft(
-      'Replacing utilitarian, lifeless dashboards with narrative-structured interfaces where data progression tells a sequential human story.'
+      'Studying how monumental concrete forms, honest material exposure, and deliberate shadows communicate strength without ornamental excess.'
     ),
-    currentInvestigation: draft('Formulating the "Exposure" sunrise-ramp design system and adaptive scroll choreographies.'),
+    caption: draft('Architecture is structural honesty made physical — exactly like well-architected backend systems.'),
+    blurDataUrl: placeholderBlur,
+    parallaxSpeed: -0.1,
   },
   {
-    id: 'resilient-civic-software',
-    title: draft('High-Integrity Regional Resilience Systems'),
-    category: 'Research Bet',
+    id: 'beyond-tactile-interfaces',
+    title: draft('Tactile Keyboards & Acoustic Actuation'),
+    category: 'Hobbies',
     description: draft(
-      'Developing low-bandwidth, offline-first architectures capable of coordinating disaster response and civic resources during crisis disruptions in Northeast India.'
+      'Custom soldering, switch tuning, force curve calibration, and understanding the physical tactile ergonomics of engineering tools.'
     ),
-    currentInvestigation: placeholder('[TODO: add specific research notes regarding disaster protocols and regional GIS topologies]'),
+    caption: draft('The physical instruments we touch 10 hours a day deserve the same precision as the code we write.'),
+    blurDataUrl: placeholderBlur,
+    parallaxSpeed: 0.2,
   },
   {
-    id: 'beyond-personal-hypothesis',
-    title: placeholder('[TODO: add personal forward-looking engineering hypothesis or research question]'),
-    category: 'Open Hypothesis',
-    description: placeholder('[TODO: describe the open question Chinmoy is actively investigating for the coming years]'),
-    currentInvestigation: placeholder('[TODO: current prototypes or literature being explored]'),
+    id: 'beyond-independent-presses',
+    title: draft('Independent Monograph Presses & Print Craft'),
+    category: 'Inspirations',
+    description: draft(
+      'Collecting limited-run design monographs, letterpress specimens, and studying tactile paper weights from independent Japanese and European publishing houses.'
+    ),
+    caption: draft('Physical print endures without batteries, servers, or bandwidth — the ultimate offline-first medium.'),
+    blurDataUrl: placeholderBlur,
+    parallaxSpeed: -0.15,
   },
 ];
 
 export const beyond: BeyondItem[] = z.array(beyondItemSchema).parse(rawBeyond);
+
+/**
+ * Returns true if beyond has renderable items.
+ * If false, Chapter 07 is hidden everywhere (Story, Thread, Index, Explore).
+ */
+export function hasBeyondContent(): boolean {
+  if (!beyond || beyond.length === 0) return false;
+  return beyond.some((item) => isContentRenderable(item.title));
+}

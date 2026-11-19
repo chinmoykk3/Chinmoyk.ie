@@ -1,4 +1,4 @@
-import { Scene, SceneSize, SceneState } from '../types';
+import { Scene, SceneSize, SceneState, RgbTuple } from '../types';
 import { rgba } from '../tokens';
 
 interface BokehDisc {
@@ -67,11 +67,11 @@ export class Ch07BokehScene implements Scene {
 
     ctx.save();
 
-    if (theme === 'dark') {
-      ctx.globalCompositeOperation = 'lighter';
-    } else {
-      ctx.globalCompositeOperation = 'multiply';
-    }
+    const isDark = theme === 'dark';
+    ctx.globalCompositeOperation = isDark ? 'lighter' : 'multiply';
+
+    const emberRgb: RgbTuple = isDark ? accentColours.emberRgb : accentColours.emberTextSafeRgb;
+    const goldRgb: RgbTuple = isDark ? accentColours.goldRgb : accentColours.goldTextSafeRgb;
 
     // Parallax
     if (!pointer.isTouch) {
@@ -91,12 +91,12 @@ export class Ch07BokehScene implements Scene {
 
       // Soft bokeh disc with subtle rim highlight
       const grad = ctx.createRadialGradient(0, 0, d.radius * 0.2, 0, 0, d.radius);
-      const alpha = d.alpha * (theme === 'dark' ? 1.0 : 0.7);
+      const alpha = d.alpha * (isDark ? 1.0 : 0.7);
 
-      grad.addColorStop(0, rgba(accentColours.emberRgb, alpha * 0.4));
-      grad.addColorStop(0.75, rgba(accentColours.emberRgb, alpha * 0.85));
-      grad.addColorStop(0.92, rgba(accentColours.goldRgb, alpha * 1.1));
-      grad.addColorStop(1, rgba(accentColours.emberRgb, 0));
+      grad.addColorStop(0, rgba(emberRgb, alpha * 0.4));
+      grad.addColorStop(0.75, rgba(emberRgb, alpha * 0.85));
+      grad.addColorStop(0.92, rgba(goldRgb, alpha * 1.1));
+      grad.addColorStop(1, rgba(emberRgb, 0));
 
       ctx.fillStyle = grad;
       ctx.beginPath();
@@ -114,11 +114,10 @@ export class Ch07BokehScene implements Scene {
     const { theme, accentColours } = state;
 
     ctx.save();
-    if (theme === 'dark') {
-      ctx.globalCompositeOperation = 'lighter';
-    } else {
-      ctx.globalCompositeOperation = 'multiply';
-    }
+    const isDark = theme === 'dark';
+    ctx.globalCompositeOperation = isDark ? 'lighter' : 'multiply';
+
+    const emberRgb = isDark ? accentColours.emberRgb : accentColours.emberTextSafeRgb;
 
     const grad = ctx.createRadialGradient(
       width * 0.5,
@@ -128,8 +127,8 @@ export class Ch07BokehScene implements Scene {
       height * 0.6,
       Math.min(width, height) * 0.4
     );
-    grad.addColorStop(0, rgba(accentColours.emberRgb, 0.12));
-    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    grad.addColorStop(0, rgba(emberRgb, 0.12));
+    grad.addColorStop(1, rgba(emberRgb, 0));
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, width, height);
     ctx.restore();

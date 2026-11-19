@@ -1,4 +1,4 @@
-import { Scene, SceneSize, SceneState } from '../types';
+import { Scene, SceneSize, SceneState, RgbTuple } from '../types';
 import { rgba } from '../tokens';
 
 export class Ch06LightLeaksFilmScene implements Scene {
@@ -12,7 +12,7 @@ export class Ch06LightLeaksFilmScene implements Scene {
 
   public update(dt: number, state: SceneState): void {
     // Film sprockets scroll slowly along Y
-    this.perfOffset = (this.perfOffset + dt * 18) % 36;
+    this.perfOffset = (this.perfOffset + dt * 16) % 36;
   }
 
   public draw(ctx: CanvasRenderingContext2D, state: SceneState): void {
@@ -21,13 +21,13 @@ export class Ch06LightLeaksFilmScene implements Scene {
 
     ctx.save();
 
-    if (theme === 'dark') {
-      ctx.globalCompositeOperation = 'lighter';
-    } else {
-      ctx.globalCompositeOperation = 'multiply';
-    }
+    const isDark = theme === 'dark';
+    ctx.globalCompositeOperation = isDark ? 'lighter' : 'multiply';
 
-    // Parallax
+    const goldRgb: RgbTuple = isDark ? accentColours.goldRgb : accentColours.goldTextSafeRgb;
+    const emberRgb: RgbTuple = isDark ? accentColours.emberRgb : accentColours.emberTextSafeRgb;
+
+    // Subtle Parallax
     if (!pointer.isTouch) {
       ctx.translate(pointer.x * 8, pointer.y * 8);
     }
@@ -38,10 +38,10 @@ export class Ch06LightLeaksFilmScene implements Scene {
 
     // Top-left leak (Gold)
     const leak1Grad = ctx.createRadialGradient(0, 0, 0, 0, 0, leak1Radius);
-    const alphaGold = (theme === 'dark' ? 0.14 : 0.09) * (1 + flicker1 * 0.4);
-    leak1Grad.addColorStop(0, rgba(accentColours.goldRgb, alphaGold));
-    leak1Grad.addColorStop(0.5, rgba(accentColours.emberRgb, alphaGold * 0.4));
-    leak1Grad.addColorStop(1, rgba(accentColours.goldRgb, 0));
+    const alphaGold = (isDark ? 0.14 : 0.09) * (1 + flicker1 * 0.4);
+    leak1Grad.addColorStop(0, rgba(goldRgb, alphaGold));
+    leak1Grad.addColorStop(0.5, rgba(emberRgb, alphaGold * 0.4));
+    leak1Grad.addColorStop(1, rgba(goldRgb, 0));
 
     ctx.fillStyle = leak1Grad;
     ctx.beginPath();
@@ -52,10 +52,10 @@ export class Ch06LightLeaksFilmScene implements Scene {
     const flicker2 = Math.cos(time * 2.2) * 0.14;
     const leak2Radius = Math.min(width, height) * (0.5 + flicker2 * 0.2);
     const leak2Grad = ctx.createRadialGradient(width, height, 0, width, height, leak2Radius);
-    const alphaEmber = (theme === 'dark' ? 0.15 : 0.1) * (1 + flicker2 * 0.35);
-    leak2Grad.addColorStop(0, rgba(accentColours.emberRgb, alphaEmber));
-    leak2Grad.addColorStop(0.6, rgba(accentColours.goldRgb, alphaEmber * 0.35));
-    leak2Grad.addColorStop(1, rgba(accentColours.emberRgb, 0));
+    const alphaEmber = (isDark ? 0.15 : 0.1) * (1 + flicker2 * 0.35);
+    leak2Grad.addColorStop(0, rgba(emberRgb, alphaEmber));
+    leak2Grad.addColorStop(0.6, rgba(goldRgb, alphaEmber * 0.35));
+    leak2Grad.addColorStop(1, rgba(emberRgb, 0));
 
     ctx.fillStyle = leak2Grad;
     ctx.beginPath();
@@ -67,9 +67,9 @@ export class Ch06LightLeaksFilmScene implements Scene {
     const perfHeight = 20;
     const perfSpacing = 36;
     const margin = 16;
-    const perfAlpha = theme === 'dark' ? 0.08 : 0.06;
+    const perfAlpha = isDark ? 0.08 : 0.06;
 
-    ctx.strokeStyle = rgba(accentColours.goldRgb, perfAlpha);
+    ctx.strokeStyle = rgba(goldRgb, perfAlpha);
     ctx.lineWidth = 1;
 
     // Left perforation column
@@ -109,11 +109,10 @@ export class Ch06LightLeaksFilmScene implements Scene {
     const { theme, accentColours } = state;
 
     ctx.save();
-    if (theme === 'dark') {
-      ctx.globalCompositeOperation = 'lighter';
-    } else {
-      ctx.globalCompositeOperation = 'multiply';
-    }
+    const isDark = theme === 'dark';
+    ctx.globalCompositeOperation = isDark ? 'lighter' : 'multiply';
+
+    const emberRgb = isDark ? accentColours.emberRgb : accentColours.emberTextSafeRgb;
 
     const grad = ctx.createRadialGradient(
       width,
@@ -123,8 +122,8 @@ export class Ch06LightLeaksFilmScene implements Scene {
       height,
       Math.min(width, height) * 0.5
     );
-    grad.addColorStop(0, rgba(accentColours.emberRgb, 0.12));
-    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    grad.addColorStop(0, rgba(emberRgb, 0.12));
+    grad.addColorStop(1, rgba(emberRgb, 0));
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, width, height);
 

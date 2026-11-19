@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { contentFieldSchema, ContentField, confirmed, draft, placeholder } from './schema';
 import { narration } from './narration';
-import { beyond } from './beyond';
+import { beyond, hasBeyondContent } from './beyond';
 
 export const accentKeySchema = z.enum([
   'gold',
@@ -235,8 +235,7 @@ const list = [...validatedChapters] as ChapterList;
  * Requirement 9: Chapter 07 auto-hides if beyond.ts is empty
  */
 list.visible = function (): Chapter[] {
-  const isBeyondEmpty = !beyond || beyond.length === 0;
-  if (isBeyondEmpty) {
+  if (!hasBeyondContent()) {
     return list.filter((ch) => ch.id !== 'chapter-07');
   }
   return list;
