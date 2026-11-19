@@ -6,17 +6,15 @@ import { projects } from '@/content/projects';
 import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Tag';
 import { Card } from '@/components/ui/Card';
+import { Content } from '@/components/content/Content';
+import { getContentText, ContentField } from '@/content/schema';
 import { ArchitectureDiagram } from '@/components/projects/ArchitectureDiagram';
-import { ProjectEvidenceSection } from '@/components/projects/ProjectEvidenceSection';
 import { DirectorsCommentary } from '@/components/polish/DirectorsCommentary';
 import {
   ArrowLeft,
-  AlertTriangle,
-  ArrowRight,
   ChevronLeft,
   ChevronRight,
   Layers,
-  Sparkles,
 } from 'lucide-react';
 
 export function generateStaticParams() {
@@ -39,18 +37,21 @@ export async function generateMetadata({
     };
   }
 
+  const titleStr = getContentText(project.title) || 'Project';
+  const taglineStr = getContentText(project.tagline) || '';
+
   return {
-    title: `${project.title} — 10-Point Engineering Case Study | Chinmoy Kalita`,
-    description: project.tagline,
+    title: `${titleStr} — 10-Point Engineering Case Study | Chinmoy Kalita`,
+    description: taglineStr,
     openGraph: {
-      title: `${project.title} — Architecture & Systems Case Study`,
-      description: project.tagline,
+      title: `${titleStr} — Architecture & Systems Case Study`,
+      description: taglineStr,
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${project.title} — Chinmoy Kalita`,
-      description: project.tagline,
+      title: `${titleStr} — Chinmoy Kalita`,
+      description: taglineStr,
     },
     alternates: {
       canonical: `/projects/${project.slug}`,
@@ -72,7 +73,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const prevProject = projectIndex > 0 ? projects[projectIndex - 1] : null;
   const nextProject = projectIndex < projects.length - 1 ? projects[projectIndex + 1] : null;
 
-  const sections = [
+  const sections: { id: string; num: string; title: string; val: ContentField }[] = [
     { id: 'section-idea', num: '01', title: 'The Original Idea', val: framework.idea },
     {
       id: 'section-problem',
@@ -99,7 +100,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       title: 'Engineering & Prototyping Process',
       val: framework.process,
     },
-    { id: 'section-architecture', num: '07', title: 'Technologies & Architecture', val: '' },
     {
       id: 'section-challenges',
       num: '08',
@@ -118,7 +118,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       title: 'Architectural Lessons Learned',
       val: framework.lessons,
     },
-    { id: 'section-evidence', num: '11', title: 'Empirical Evidence & Artifacts', val: '' },
   ];
 
   return (
@@ -141,7 +140,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             <span className="text-theme-border-strong">/</span>
             <span>Case Study</span>
             <span className="text-theme-border-strong">/</span>
-            <span className="text-theme-azure font-semibold">{project.title}</span>
+            <span className="text-theme-azure font-semibold"><Content value={project.title} /></span>
           </div>
         </div>
 
@@ -154,40 +153,23 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             <Tag variant="status" size="sm">
               STATUS: {project.status.toUpperCase()}
             </Tag>
-            <span className="text-xs font-mono text-theme-muted">{project.year}</span>
           </div>
 
           <h1 className="text-fluid-h1 font-serif font-black text-theme-text tracking-tight leading-tight">
-            {project.title}
+            <Content value={project.title} />
           </h1>
 
           <p className="text-fluid-narration font-serif italic text-theme-muted max-w-3xl leading-relaxed">
-            &ldquo;{project.tagline}&rdquo;
+            &ldquo;<Content value={project.tagline} />&rdquo;
           </p>
 
-          {/* Placeholder Banner */}
-          {project.isPlaceholder && (
-            <div className="p-4 rounded-xl bg-theme-ember/10 border border-theme-ember/30 flex items-start gap-3 text-theme-text text-xs">
-              <AlertTriangle className="w-4 h-4 text-theme-ember shrink-0 mt-0.5" />
-              <div>
-                <span className="font-semibold text-theme-ember">Integrity Notice: </span>
-                In accordance with project rules, all unverified metrics, dates, and client results
-                are clearly marked as{' '}
-                <code className="bg-theme-surface px-1.5 py-0.5 rounded font-mono text-[11px]">
-                  [TODO: ...]
-                </code>{' '}
-                and stored in <code className="font-mono">/content/projects.ts</code>. No metrics
-                are fabricated.
-              </div>
-            </div>
-          )}
-          {/* Director's Commentary Note (Behind-the-scenes) */}
+          {/* Director's Commentary */}
           <DirectorsCommentary id={project.slug} />
         </header>
 
-        {/* Two-Column Grid: Sticky Section Index (3 cols) + 10-Point Framework (9 cols) */}
+        {/* Two-Column Grid: Sticky Section Index (4 cols) + 10-Point Framework (8 cols) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Sticky Section Index Sidebar */}
+          {/* Sticky Sidebar */}
           <aside className="lg:col-span-4 sticky top-24 hidden lg:block p-5 rounded-2xl bg-theme-surface border border-theme-border shadow-sm space-y-4">
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-theme-azure font-bold border-b border-theme-border pb-3">
               <Layers className="w-4 h-4" />
@@ -208,51 +190,37 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 </a>
               ))}
             </nav>
-
-            <div className="pt-3 border-t border-theme-border text-[10px] font-mono text-theme-muted">
-              Click to jump to section
-            </div>
           </aside>
 
           {/* Main Case Study Content Area */}
           <div className="lg:col-span-8 space-y-12">
             {/* Sections 01 - 06 */}
             <div className="space-y-6">
-              {sections.slice(0, 6).map((sec) => {
-                const isTodo = sec.val.startsWith('[TODO:');
-
-                return (
-                  <section
-                    key={sec.id}
-                    id={sec.id}
-                    className="p-6 sm:p-8 rounded-2xl bg-theme-surface border border-theme-border shadow-sm scroll-mt-24 space-y-3"
-                  >
-                    <div className="flex items-center justify-between border-b border-theme-border pb-3">
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs font-mono font-bold text-theme-azure">
-                          {sec.num}
-                        </span>
-                        <h2 className="font-serif font-bold text-lg sm:text-xl text-theme-text">
-                          {sec.title}
-                        </h2>
-                      </div>
-                      <Tag variant="default" size="sm">
-                        POINT {sec.num}
-                      </Tag>
+              {sections.slice(0, 6).map((sec) => (
+                <section
+                  key={sec.id}
+                  id={sec.id}
+                  className="p-6 sm:p-8 rounded-2xl bg-theme-surface border border-theme-border shadow-sm scroll-mt-24 space-y-3"
+                >
+                  <div className="flex items-center justify-between border-b border-theme-border pb-3">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-mono font-bold text-theme-azure">
+                        {sec.num}
+                      </span>
+                      <h2 className="font-serif font-bold text-lg sm:text-xl text-theme-text">
+                        {sec.title}
+                      </h2>
                     </div>
+                    <Tag variant="default" size="sm">
+                      POINT {sec.num}
+                    </Tag>
+                  </div>
 
-                    <div
-                      className={
-                        isTodo
-                          ? 'p-4 rounded-xl bg-theme-ember/10 border border-theme-ember/20 font-mono text-xs text-theme-text leading-relaxed'
-                          : 'text-sm text-theme-muted leading-relaxed font-sans'
-                      }
-                    >
-                      {sec.val}
-                    </div>
-                  </section>
-                );
-              })}
+                  <div className="text-sm text-theme-muted leading-relaxed font-sans">
+                    <Content value={sec.val} />
+                  </div>
+                </section>
+              ))}
             </div>
 
             {/* Section 07: Technology Stack & Self-Drawing Architecture Diagram */}
@@ -262,7 +230,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   <div className="flex items-center gap-3">
                     <span className="text-xs font-mono font-bold text-theme-azure">07</span>
                     <h2 className="font-serif font-bold text-lg sm:text-xl text-theme-text">
-                      Technologies & Stack Components
+                      Technologies &amp; Stack Components
                     </h2>
                   </div>
                   <Tag variant="default" size="sm">
@@ -273,58 +241,46 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 <div className="flex flex-wrap gap-2 pt-2">
                   {framework.stack.map((tech, idx) => (
                     <Tag key={idx} variant="default" size="md">
-                      {tech}
+                      <Content value={tech} />
                     </Tag>
                   ))}
                 </div>
               </Card>
 
-              {/* Self-Drawing Architecture Diagram with [Diagram placeholder] */}
-              <ArchitectureDiagram nodes={project.architectureNodes} projectTitle={project.title} />
+              {/* Self-Drawing Architecture Diagram */}
+              <ArchitectureDiagram
+                nodes={project.architectureNodes}
+                projectTitle={getContentText(project.title) || ''}
+              />
             </section>
 
             {/* Sections 08 - 10 */}
             <div className="space-y-6">
-              {sections.slice(7, 10).map((sec) => {
-                const isTodo = sec.val.startsWith('[TODO:');
-
-                return (
-                  <section
-                    key={sec.id}
-                    id={sec.id}
-                    className="p-6 sm:p-8 rounded-2xl bg-theme-surface border border-theme-border shadow-sm scroll-mt-24 space-y-3"
-                  >
-                    <div className="flex items-center justify-between border-b border-theme-border pb-3">
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs font-mono font-bold text-theme-azure">
-                          {sec.num}
-                        </span>
-                        <h2 className="font-serif font-bold text-lg sm:text-xl text-theme-text">
-                          {sec.title}
-                        </h2>
-                      </div>
-                      <Tag variant="default" size="sm">
-                        POINT {sec.num}
-                      </Tag>
+              {sections.slice(6).map((sec) => (
+                <section
+                  key={sec.id}
+                  id={sec.id}
+                  className="p-6 sm:p-8 rounded-2xl bg-theme-surface border border-theme-border shadow-sm scroll-mt-24 space-y-3"
+                >
+                  <div className="flex items-center justify-between border-b border-theme-border pb-3">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-mono font-bold text-theme-azure">
+                        {sec.num}
+                      </span>
+                      <h2 className="font-serif font-bold text-lg sm:text-xl text-theme-text">
+                        {sec.title}
+                      </h2>
                     </div>
+                    <Tag variant="default" size="sm">
+                      POINT {sec.num}
+                    </Tag>
+                  </div>
 
-                    <div
-                      className={
-                        isTodo
-                          ? 'p-4 rounded-xl bg-theme-ember/10 border border-theme-ember/20 font-mono text-xs text-theme-text leading-relaxed'
-                          : 'text-sm text-theme-muted leading-relaxed font-sans'
-                      }
-                    >
-                      {sec.val}
-                    </div>
-                  </section>
-                );
-              })}
-            </div>
-
-            {/* Section 11: Empirical Evidence & Artifacts */}
-            <div id="section-evidence" className="scroll-mt-24">
-              <ProjectEvidenceSection evidence={project.evidence} projectTitle={project.title} />
+                  <div className="text-sm text-theme-muted leading-relaxed font-sans">
+                    <Content value={sec.val} />
+                  </div>
+                </section>
+              ))}
             </div>
 
             {/* Next / Previous Project Navigation */}
@@ -338,38 +294,32 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   className="p-5 rounded-2xl bg-theme-surface border border-theme-border hover:border-theme-azure/40 transition-all flex flex-col justify-between group"
                 >
                   <span className="text-[10px] font-mono uppercase tracking-widest text-theme-muted flex items-center gap-1">
-                    <ChevronLeft className="w-3.5 h-3.5" /> Previous Project
+                    <ChevronLeft className="w-3 h-3" />
+                    <span>Previous Case Study</span>
                   </span>
-                  <div className="mt-2">
-                    <div className="font-serif font-bold text-base text-theme-text group-hover:text-theme-azure transition-colors">
-                      {prevProject.title}
-                    </div>
-                    <div className="text-xs text-theme-muted truncate mt-0.5">
-                      {prevProject.tagline}
-                    </div>
-                  </div>
+                  <span className="font-serif font-bold text-base text-theme-text group-hover:text-theme-azure mt-2">
+                    <Content value={prevProject.title} />
+                  </span>
                 </Link>
               ) : (
                 <div />
               )}
 
-              {nextProject && (
+              {nextProject ? (
                 <Link
                   href={`/projects/${nextProject.slug}`}
-                  className="p-5 rounded-2xl bg-theme-surface border border-theme-border hover:border-theme-azure/40 transition-all flex flex-col justify-between items-end text-right group ml-auto w-full"
+                  className="p-5 rounded-2xl bg-theme-surface border border-theme-border hover:border-theme-azure/40 transition-all flex flex-col justify-between group sm:text-right"
                 >
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-theme-muted flex items-center gap-1">
-                    Next Project <ChevronRight className="w-3.5 h-3.5" />
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-theme-muted flex items-center gap-1 sm:justify-end">
+                    <span>Next Case Study</span>
+                    <ChevronRight className="w-3 h-3" />
                   </span>
-                  <div className="mt-2">
-                    <div className="font-serif font-bold text-base text-theme-text group-hover:text-theme-azure transition-colors">
-                      {nextProject.title}
-                    </div>
-                    <div className="text-xs text-theme-muted truncate mt-0.5">
-                      {nextProject.tagline}
-                    </div>
-                  </div>
+                  <span className="font-serif font-bold text-base text-theme-text group-hover:text-theme-azure mt-2">
+                    <Content value={nextProject.title} />
+                  </span>
                 </Link>
+              ) : (
+                <div />
               )}
             </nav>
           </div>

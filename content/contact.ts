@@ -1,73 +1,67 @@
-export interface SocialLink {
-  platform: string;
-  url: string;
-  handle: string;
-  isPlaceholder: boolean;
-}
+import { z } from 'zod';
+import { contentFieldSchema, ContentField, confirmed, draft, placeholder } from './schema';
 
-export interface ContactInfo {
-  name: string;
-  email: string;
-  location: string;
-  currentRoleOrStatus: string;
-  availability: string;
-  bioSnippet: string;
-  socials: SocialLink[];
-  isPlaceholder: boolean;
-  // Specific Epilogue Horizons & Aspirations
-  whatIWantToBecome: string;
-  whatIWantToBuild: string;
-  technologiesToExplore: string[];
-  ambitions: string;
-  collaborationOpportunities: string[];
-}
+export const socialLinkSchema = z.object({
+  platform: z.string(),
+  url: z.string(),
+  handle: z.string(),
+  isPlaceholder: z.boolean(),
+});
+export type SocialLink = z.infer<typeof socialLinkSchema>;
 
-export const contactData: ContactInfo = {
-  name: 'Chinmoy Kalita',
-  email: 'chinmoykk3@gmail.com', // derived from git author
-  location: 'Assam, India [TODO: confirm exact city/region]',
-  currentRoleOrStatus: '[TODO: Add current role/student status/independent engineer title]',
-  availability: 'Open for high-impact engineering roles, research collaborations & creative builds',
-  bioSnippet:
-    'Creative technologist and full-stack software engineer crafting narrative-rich interactive systems, resilient public platforms, and AI frontiers.',
-  isPlaceholder: true,
-  whatIWantToBecome:
-    '[TODO: Chinmoy to supply: What I want to become — e.g. A foundational systems architect bridging autonomous intelligence, spatial media, and public infrastructure]',
-  whatIWantToBuild:
-    '[TODO: Chinmoy to supply: What I want to build — e.g. Resilient decentralized platforms, agentic computing operating environments, and sensory interfaces that dignify human agency]',
+export const contactInfoSchema = z.object({
+  name: contentFieldSchema,
+  email: z.string(),
+  location: contentFieldSchema,
+  currentRoleOrStatus: contentFieldSchema,
+  availability: contentFieldSchema,
+  bioSnippet: contentFieldSchema,
+  socials: z.array(socialLinkSchema),
+  whatIWantToBecome: contentFieldSchema,
+  whatIWantToBuild: contentFieldSchema,
+  technologiesToExplore: z.array(contentFieldSchema),
+  ambitions: contentFieldSchema,
+  collaborationOpportunities: z.array(contentFieldSchema),
+});
+export type ContactInfo = z.infer<typeof contactInfoSchema>;
+
+const rawContact: ContactInfo = {
+  name: confirmed('Chinmoy Kalita'),
+  email: 'chinmoykk3@gmail.com',
+  location: placeholder('[TODO: confirm exact city/region, Assam, India]'),
+  currentRoleOrStatus: placeholder('[TODO: add current role/student status/independent engineer title]'),
+  availability: draft('Open for high-impact engineering roles, research collaborations & creative builds'),
+  bioSnippet: draft(
+    'Creative technologist and full-stack software engineer crafting narrative-rich interactive systems, resilient public platforms, and AI frontiers.'
+  ),
+  whatIWantToBecome: placeholder('[TODO: Chinmoy to supply: What I want to become]'),
+  whatIWantToBuild: placeholder('[TODO: Chinmoy to supply: What I want to build]'),
   technologiesToExplore: [
-    'Local Small Language Models (SLMs) & WebGPU Shaders',
-    'Distributed Consensus & Zero-Knowledge Cryptography',
-    'Spatial Typography & WebGL Real-Time Graphics',
-    'Deterministic Agentic Evaluation Systems',
-    '[TODO: Chinmoy to confirm additional technologies to explore]',
+    draft('Local Small Language Models (SLMs) & WebGPU Shaders'),
+    draft('Distributed Consensus & Zero-Knowledge Cryptography'),
+    draft('Spatial Typography & WebGL Real-Time Graphics'),
+    draft('Deterministic Agentic Evaluation Systems'),
+    placeholder('[TODO: confirm additional technologies to explore]'),
   ],
-  ambitions:
-    '[TODO: Chinmoy to supply: Ambitions — e.g. To engineer mission-critical systems that outlast ephemeral hype cycles and empower vulnerable civic communities]',
+  ambitions: placeholder('[TODO: Chinmoy to supply: Ambitions]'),
   collaborationOpportunities: [
-    'Founding / Core Full-Stack & AI Engineering Roles',
-    'Open-Source Decentralized & Civic Tech Initiatives',
-    'Interactive 3D / Creative Technology Experiments',
-    'Applied AI & Autonomous Agent Architecture Research',
-    '[TODO: Chinmoy to add specific collaboration targets]',
+    draft('Founding / Core Full-Stack & AI Engineering Roles'),
+    draft('Open-Source Decentralized & Civic Tech Initiatives'),
+    draft('Interactive 3D / Creative Technology Experiments'),
+    draft('Applied AI & Autonomous Agent Architecture Research'),
+    placeholder('[TODO: add specific collaboration targets]'),
   ],
   socials: [
     {
       platform: 'GitHub',
-      url: 'https://github.com/chinmoyk [TODO: verify GitHub handle]',
-      handle: '@chinmoyk [TODO: verify]',
+      url: 'https://github.com/chinmoyk',
+      handle: '@chinmoyk',
       isPlaceholder: true,
     },
     {
       platform: 'LinkedIn',
-      url: 'https://linkedin.com/in/[TODO: add-linkedin-slug]',
-      handle: 'Chinmoy Kalita [TODO: verify]',
-      isPlaceholder: true,
-    },
-    {
-      platform: 'X (Twitter)',
-      url: 'https://x.com/[TODO: add-x-handle]',
-      handle: '@[TODO: handle]',
+      url: 'https://linkedin.com/in/chinmoy-kalita',
+      handle: 'Chinmoy Kalita',
       isPlaceholder: true,
     },
     {
@@ -78,3 +72,5 @@ export const contactData: ContactInfo = {
     },
   ],
 };
+
+export const contactData: ContactInfo = contactInfoSchema.parse(rawContact);

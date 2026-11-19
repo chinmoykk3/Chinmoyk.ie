@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { DesignWorkItem } from '@/content/designWork';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { Tag } from '@/components/ui/Tag';
+import { Content } from '@/components/content/Content';
+import { getContentText } from '@/content/schema';
 import {
   X,
   ChevronLeft,
@@ -110,7 +112,7 @@ export function DesignLightbox({ isOpen, onClose, items, initialIndex }: DesignL
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`Design Specimen Lightbox: ${currentItem.title}`}
+      aria-label={`Design Specimen Lightbox: ${getContentText(currentItem.title) || ''}`}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl p-4 sm:p-6 select-none animate-fade-in"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
@@ -170,7 +172,7 @@ export function DesignLightbox({ isOpen, onClose, items, initialIndex }: DesignL
             <div className="relative w-full h-[360px] sm:h-[420px]">
               <Image
                 src={activeImageSrc}
-                alt={currentItem.alt}
+                alt={getContentText(currentItem.alt) || ''}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 60vw, 700px"
                 className="object-contain transition-all duration-300"
@@ -192,10 +194,10 @@ export function DesignLightbox({ isOpen, onClose, items, initialIndex }: DesignL
           <div className="lg:col-span-5 space-y-5">
             <div>
               <h2 className="text-xl sm:text-2xl font-serif font-black text-theme-text tracking-tight">
-                {currentItem.title}
+                <Content value={currentItem.title} />
               </h2>
               <p className="text-xs text-theme-muted font-sans mt-2 leading-relaxed">
-                {currentItem.description}
+                <Content value={currentItem.description} />
               </p>
             </div>
 
@@ -205,7 +207,7 @@ export function DesignLightbox({ isOpen, onClose, items, initialIndex }: DesignL
                 Accessibility Description (Alt Text)
               </span>
               <p className="text-theme-text font-serif italic text-xs leading-relaxed">
-                &ldquo;{currentItem.alt}&rdquo;
+                &ldquo;<Content value={currentItem.alt} />&rdquo;
               </p>
             </div>
 
@@ -255,19 +257,11 @@ export function DesignLightbox({ isOpen, onClose, items, initialIndex }: DesignL
               <div className="flex flex-wrap gap-1.5">
                 {currentItem.tools.map((tool, idx) => (
                   <Tag key={idx} variant="default" size="sm">
-                    {tool}
+                    <Content value={tool} />
                   </Tag>
                 ))}
               </div>
             </div>
-
-            {/* Placeholder Indicator */}
-            {currentItem.isPlaceholder && (
-              <div className="p-2.5 rounded-lg bg-theme-ember/10 border border-theme-ember/20 text-[11px] font-mono text-theme-ember flex items-center gap-1.5">
-                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                <span>[Placeholder Tile] · Awaiting Chinmoy artwork file</span>
-              </div>
-            )}
           </div>
         </div>
 

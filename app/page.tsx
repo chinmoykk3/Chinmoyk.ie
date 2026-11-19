@@ -12,9 +12,11 @@ import { Chapter07Possibility } from '@/components/chapters/Chapter07Possibility
 import { EpilogueSection } from '@/components/story/EpilogueSection';
 
 export default function StoryModePage() {
+  const visibleChapters = chapters.visible ? chapters.visible() : chapters;
+
   return (
     <div className="w-full relative">
-      {/* Cinematic Opening Experience (Pure Black Screen, Focus Pull, Breathing Gold Point) */}
+      {/* Cinematic Opening Experience */}
       <OpeningExperience />
 
       {/* Narrative Hero (Prologue) */}
@@ -22,7 +24,7 @@ export default function StoryModePage() {
 
       {/* Full-bleed Chapter Scenes: Scene, Not Card (Rule 1) */}
       <main className="w-full relative">
-        {chapters.map((chapter) => {
+        {visibleChapters.map((chapter) => {
           if (chapter.id === 'chapter-01') {
             return <Chapter01Curiosity key={chapter.id} chapter={chapter} />;
           }

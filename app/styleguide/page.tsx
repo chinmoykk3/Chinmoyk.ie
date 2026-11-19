@@ -8,6 +8,7 @@ import { NarrationText } from '@/components/ui/NarrationText';
 import { Button } from '@/components/ui/Button';
 import { Tag } from '@/components/ui/Tag';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
+import { Content } from '@/components/content/Content';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { useTheme } from '@/hooks/useTheme';
 import { chapters } from '@/content/chapters';
@@ -267,7 +268,7 @@ export default function StyleguidePage() {
                     <td className="p-3 font-semibold text-chapter-accent">
                       {ch.number === 0 ? 'Prologue' : typeof ch.number === 'number' ? `Chapter 0${ch.number}` : ch.number}
                     </td>
-                    <td className="p-3 font-serif font-medium text-sm text-theme-text">{ch.title}</td>
+                    <td className="p-3 font-serif font-medium text-sm text-theme-text"><Content value={ch.title} /></td>
                     <td className="p-3 text-chapter-accent font-semibold">{ch.accentKey}</td>
                     <td className="p-3 text-theme-muted">{ch.emotionalArc}</td>
                     <td className="p-3">

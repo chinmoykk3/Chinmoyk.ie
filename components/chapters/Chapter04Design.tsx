@@ -1,19 +1,20 @@
 'use client';
 
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { Chapter } from '@/content/chapters';
-import { designWorks, DesignWorkItem, DesignCategory } from '@/content/designWork';
+import { designWork, DesignWorkItem, DesignCategory } from '@/content/designWork';
 import { useMotion } from '@/hooks/useMotion';
-import { ChapterLabel } from '@/components/ui/ChapterLabel';
 import { Container } from '@/components/ui/Container';
-import { Tag } from '@/components/ui/Tag';
 import { Card } from '@/components/ui/Card';
-import { DesignLightbox } from '@/components/chapters/DesignLightbox';
-import { Sparkles, ArrowDown, Palette, Eye, Sliders, Maximize2 } from 'lucide-react';
+import { Content } from '@/components/content/Content';
+import { NarrationText } from '@/components/ui/NarrationText';
+import { getContentText } from '@/content/schema';
+import { Palette, Eye } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { cn } from '@/lib/utils';
+import { DesignLightbox } from './DesignLightbox';
 
 export interface Chapter04DesignProps {
   chapter: Chapter;
@@ -21,72 +22,86 @@ export interface Chapter04DesignProps {
 
 export function Chapter04Design({ chapter }: Chapter04DesignProps) {
   const { motionEnabled, prefersReducedMotion } = useMotion();
-  const typoMomentRef = useRef<HTMLDivElement>(null);
-  const galleryRef = useRef<HTMLDivElement>(null);
-
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  // Desktop Cursor Lens state
+  // Floating cursor lens state (Desktop only)
   const [lensPos, setLensPos] = useState<{ x: number; y: number } | null>(null);
-  const [lensText, setLensText] = useState<string>('');
+  const [lensText, setLensText] = useState('');
+
+  const typoMomentRef = useRef<HTMLDivElement>(null);
+  const lettersRef = useRef<(HTMLSpanElement | null)[]>([]);
+  const galleryRef = useRef<HTMLDivElement>(null);
 
   const isReduced = prefersReducedMotion || !motionEnabled;
 
-  const categories: (DesignCategory | 'All')[] = [
-    'All',
-    'Posters',
-    'Branding',
-    'Typography',
-    'Visual experiments',
-  ];
+  const categories = ['All', 'Posters', 'Branding', 'Typography', 'Visual experiments'];
 
   const filteredItems =
     activeCategory === 'All'
-      ? designWorks
-      : designWorks.filter((item) => item.category === activeCategory);
+      ? designWork
+      : designWork.filter((item) => item.category === activeCategory);
 
-  // 1. Typographic Moment Animation via GSAP ScrollTrigger
+  // 1. Dynamic rearranging letter composition (Scroll-triggered kinetic typography)
   useEffect(() => {
-    const el = typoMomentRef.current;
-    if (!el || isReduced) return;
+    if (isReduced) return;
 
-    const letters = el.querySelectorAll('.typo-letter');
-    if (!letters.length) return;
+    const typoEl = typoMomentRef.current;
+    if (!typoEl) return;
 
-    gsap.set(letters, {
-      y: (i) => (i % 2 === 0 ? -30 : 30),
-      opacity: 0.2,
-      letterSpacing: '0.3em',
-    });
+    const letters = lettersRef.current.filter(Boolean) as HTMLSpanElement[];
+    if (letters.length === 0) return;
 
-    const tween = gsap.to(letters, {
-      y: 0,
-      opacity: 1,
-      letterSpacing: '0.05em',
-      stagger: 0.04,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 75%',
-        end: 'bottom 45%',
-        scrub: 0.6,
-      },
-    });
+    const ctx = gsap.context(() => {
+      // Letters assemble from slight random offsets and rotations into sharp grid alignment
+      gsap.fromTo(
+        letters,
+        {
+          x: () => (Math.random() - 0.5) * 80,
+          y: () => (Math.random() - 0.5) * 80,
+          rotation: () => (Math.random() - 0.5) * 35,
+          opacity: 0.2,
+          scale: 0.85,
+        },
+        {
+          x: 0,
+          y: 0,
+          rotation: 0,
+          opacity: 1,
+          scale: 1,
+          ease: 'power3.out',
+          stagger: {
+            each: 0.03,
+            from: 'random',
+          },
+          scrollTrigger: {
+            trigger: typoEl,
+            start: 'top 80%',
+            end: 'center 45%',
+            scrub: 0.4,
+          },
+        }
+      );
+    }, typoEl);
 
-    return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
-    };
+    return () => ctx.revert();
   }, [isReduced]);
 
-  // 2. Cursor Lens mouse move handler
+  // 2. Cursor hover lens handlers
+  const handleMouseEnter = useCallback(
+    (title: string, e: React.MouseEvent) => {
+      if (isReduced) return;
+      setLensText(title);
+      setLensPos({ x: e.clientX, y: e.clientY });
+    },
+    [isReduced]
+  );
+
   const handleMouseMove = useCallback(
-    (e: React.MouseEvent, title: string) => {
+    (e: React.MouseEvent) => {
       if (isReduced) return;
       setLensPos({ x: e.clientX, y: e.clientY });
-      setLensText(title);
     },
     [isReduced]
   );
@@ -110,7 +125,7 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
       className="relative w-full border-t border-theme-border transition-colors duration-300"
     >
       <div className="w-full py-16 relative overflow-hidden">
-        {/* Chapter Ambient Wash (Token-based) */}
+        {/* Chapter Ambient Wash */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-0 bg-chapter-wash"
@@ -127,7 +142,7 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
                 ·
               </span>
               <span className="font-mono text-xs uppercase tracking-widest text-theme-muted">
-                {chapter.title}
+                <Content value={chapter.title} />
               </span>
             </div>
           </div>
@@ -137,25 +152,22 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
               id="chapter-04-heading"
               className="text-fluid-h1 font-serif font-normal tracking-tight text-theme-text leading-[1.08]"
             >
-              {chapter.title}
+              <Content value={chapter.title} />
             </h2>
             {chapter.subtitle && (
               <p className="text-fluid-narration font-serif italic text-theme-muted mt-2 max-w-[32ch] leading-[1.35]">
-                {chapter.subtitle}
+                <Content value={chapter.subtitle} />
               </p>
             )}
           </div>
         </Container>
 
-        {/* ===================================================================
-            TYPOGRAPHIC MOMENT: Dynamic rearranging letter composition
-            =================================================================== */}
+        {/* TYPOGRAPHIC MOMENT */}
         <Container size="lg" className="relative z-10 w-full mb-16">
           <div
             ref={typoMomentRef}
             className="p-8 sm:p-12 rounded-3xl bg-theme-surface border border-theme-border shadow-lg relative overflow-hidden"
           >
-            {/* Top Minimal Slate */}
             <div className="flex items-center justify-between text-xs font-mono text-theme-muted mb-8 border-b border-theme-border pb-3">
               <span>EXHIBITION REFLECTION · OP-04</span>
               <span className="text-theme-rose uppercase tracking-widest font-semibold">
@@ -163,51 +175,38 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
               </span>
             </div>
 
-            {/* Large Dynamic Rearranging Typographic Lockup */}
             <div
               aria-label="DESIGN AS ANOTHER LANGUAGE"
               className="text-center py-4 select-none overflow-hidden"
             >
-              <div className="text-[clamp(2.5rem,8vw+0.5rem,7rem)] font-serif font-black tracking-tight leading-none text-theme-text flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-6">
-                {'DESIGN'.split('').map((char, i) => (
+              <div className="text-fluid-display font-serif font-bold tracking-tight text-theme-text uppercase flex flex-wrap justify-center gap-x-3 sm:gap-x-5 leading-none">
+                {'DESIGN IS A LANGUAGE'.split('').map((char, i) => (
                   <span
-                    key={`d-${i}`}
-                    className="typo-letter inline-block transition-transform duration-300 hover:text-theme-rose"
+                    key={i}
+                    ref={(el) => {
+                      lettersRef.current[i] = el;
+                    }}
+                    className={cn(
+                      'inline-block transition-transform duration-75',
+                      char === ' ' ? 'w-4 sm:w-8' : ''
+                    )}
                   >
                     {char}
                   </span>
                 ))}
               </div>
+            </div>
 
-              <div className="text-[clamp(1.25rem,4vw,3.5rem)] font-mono uppercase tracking-[0.2em] text-theme-rose font-light mt-2 flex flex-wrap items-center justify-center gap-x-2">
-                {'ANOTHER LANGUAGE'.split('').map((char, i) => (
-                  <span
-                    key={`l-${i}`}
-                    className="typo-letter inline-block transition-transform duration-300"
-                  >
-                    {char === ' ' ? '\u00A0' : char}
-                  </span>
-                ))}
+            {/* Verified Narration or Quiet dev placeholder */}
+            {chapter.narration[0] && (
+              <div className="mt-8 pt-6 border-t border-theme-border max-w-2xl mx-auto text-center">
+                <NarrationText value={chapter.narration[0]} />
               </div>
-            </div>
-
-            {/* Narration Thesis */}
-            <div className="mt-8 pt-6 border-t border-theme-border max-w-2xl mx-auto text-center space-y-3">
-              <blockquote className="text-fluid-narration font-serif italic text-theme-text leading-snug">
-                &ldquo;Code instructs machines what to do. Design explains to humans why it matters.
-                Design is another language of thought.&rdquo;
-              </blockquote>
-              <p className="text-xs text-theme-muted leading-relaxed font-sans">
-                It is neither decoration nor an afterthought. In this documentary, visual form,
-                editorial rhythm, and typography stand shoulder-to-shoulder with backend systems.
-              </p>
-            </div>
+            )}
           </div>
         </Container>
 
-        {/* ===================================================================
-            CATEGORY FILTER CONTROLS
-            =================================================================== */}
+        {/* CATEGORY FILTER CONTROLS */}
         <Container size="lg" className="relative z-10 w-full mb-8">
           <div className="flex items-center justify-between flex-wrap gap-4 border-b border-theme-border pb-4">
             <div className="flex items-center gap-2">
@@ -239,119 +238,59 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
           </div>
         </Container>
 
-        {/* ===================================================================
-            ASYMMETRIC EDITORIAL / MASONRY GALLERY WITH CLIP-PATH REVEALS
-            =================================================================== */}
+        {/* GALLERY */}
         <Container size="lg" className="relative z-10 w-full">
           <div
             ref={galleryRef}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-6 items-start"
           >
             {filteredItems.map((item, index) => {
-              // Asymmetric span allocation across 12-col grid
               const spanClasses =
                 index % 3 === 0
-                  ? 'lg:col-span-7' // wide editorial lead
+                  ? 'lg:col-span-7'
                   : index % 3 === 1
-                    ? 'lg:col-span-5' // compact portrait complement
-                    : 'lg:col-span-6'; // balanced split
+                    ? 'lg:col-span-5'
+                    : 'lg:col-span-12';
 
-              const heightClasses =
-                item.aspectRatio === 'portrait'
-                  ? 'h-[380px] sm:h-[440px]'
-                  : item.aspectRatio === 'landscape'
-                    ? 'h-[260px] sm:h-[320px]'
-                    : 'h-[320px] sm:h-[380px]';
+              const titleText = getContentText(item.title) || '';
 
               return (
-                <div
-                  key={item.id}
-                  className={cn('w-full group cursor-pointer focus:outline-none', spanClasses)}
-                  onClick={() => openLightbox(index)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      openLightbox(index);
-                    }
-                  }}
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`View design artifact: ${item.title}`}
-                  onMouseMove={(e) => handleMouseMove(e, item.title)}
-                  onMouseLeave={handleMouseLeave}
-                >
+                <div key={item.id} className={spanClasses}>
                   <Card
                     withWash
                     hoverEffect
-                    className="p-5 flex flex-col justify-between overflow-hidden relative border-theme-border group-hover:border-theme-rose/50 transition-all duration-300"
+                    className="group cursor-pointer overflow-hidden p-4 sm:p-5 border-theme-border/80 bg-theme-surface flex flex-col justify-between h-full"
+                    onClick={() => openLightbox(index)}
+                    onMouseEnter={(e) => handleMouseEnter(titleText, e)}
+                    onMouseMove={handleMouseMove}
+                    onMouseLeave={handleMouseLeave}
                   >
-                    {/* Media Container with Next/Image and Clip-Path styling */}
-                    <div
-                      className={cn(
-                        'relative w-full rounded-xl overflow-hidden bg-black/40 border border-theme-border/60 mb-4',
-                        heightClasses,
-                        !isReduced &&
-                          'transition-all duration-500 ease-out group-hover:scale-[1.01]'
-                      )}
-                    >
-                      <Image
-                        src={item.image}
-                        alt={item.alt}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        placeholder="blur"
-                        blurDataURL={item.blurDataUrl}
-                        loading="lazy"
-                      />
-
-                      {/* Top Corner Badge: Process View Indicator */}
-                      {item.processStages && (
-                        <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/10 text-[10px] font-mono text-white/90 flex items-center gap-1">
-                          <Sliders className="w-3 h-3 text-theme-rose" />
-                          <span>Process View</span>
-                        </div>
-                      )}
-
-                      {/* Category Pill Over Image */}
-                      <div className="absolute top-3 left-3">
-                        <Tag variant="rose" size="sm">
-                          {item.category}
-                        </Tag>
-                      </div>
-
-                      {/* Hover Action Cue */}
-                      <div className="absolute inset-0 bg-theme-rose/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                        <div className="px-3.5 py-1.5 rounded-full bg-theme-surface/90 backdrop-blur-md border border-theme-border text-xs font-mono font-semibold text-theme-text flex items-center gap-1.5 shadow-lg">
-                          <Maximize2 className="w-3.5 h-3.5 text-theme-rose" />
-                          <span>Inspect Specimen</span>
-                        </div>
-                      </div>
+                    <div className="flex items-center justify-between text-xs font-mono text-theme-muted mb-3 border-b border-theme-border pb-2">
+                      <span className="text-theme-rose font-semibold">{item.category}</span>
+                      <span>PIECE 0{index + 1}</span>
                     </div>
 
-                    {/* Metadata & Title */}
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between text-xs font-mono text-theme-muted">
-                        <span>{item.year || '2025–2026'}</span>
-                        {item.isPlaceholder && (
-                          <span className="text-[10px] text-theme-ember font-semibold">
-                            [Placeholder Tile]
-                          </span>
-                        )}
-                      </div>
+                    <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-theme-surface-elevated border border-theme-border/60">
+                      <Image
+                        src={item.image}
+                        alt={getContentText(item.alt) || 'Design piece'}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+                        className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                      />
+                    </div>
 
-                      <h4 className="font-serif font-bold text-lg sm:text-xl text-theme-text group-hover:text-theme-rose transition-colors">
-                        {item.title}
+                    <div className="mt-4 space-y-1">
+                      <h4 className="font-serif font-bold text-xl text-theme-text group-hover:text-theme-rose transition-colors">
+                        <Content value={item.title} />
                       </h4>
-
                       <p className="text-xs text-theme-muted line-clamp-2 leading-relaxed">
-                        {item.description}
+                        <Content value={item.description} />
                       </p>
                     </div>
 
-                    {/* Footer Deliverable Pills */}
                     <div className="mt-4 pt-3 border-t border-theme-border flex items-center justify-between text-[11px] font-mono text-theme-muted">
-                      <span>{item.tools[0]}</span>
+                      <span>{getContentText(item.tools[0]) || ''}</span>
                       <span className="text-theme-rose font-semibold group-hover:underline flex items-center gap-1">
                         <span>View Piece</span> &rarr;
                       </span>
@@ -363,17 +302,15 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
           </div>
         </Container>
 
-        {/* Narrative Bridge to Chapter 05 (Rule 5: Quiet first-person line, no box, no label) */}
+        {/* Narrative Bridge to Chapter 05 (Rule 5: Quiet first-person line) */}
         <Container size="lg" className="relative z-10 w-full pt-16 pb-4">
           <p className="text-sm sm:text-base font-serif italic text-theme-muted text-center sm:text-left">
-            &ldquo;{chapter.bridgeToNext}&rdquo;
+            &ldquo;<Content value={chapter.bridge} />&rdquo;
           </p>
         </Container>
       </div>
 
-      {/* ===================================================================
-          DESKTOP FLOATING CURSOR LENS
-          =================================================================== */}
+      {/* Floating cursor lens */}
       {lensPos && !isReduced && (
         <div
           aria-hidden="true"
@@ -388,9 +325,7 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
         </div>
       )}
 
-      {/* ===================================================================
-          ACCESSIBLE LIGHTBOX DIALOG
-          =================================================================== */}
+      {/* Lightbox */}
       <DesignLightbox
         isOpen={lightboxOpen}
         onClose={() => setLightboxOpen(false)}

@@ -4,6 +4,7 @@ import React, { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { chapters } from '@/content/chapters';
 import { Button } from '@/components/ui/Button';
+import { Content } from '@/components/content/Content';
 import { useMotion } from '@/hooks/useMotion';
 import { Play, Compass, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -11,6 +12,9 @@ import { cn } from '@/lib/utils';
 export function StoryHero() {
   const [indexOpen, setIndexOpen] = useState(false);
   const { lenis, motionEnabled } = useMotion();
+
+  const prologue = chapters.find((c) => c.id === 'prologue') || chapters[0];
+  const visibleChapters = chapters.visible ? chapters.visible() : chapters;
 
   const scrollToSection = useCallback(
     (id: string) => {
@@ -34,7 +38,7 @@ export function StoryHero() {
       className="relative w-full min-h-[90svh] flex flex-col justify-center items-center px-6 sm:px-12 py-24 text-center"
     >
       <div className="max-w-4xl mx-auto space-y-8">
-        {/* Single minimal chapter identifier */}
+        {/* Single minimal chapter identifier (Rule 2: One label) */}
         <div className="flex items-center justify-center gap-3">
           <span className="font-mono text-xs uppercase tracking-widest text-chapter-accent font-medium">
             PROLOGUE
@@ -43,7 +47,7 @@ export function StoryHero() {
             ·
           </span>
           <span className="font-mono text-xs uppercase tracking-widest text-theme-muted">
-            The Spark
+            <Content value={prologue.title} />
           </span>
         </div>
 
@@ -53,10 +57,12 @@ export function StoryHero() {
           <span className="italic text-chapter-accent font-normal">Unfolding</span>
         </h1>
 
-        {/* Premise Narration */}
-        <p className="text-fluid-narration font-serif italic text-theme-muted max-w-2xl mx-auto leading-[1.35]">
-          The engineering, design, and research odyssey of Chinmoy Kalita.
-        </p>
+        {/* Verified Draft Narration Line (Rule 3: Exact brief text only) */}
+        {prologue.narration[0] && (
+          <p className="text-fluid-narration font-serif italic text-theme-muted max-w-2xl mx-auto leading-[1.35]">
+            &ldquo;<Content value={prologue.narration[0]} />&rdquo;
+          </p>
+        )}
 
         {/* Primary Story Actions */}
         <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
@@ -86,7 +92,7 @@ export function StoryHero() {
             aria-expanded={indexOpen}
             className="inline-flex items-center gap-2 font-mono text-xs text-theme-muted hover:text-theme-text transition-colors"
           >
-            <span>Movement Index ({chapters.length} Chapters)</span>
+            <span>Movement Index ({visibleChapters.length} Chapters)</span>
             <ChevronDown
               className={cn(
                 'w-3.5 h-3.5 transition-transform duration-200',
@@ -100,7 +106,7 @@ export function StoryHero() {
               aria-label="Story chapter index"
               className="mt-6 text-left border-t border-theme-border/60 pt-4 divide-y divide-theme-border/40"
             >
-              {chapters.map((ch, idx) => (
+              {visibleChapters.map((ch, idx) => (
                 <button
                   key={ch.id}
                   type="button"
@@ -110,12 +116,16 @@ export function StoryHero() {
                   }}
                   className="w-full flex items-baseline justify-between py-2.5 text-xs font-mono group hover:text-chapter-accent transition-colors text-left"
                 >
-                  <span className="text-theme-muted group-hover:text-chapter-accent">
-                    {idx === 0
-                      ? '00 · Prologue'
-                      : idx === chapters.length - 1
-                        ? 'EP · Epilogue'
-                        : `0${idx} · ${ch.title}`}
+                  <span className="text-theme-muted group-hover:text-chapter-accent flex items-center gap-1.5">
+                    <span>
+                      {idx === 0
+                        ? '00'
+                        : idx === visibleChapters.length - 1
+                          ? 'EP'
+                          : `0${idx}`}
+                      {' · '}
+                    </span>
+                    <Content value={ch.title} />
                   </span>
                   <span className="text-theme-muted/50 font-serif italic text-[11px]">
                     {ch.emotionalArc}

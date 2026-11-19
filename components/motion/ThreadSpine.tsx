@@ -1,25 +1,26 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMotion } from '@/hooks/useMotion';
-import { chapters, AccentKey } from '@/content/chapters';
+import { chapters } from '@/content/chapters';
+import { Content } from '@/components/content/Content';
+import { getContentText } from '@/content/schema';
 import { cn } from '@/lib/utils';
 
 export function ThreadSpine() {
   const { scrollProgress, motionEnabled } = useMotion();
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
 
-  // Map progress to chapter indices
-  const chapterCount = chapters.length;
+  const chapterList = chapters.visible ? chapters.visible() : chapters;
+  const chapterCount = chapterList.length;
+
   useEffect(() => {
     const rawIndex = Math.min(chapterCount - 1, Math.floor(scrollProgress * chapterCount));
     setActiveChapterIndex(rawIndex);
   }, [scrollProgress, chapterCount]);
 
-  const activeChapter = chapters[activeChapterIndex] || chapters[0];
-  const nextChapter = chapters[Math.min(chapterCount - 1, activeChapterIndex + 1)];
+  const activeChapter = chapterList[activeChapterIndex] || chapterList[0];
 
-  // Scroll to chapter node smoothly
   const scrollToChapter = (chapterId: string) => {
     const el = document.getElementById(chapterId);
     if (el) {
@@ -29,9 +30,7 @@ export function ThreadSpine() {
 
   return (
     <>
-      {/* ===================================================================
-          1. MOBILE: Fixed Thin Top Progress Bar
-          =================================================================== */}
+      {/* 1. MOBILE: Fixed Thin Top Progress Bar */}
       <div
         aria-hidden="true"
         className="fixed top-0 left-0 right-0 z-50 h-[3px] bg-theme-border xl:hidden pointer-events-none"
@@ -43,9 +42,7 @@ export function ThreadSpine() {
         />
       </div>
 
-      {/* ===================================================================
-          2. DESKTOP: Fixed Left Narrative Thread Spine & Nodes
-          =================================================================== */}
+      {/* 2. DESKTOP: Fixed Left Narrative Thread Spine & Nodes */}
       <nav
         aria-label="Documentary Spine Navigation"
         className="fixed left-6 top-1/2 -translate-y-1/2 z-30 hidden xl:flex flex-col items-center select-none"
@@ -64,9 +61,10 @@ export function ThreadSpine() {
 
         {/* Chapter Nodes */}
         <div className="relative flex flex-col justify-between h-96 py-2">
-          {chapters.map((ch, idx) => {
+          {chapterList.map((ch, idx) => {
             const isActive = idx === activeChapterIndex;
             const isCompleted = idx < activeChapterIndex;
+            const titleStr = getContentText(ch.title) || '';
 
             return (
               <button
@@ -74,7 +72,7 @@ export function ThreadSpine() {
                 type="button"
                 data-accent={ch.accentKey}
                 onClick={() => scrollToChapter(ch.id)}
-                aria-label={`Jump to ${ch.title} (${ch.emotionalArc})`}
+                aria-label={`Jump to ${titleStr} (${ch.emotionalArc})`}
                 className="group relative flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-chapter-accent rounded-full"
               >
                 {/* Node Pill Indicator */}
@@ -98,7 +96,7 @@ export function ThreadSpine() {
                   )}
                 >
                   <span className="font-semibold">{ch.number === 0 ? 'P' : ch.number}: </span>
-                  <span>{ch.title}</span>
+                  <Content value={ch.title} />
                 </div>
               </button>
             );

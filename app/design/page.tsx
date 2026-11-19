@@ -7,10 +7,8 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-  CardContent,
-  CardFooter,
 } from '@/components/ui/Card';
-import { AlertCircle } from 'lucide-react';
+import { Content } from '@/components/content/Content';
 
 export const metadata = {
   title: 'Design & Systems — Chinmoy Kalita',
@@ -27,10 +25,10 @@ export default function DesignPage() {
       {/* Header */}
       <div className="border-b border-theme-border pb-8">
         <Tag variant="rose" size="sm">
-          Craft & Aesthetics
+          Craft &amp; Aesthetics
         </Tag>
         <h1 className="text-fluid-h1 font-serif font-black text-theme-text mt-3">
-          Design Systems & Spatial UI
+          Design Systems &amp; Spatial UI
         </h1>
         <p className="text-theme-muted text-sm sm:text-base max-w-2xl mt-3">
           Exploring typography, micro-interactions, true-neutral dark mode, warm cream light mode,
@@ -47,20 +45,19 @@ export default function DesignPage() {
                 <Tag variant="accent" size="sm">
                   {work.category}
                 </Tag>
-                <span className="text-xs font-mono text-theme-muted">{work.year}</span>
               </CardHeader>
 
-              <CardTitle>{work.title}</CardTitle>
-              <CardDescription>{work.description}</CardDescription>
+              <CardTitle><Content value={work.title} /></CardTitle>
+              <CardDescription><Content value={work.description} /></CardDescription>
 
               {/* Deliverables */}
               <div className="mt-4 pt-3 border-t border-theme-border space-y-2">
                 <span className="text-xs font-mono text-theme-muted uppercase tracking-wider block">
-                  Deliverables & Specs
+                  Deliverables &amp; Specs
                 </span>
                 <ul className="list-disc list-inside text-xs text-theme-muted space-y-1">
                   {work.deliverables.map((item, idx) => (
-                    <li key={idx}>{item}</li>
+                    <li key={idx}><Content value={item} /></li>
                   ))}
                 </ul>
               </div>
@@ -69,20 +66,11 @@ export default function DesignPage() {
               <div className="mt-4 flex flex-wrap gap-1.5">
                 {work.tools.map((tool, i) => (
                   <Tag key={i} variant="default" size="sm">
-                    {tool}
+                    <Content value={tool} />
                   </Tag>
                 ))}
               </div>
             </div>
-
-            {work.isPlaceholder && (
-              <CardFooter>
-                <div className="text-[11px] font-mono text-theme-ember flex items-center gap-1.5">
-                  <AlertCircle className="w-3.5 h-3.5" />
-                  <span>Placeholders marked in /content/designWork.ts</span>
-                </div>
-              </CardFooter>
-            )}
           </Card>
         ))}
       </div>

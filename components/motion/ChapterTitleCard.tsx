@@ -3,11 +3,13 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { AccentKey } from '@/content/chapters';
+import { ContentField } from '@/content/schema';
+import { Content } from '@/components/content/Content';
 
-export interface ChapterTitleCardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ChapterTitleCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   number: number | string;
-  title: string;
-  subtitle?: string;
+  title: ContentField | string;
+  subtitle?: ContentField | string;
   arc?: string;
   accentKey: AccentKey;
   baseTimeSeconds?: number;
@@ -35,7 +37,7 @@ export function ChapterTitleCard({
       className={cn('relative max-w-4xl text-left space-y-4', className)}
       {...props}
     >
-      {/* Chapter identity label - only ONE label per chapter */}
+      {/* Chapter identity label - only ONE label per chapter (Rule 2) */}
       <div className="flex items-center gap-3">
         <span className="font-mono text-xs uppercase tracking-widest text-chapter-accent font-medium">
           {formattedNum}
@@ -54,13 +56,13 @@ export function ChapterTitleCard({
 
       {/* Main Chapter Title */}
       <h2 className="text-fluid-h1 font-serif font-normal tracking-tight text-theme-text leading-[1.08]">
-        {title}
+        <Content value={title} />
       </h2>
 
       {/* Subtitle / Premise */}
       {subtitle && (
         <p className="text-fluid-narration font-serif italic text-theme-muted leading-[1.35] max-w-[34ch]">
-          {subtitle}
+          <Content value={subtitle} />
         </p>
       )}
     </header>

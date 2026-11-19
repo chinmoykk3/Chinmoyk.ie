@@ -4,6 +4,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Chapter } from '@/content/chapters';
 import { useMotion } from '@/hooks/useMotion';
 import { DirectorsCommentary } from '@/components/polish/DirectorsCommentary';
+import { Content } from '@/components/content/Content';
+import { getContentText } from '@/content/schema';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { cn } from '@/lib/utils';
 
@@ -26,7 +28,9 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
   ];
 
   const slots = chapter.curiositySlots || [];
-  const isDev = process.env.NODE_ENV !== 'production';
+  const showDebugChips =
+    process.env.NODE_ENV !== 'production' &&
+    process.env.NEXT_PUBLIC_DEBUG_CONTENT === '1';
 
   useEffect(() => {
     const triggerEl = sceneRef.current;
@@ -54,12 +58,6 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
       trigger.kill();
     };
   }, [isReduced]);
-
-  // Phase windows for the 3 narration moments and sketches
-  // Line 1 & Gear: 0.08 - 0.38
-  // Line 2 & Circuit: 0.38 - 0.68
-  // Line 3 & Sketch: 0.68 - 0.92
-  // Bridge line: 0.88 - 1.00
 
   const getPhaseProgress = (start: number, end: number) => {
     if (isReduced) return 1;
@@ -96,7 +94,7 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
               ·
             </span>
             <span className="font-mono text-xs uppercase tracking-widest text-theme-muted">
-              {chapter.title}
+              <Content value={chapter.title} />
             </span>
           </div>
 
@@ -107,18 +105,17 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
 
         {/* Center: Full-bleed scrubbed narration + inline gold line art */}
         <div className="relative z-10 max-w-3xl mx-auto w-full my-auto py-12">
-          {/* Accessible screen-reader text in natural reading order */}
+          {/* Accessible screen-reader text */}
           <div className="sr-only">
-            <h2>{chapter.title}</h2>
+            <h2><Content value={chapter.title} /></h2>
             <p>{narrationLines.join(' ')}</p>
-            <p>{chapter.bridgeToNext}</p>
+            <p><Content value={chapter.bridge} /></p>
           </div>
 
           {/* Visual Presentation */}
           <div aria-hidden="true" className="space-y-12 sm:space-y-16">
             {/* Line 1: Understanding */}
             <div className="relative">
-              {/* Subtle gold line sketch: gear drawing on paper */}
               <div className="pointer-events-none absolute -left-12 -top-8 w-28 h-28 text-chapter-accent opacity-25 -z-10">
                 <svg
                   viewBox="0 0 100 100"
@@ -163,7 +160,6 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
 
             {/* Line 2: Not enough */}
             <div className="relative sm:pl-8">
-              {/* Gold circuit trace sketch */}
               <div className="pointer-events-none absolute right-0 -top-6 w-32 h-24 text-chapter-accent opacity-25 -z-10">
                 <svg viewBox="0 0 120 80" className="w-full h-full">
                   <path
@@ -194,7 +190,6 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
 
             {/* Line 3: Create things myself */}
             <div className="relative sm:pl-16">
-              {/* Compass / sketch arc */}
               <div className="pointer-events-none absolute -left-6 -top-4 w-28 h-28 text-chapter-accent opacity-25 -z-10">
                 <svg viewBox="0 0 100 100" className="w-full h-full">
                   <path
@@ -233,7 +228,7 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
           </div>
 
           {/* Dev-only quiet chips for confirmed personal claims (Rule 4) */}
-          {isDev && slots.length > 0 && (
+          {showDebugChips && slots.length > 0 && (
             <aside
               aria-label="Development status"
               className="mt-12 flex flex-wrap gap-2 text-[10px] font-mono text-theme-muted/60"
@@ -243,14 +238,14 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
                   key={s.id}
                   className="px-2 py-0.5 rounded border border-theme-border/50 bg-theme-surface/50"
                 >
-                  [TODO: {s.id}]
+                  TODO: {s.id}
                 </span>
               ))}
             </aside>
           )}
         </div>
 
-        {/* Bottom: Narrative Bridge (Rule 5: Quiet first-person line, no box, no label) */}
+        {/* Bottom: Narrative Bridge (Rule 5: Quiet first-person line) */}
         <footer className="relative z-10 max-w-3xl mx-auto w-full pt-4">
           <p
             className={cn(
@@ -258,7 +253,7 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
               bridgeProgress > 0.2 ? 'opacity-90' : 'opacity-40'
             )}
           >
-            &ldquo;{chapter.bridgeToNext}&rdquo;
+            &ldquo;<Content value={chapter.bridge} />&rdquo;
           </p>
         </footer>
       </div>

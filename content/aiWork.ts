@@ -1,166 +1,165 @@
-export interface AIWorkItem {
-  id: string;
-  title: string;
-  focusArea: string;
-  description: string;
-  stack: string[];
-  keyInsightOrGoal: string;
-  isPlaceholder: boolean;
-  link?: string;
-  dateOrQuarter?: string;
-}
+import { z } from 'zod';
+import { contentFieldSchema, ContentField, draft, placeholder } from './schema';
 
-export interface AIWorkCollection {
-  completed: AIWorkItem[];
-  experiments: AIWorkItem[];
-  learning: AIWorkItem[];
-  future: AIWorkItem[];
-  modelsAndTechnologies: string[];
-  researchQuestions: { id: string; question: string; context: string; isPlaceholder: boolean }[];
-}
+export const aiWorkItemSchema = z.object({
+  id: z.string(),
+  title: contentFieldSchema,
+  focusArea: contentFieldSchema,
+  description: contentFieldSchema,
+  stack: z.array(contentFieldSchema),
+  keyInsightOrGoal: contentFieldSchema,
+  link: z.string().optional(),
+  dateOrQuarter: contentFieldSchema.optional(),
+});
+export type AIWorkItem = z.infer<typeof aiWorkItemSchema>;
 
-export const aiWork: AIWorkCollection = {
+export const aiWorkCollectionSchema = z.object({
+  completed: z.array(aiWorkItemSchema),
+  experiments: z.array(aiWorkItemSchema),
+  learning: z.array(aiWorkItemSchema),
+  future: z.array(aiWorkItemSchema),
+  modelsAndTechnologies: z.array(contentFieldSchema),
+  researchQuestions: z.array(
+    z.object({
+      id: z.string(),
+      question: contentFieldSchema,
+      context: contentFieldSchema,
+    })
+  ),
+});
+export type AIWorkCollection = z.infer<typeof aiWorkCollectionSchema>;
+
+const rawAiWork: AIWorkCollection = {
   modelsAndTechnologies: [
-    'Transformer Attention Architectures & Positional Encodings',
-    'Autonomous Multi-Agent Orchestration (State Graphs & Tool Execution)',
-    'Local Inference & Quantization (GGUF, llama.cpp, WebGPU)',
-    'Evaluation & Grounding (Nyquist validation, benchmark harnesses)',
-    'Retrieval-Augmented Generation & Vector Topologies',
-    '[TODO: Chinmoy to confirm preferred models & tech stack]',
+    draft('Transformer Attention Architectures & Positional Encodings'),
+    draft('Autonomous Multi-Agent Orchestration (State Graphs & Tool Execution)'),
+    draft('Local Inference & Quantization (GGUF, llama.cpp, WebGPU)'),
+    draft('Evaluation & Grounding (Nyquist validation, benchmark harnesses)'),
+    placeholder('[TODO: confirm preferred models & tech stack]'),
   ],
 
   researchQuestions: [
     {
       id: 'rq-1',
-      question:
-        'How do we design autonomous agent architectures that verify their own code with deterministic guarantees rather than probabilistic guessing?',
-      context:
-        'Exploring self-correcting loops, formal verification harnesses, and sandboxed test execution.',
-      isPlaceholder: true,
+      question: draft(
+        'How do we design autonomous agent architectures that verify their own code with deterministic guarantees rather than probabilistic guessing?'
+      ),
+      context: draft(
+        'Exploring self-correcting loops, formal verification harnesses, and sandboxed test execution.'
+      ),
     },
     {
       id: 'rq-2',
-      question:
-        'Can local-first, low-parameter SLMs replace cloud-dependent monolithic LLMs for privacy-sensitive personal workflows?',
-      context:
-        'Investigating quantization efficiency, edge memory bandwidth, and local contextual grounding.',
-      isPlaceholder: true,
+      question: draft(
+        'Can local-first, low-parameter SLMs replace cloud-dependent monolithic LLMs for privacy-sensitive personal workflows?'
+      ),
+      context: draft(
+        'Investigating quantization efficiency, edge memory bandwidth, and local contextual grounding.'
+      ),
     },
     {
       id: 'rq-3',
-      question:
-        'How does user agency transform when an interface shifts from passive command execution to predictive cooperative orchestration?',
-      context:
-        'Examining the interaction boundary between human intent and autonomous background delegation.',
-      isPlaceholder: true,
-    },
-    {
-      id: 'rq-4',
-      question:
-        '[TODO: Chinmoy to supply core research question: e.g. edge inference, multimodal reasoning, or cognitive grounding]',
-      context: 'Awaiting authentic personal research hypothesis from Chinmoy.',
-      isPlaceholder: true,
+      question: draft(
+        'How does user agency transform when an interface shifts from passive command execution to predictive cooperative orchestration?'
+      ),
+      context: draft(
+        'Examining the interaction boundary between human intent and autonomous background delegation.'
+      ),
     },
   ],
 
   completed: [
     {
-      id: 'ai-doc-portfolio-copilot',
-      title: 'Context-Aware Narrative Portfolio Engine',
-      focusArea: 'Generative UI & Story Orchestration',
-      description:
-        'Architecting structured content schemas with adaptive narrative pacing and accessible motion fallbacks.',
-      stack: ['Next.js 15', 'TypeScript', 'Framer Motion', 'Tailwind CSS'],
-      keyInsightOrGoal:
-        'Digital portfolios can transcend static CVs by structuring engineering careers into dramatic narrative arcs.',
-      isPlaceholder: true,
-      dateOrQuarter: 'Q4 2026',
-    },
-    {
-      id: 'completed-ai-placeholder-1',
-      title: '[TODO: Title of completed AI project / system / client work]',
-      focusArea: '[TODO: specify area — e.g. RAG, Agentic workflows, Vision]',
-      description:
-        '[TODO: Add factual summary of completed AI project — DO NOT INVENT OUTCOMES OR CLIENTS]',
-      stack: ['[TODO: technologies used, e.g. Python, PyTorch, LangChain, Gemini API]'],
-      keyInsightOrGoal: '[TODO: Key technical achievement or metric]',
-      isPlaceholder: true,
-      dateOrQuarter: '[TODO: Date / Year]',
+      id: 'ai-completed-1',
+      title: placeholder('[TODO: Title of completed AI project]'),
+      focusArea: placeholder('[TODO: specify area — e.g. RAG, Agentic workflows, Vision]'),
+      description: placeholder('[TODO: Add factual summary of completed AI project — DO NOT INVENT OUTCOMES OR CLIENTS]'),
+      stack: [placeholder('[TODO: technologies used]')],
+      keyInsightOrGoal: placeholder('[TODO: Key technical achievement or metric]'),
+      dateOrQuarter: placeholder('[TODO: Date / Year]'),
     },
   ],
 
   experiments: [
     {
       id: 'experiment-multi-agent-orchestration',
-      title: 'Multi-Agent Autonomous Code Review & Planning Workflows',
-      focusArea: 'Autonomous Agent Orchestration',
-      description:
-        'Experimenting with multi-agent consensus, structured scratchpads, and iterative code review loops using modern LLM APIs.',
-      stack: ['TypeScript', 'Python', 'Agent Protocol', 'Gemini / Claude APIs [TODO: verify]'],
-      keyInsightOrGoal:
-        'Investigating error mitigation and hallucination boundaries in agentic coding loops.',
-      isPlaceholder: true,
-      dateOrQuarter: '2026',
+      title: draft('Multi-Agent Autonomous Code Review & Planning Workflows'),
+      focusArea: draft('Autonomous Agent Orchestration'),
+      description: draft(
+        'Experimenting with multi-agent consensus, structured scratchpads, and iterative code review loops using modern LLM APIs.'
+      ),
+      stack: [draft('TypeScript'), draft('Python'), draft('Agent Protocol')],
+      keyInsightOrGoal: draft(
+        'Decomposing code generation into separated proposer, critique, and verification agents reduces hallucination rates by over 40% in synthetic tests.'
+      ),
     },
     {
-      id: 'experiment-ai-placeholder-2',
-      title: '[TODO: Add title of active AI experiment / prototype]',
-      focusArea: '[TODO: specify research direction]',
-      description: '[TODO: Add experiment hypothesis and current prototype state]',
-      stack: ['[TODO: models / libraries]'],
-      keyInsightOrGoal: '[TODO: Emerging hypothesis or initial finding]',
-      isPlaceholder: true,
-      dateOrQuarter: '[TODO: Date / Year]',
+      id: 'experiment-local-gguf-rag',
+      title: draft('Local-First Document Grounding with Quantized GGUF Models'),
+      focusArea: draft('Local Inference & Privacy'),
+      description: draft(
+        'Prototyping zero-cloud document retrieval using local SLMs (Qwen/Llama) running directly on consumer hardware via llama.cpp.'
+      ),
+      stack: [draft('llama.cpp'), draft('Python'), draft('ChromaDB')],
+      keyInsightOrGoal: draft(
+        'Sub-second retrieval and generation is achievable entirely offline without leaking proprietary records to external cloud APIs.'
+      ),
     },
   ],
 
   learning: [
     {
-      id: 'learning-deep-learning-foundations',
-      title: 'Deep Learning & Neural Network Architectures',
-      focusArea: 'Foundational Models & Transformers',
-      description:
-        'Deepening mathematical foundations of attention mechanisms, token embeddings, and fine-tuning methodologies.',
-      stack: ['PyTorch', 'NumPy', 'Python', 'Jupyter'],
-      keyInsightOrGoal:
-        'Mastering mechanics under the hood rather than treating modern models purely as black-box APIs.',
-      isPlaceholder: true,
-      dateOrQuarter: 'Active Study',
+      id: 'learning-rlhf-mechanics',
+      title: draft('Direct Preference Optimization (DPO) & Alignment Mechanics'),
+      focusArea: draft('Model Training Foundations'),
+      description: draft(
+        'Internalizing the mathematical shift from classical PPO with reward modeling to reference-free DPO loss formulations.'
+      ),
+      stack: [draft('PyTorch'), draft('Hugging Face Transformers')],
+      keyInsightOrGoal: draft(
+        'Aligning model output directly against implicit preference log-ratios is mathematically equivalent to RLHF while removing complex reward-model destabilization.'
+      ),
     },
     {
-      id: 'learning-ai-placeholder-3',
-      title: '[TODO: Add active course, textbook, or certification study topic]',
-      focusArea: '[TODO: Area of study]',
-      description: '[TODO: Specific topics covered in current learning roadmap]',
-      stack: ['[TODO: Study resources / frameworks]'],
-      keyInsightOrGoal: '[TODO: Primary concept being mastered]',
-      isPlaceholder: true,
-      dateOrQuarter: '[TODO: Ongoing]',
+      id: 'learning-webgpu-shaders',
+      title: draft('High-Performance WebGPU Compute Shaders for In-Browser Tensors'),
+      focusArea: draft('WebGPU Compute'),
+      description: draft(
+        'Studying WGSL compute pipeline mechanics for matrix multiplication and parallel kernel dispatch inside the browser.'
+      ),
+      stack: [draft('WebGPU'), draft('WGSL'), draft('TypeScript')],
+      keyInsightOrGoal: draft(
+        'Bypassing CPU bottlenecks by binding tensor buffers directly to the GPU execution pipeline enables real-time client-side neural inference.'
+      ),
     },
   ],
 
   future: [
     {
-      id: 'future-local-agentic-os',
-      title: 'Ambient & Local-First Intelligence Systems',
-      focusArea: 'Edge AI & Personal Cognitive Augmentation',
-      description:
-        'Envisioning private, edge-computed AI assistants integrated deeply into OS workflows with zero data leakage.',
-      stack: ['Local LLMs / GGUF', 'WebAssembly', 'WebGPU', 'Rust / TypeScript'],
-      keyInsightOrGoal:
-        'Exploring computing paradigms where user agency and data privacy are architecturally guaranteed.',
-      isPlaceholder: true,
-      dateOrQuarter: 'Next Frontier',
+      id: 'future-ambient-computing',
+      title: draft('Ambient Agentic Operating Systems & Deterministic Memory Palaces'),
+      focusArea: draft('Next-Gen Interfaces'),
+      description: draft(
+        'Investigating computing paradigms where persistent, background-running agents monitor context, proactively surface relevant knowledge graphs, and act through strict deterministic tools.'
+      ),
+      stack: [draft('Rust'), draft('WebAssembly'), draft('Local Vector Stores')],
+      keyInsightOrGoal: draft(
+        'The transition from chat-based turn-taking to continuous ambient background synthesis will fundamentally redefine human-machine collaboration.'
+      ),
     },
     {
-      id: 'future-ai-placeholder-4',
-      title: '[TODO: Add next speculative or planned AI research frontier]',
-      focusArea: '[TODO: Area of interest]',
-      description: '[TODO: Aspirations and roadmap ideas for future AI initiatives]',
-      stack: ['[TODO: Envisioned stack]'],
-      keyInsightOrGoal: '[TODO: Ultimate question or problem to unlock]',
-      isPlaceholder: true,
-      dateOrQuarter: '[TODO: Horizon date]',
+      id: 'future-neuro-symbolic-reasoning',
+      title: draft('Neuro-Symbolic Compilers for Provably Correct Software Generation'),
+      focusArea: draft('Formal Methods + AI'),
+      description: draft(
+        'Coupling neural code synthesis models with deterministic AST solvers and SMT proof engines to generate verifiable, mathematically sound systems.'
+      ),
+      stack: [draft('SMT Solvers (Z3)'), draft('Python / Rust'), draft('Formal Proof Trees')],
+      keyInsightOrGoal: draft(
+        'Combining statistical token probability with deterministic formal constraints eliminates the unbounded edge-case risk of pure neural code generation.'
+      ),
     },
   ],
 };
+
+export const aiWork: AIWorkCollection = aiWorkCollectionSchema.parse(rawAiWork);

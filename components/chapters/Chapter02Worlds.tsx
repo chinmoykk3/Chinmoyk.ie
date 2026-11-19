@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Chapter } from '@/content/chapters';
 import { useMotion } from '@/hooks/useMotion';
 import { DirectorsCommentary } from '@/components/polish/DirectorsCommentary';
+import { Content } from '@/components/content/Content';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { cn } from '@/lib/utils';
 
@@ -19,9 +20,7 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
 
   const isReduced = prefersReducedMotion || !motionEnabled;
 
-  const narration =
-    chapter.summary ||
-    "I eventually realised that I didn't want to choose between technology and creativity. I wanted to explore both.";
+  const narration = chapter.narration[0];
 
   const identities = [
     {
@@ -82,10 +81,10 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
     const trigger = ScrollTrigger.create({
       trigger: triggerEl,
       start: 'top top',
-      end: '+=100%',
+      end: '+=120%',
       pin: contentEl,
       pinSpacing: true,
-      scrub: 0.4,
+      scrub: 0.5,
       onUpdate: (self) => {
         setConvergenceProgress(self.progress);
       },
@@ -97,19 +96,6 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
   }, [isReduced]);
 
   const p = isReduced ? 1 : convergenceProgress;
-
-  // Active identity focus index based on scroll
-  const activeIndex = isReduced ? -1 : Math.min(3, Math.floor(p * 4));
-
-  // Visual Coordinates in 360x360 SVG stage
-  // Starts spread at distance 90 from center (180, 180), converges to distance 20
-  const center = 180;
-  const spread = (1 - p) * 90 + 20;
-
-  const p1 = { x: center - spread, y: center - spread }; // Azure (Builder)
-  const p2 = { x: center + spread, y: center - spread }; // Iris (Intelligence)
-  const p3 = { x: center + spread, y: center + spread }; // Rose (Visual)
-  const p4 = { x: center - spread, y: center + spread }; // Ember (Explorer)
 
   return (
     <article
@@ -134,7 +120,7 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
               ·
             </span>
             <span className="font-mono text-xs uppercase tracking-widest text-theme-muted">
-              {chapter.title}
+              <Content value={chapter.title} />
             </span>
           </div>
 
@@ -145,179 +131,76 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
 
         {/* Center: Narration + SVG Convergence Visual + Identity Details */}
         <div className="relative z-10 max-w-5xl mx-auto w-full my-auto py-8">
-          {/* Accessible screen-reader text in natural reading order */}
           <div className="sr-only">
-            <h2>{chapter.title}</h2>
-            <p>{narration}</p>
-            <ul>
-              {identities.map((item) => (
-                <li key={item.id}>
-                  <strong>{item.role}</strong>: {item.description} How this feeds the others:{' '}
-                  {item.feedsOthers}
-                </li>
-              ))}
-            </ul>
-            <p>{chapter.bridgeToNext}</p>
+            <h2><Content value={chapter.title} /></h2>
+            <p><Content value={narration} /></p>
+            <p><Content value={chapter.bridge} /></p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            {/* Left: Narration and Convergence Visual (6 cols) */}
+            {/* Left: Narration and Convergence Visual */}
             <div className="lg:col-span-6 space-y-6">
               <p className="font-serif text-fluid-narration sm:text-3xl text-theme-text max-w-[28ch] leading-[1.35]">
-                &ldquo;{narration}&rdquo;
+                &ldquo;<Content value={narration} />&rdquo;
               </p>
 
               {/* 4 Glowing Forms Convergence Stage */}
               <div
                 aria-hidden="true"
-                className="relative w-64 h-64 sm:w-72 sm:h-72 mx-auto lg:mx-0 select-none"
+                className="relative w-full aspect-square max-w-[340px] mx-auto border border-theme-border/50 rounded-full flex items-center justify-center p-6 bg-theme-surface/40 backdrop-blur-xs"
               >
-                <svg
-                  viewBox="0 0 360 360"
-                  className="w-full h-full overflow-visible"
-                  aria-hidden="true"
-                >
-                  <defs>
-                    <filter id="ch02-glow" x="-40%" y="-40%" width="180%" height="180%">
-                      <feGaussianBlur stdDeviation="6" result="blur" />
-                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
-                  </defs>
+                {/* Center Core Gold Thread Node */}
+                <div
+                  className="w-4 h-4 rounded-full bg-theme-gold transition-all duration-300"
+                  style={{
+                    boxShadow: `0 0 ${16 + p * 32}px var(--color-gold)`,
+                    transform: `scale(${1 + p * 0.4})`,
+                  }}
+                />
 
-                  {/* Gold thread passing through all 4 forms, tightening inward */}
-                  <path
-                    d={`M ${p1.x} ${p1.y} Q ${center} ${p1.y}, ${p2.x} ${p2.y} Q ${p2.x} ${center}, ${p3.x} ${p3.y} Q ${center} ${p3.y}, ${p4.x} ${p4.y} Q ${p4.x} ${center}, ${p1.x} ${p1.y}`}
-                    fill="none"
-                    stroke="var(--color-gold)"
-                    strokeWidth={2 + p * 1.5}
-                    strokeDasharray={p > 0.85 ? 'none' : '4 3'}
-                    opacity={0.7 + p * 0.3}
-                  />
+                {/* 4 Satellites converging inward */}
+                {identities.map((item, idx) => {
+                  const angle = (idx * Math.PI) / 2 - Math.PI / 4;
+                  const maxRadius = 120;
+                  const currentRadius = maxRadius * (1 - p * 0.72);
+                  const x = Math.cos(angle) * currentRadius;
+                  const y = Math.sin(angle) * currentRadius;
 
-                  {/* Form 1: The Builder (Azure) */}
-                  <g transform={`translate(${p1.x}, ${p1.y})`} filter="url(#ch02-glow)">
-                    <circle
-                      r={30 - p * 6}
-                      fill="var(--color-azure)"
-                      fillOpacity={0.25 + p * 0.15}
-                      stroke="var(--color-azure)"
-                      strokeWidth="2"
+                  return (
+                    <div
+                      key={item.id}
+                      className="absolute w-3.5 h-3.5 rounded-full transition-transform duration-100 ease-out flex items-center justify-center"
+                      style={{
+                        transform: `translate(${x}px, ${y}px)`,
+                        backgroundColor: item.accentVar,
+                        boxShadow: `0 0 14px ${item.accentVar}`,
+                      }}
                     />
-                    <rect
-                      x="-8"
-                      y="-8"
-                      width="16"
-                      height="16"
-                      rx="2"
-                      fill="none"
-                      stroke="var(--color-azure)"
-                      strokeWidth="1.5"
-                      transform={`rotate(${p * 45})`}
-                    />
-                  </g>
-
-                  {/* Form 2: The Engineer of Intelligence (Iris) */}
-                  <g transform={`translate(${p2.x}, ${p2.y})`} filter="url(#ch02-glow)">
-                    <circle
-                      r={30 - p * 6}
-                      fill="var(--color-iris)"
-                      fillOpacity={0.25 + p * 0.15}
-                      stroke="var(--color-iris)"
-                      strokeWidth="2"
-                    />
-                    <circle r="6" fill="none" stroke="var(--color-iris)" strokeWidth="1.5" />
-                    <circle cx="0" cy="0" r="2.5" fill="var(--color-iris)" />
-                  </g>
-
-                  {/* Form 3: The Visual Thinker (Rose) */}
-                  <g transform={`translate(${p3.x}, ${p3.y})`} filter="url(#ch02-glow)">
-                    <circle
-                      r={30 - p * 6}
-                      fill="var(--color-rose)"
-                      fillOpacity={0.25 + p * 0.15}
-                      stroke="var(--color-rose)"
-                      strokeWidth="2"
-                    />
-                    <polygon
-                      points="0,-8 7,6 -7,6"
-                      fill="none"
-                      stroke="var(--color-rose)"
-                      strokeWidth="1.5"
-                      transform={`rotate(${p * -45})`}
-                    />
-                  </g>
-
-                  {/* Form 4: The Explorer (Ember) */}
-                  <g transform={`translate(${p4.x}, ${p4.y})`} filter="url(#ch02-glow)">
-                    <circle
-                      r={30 - p * 6}
-                      fill="var(--color-ember)"
-                      fillOpacity={0.25 + p * 0.15}
-                      stroke="var(--color-ember)"
-                      strokeWidth="2"
-                    />
-                    <line
-                      x1="-7"
-                      y1="0"
-                      x2="7"
-                      y2="0"
-                      stroke="var(--color-ember)"
-                      strokeWidth="1.5"
-                    />
-                    <line
-                      x1="0"
-                      y1="-7"
-                      x2="0"
-                      y2="7"
-                      stroke="var(--color-ember)"
-                      strokeWidth="1.5"
-                    />
-                  </g>
-
-                  {/* Center Convergence Core */}
-                  {p > 0.4 && (
-                    <g transform={`translate(${center}, ${center})`}>
-                      <circle
-                        r={12 * p}
-                        fill="var(--color-gold)"
-                        fillOpacity={0.35 * p}
-                        stroke="var(--color-gold)"
-                        strokeWidth="1.5"
-                      />
-                      <circle r={3.5 * p} fill="var(--color-gold)" />
-                    </g>
-                  )}
-                </svg>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Right: The 4 Converging Identities (6 cols) - NOT skill cards, pure typography */}
-            <div aria-hidden="true" className="lg:col-span-6 space-y-6">
+            {/* Right: Identities List */}
+            <div className="lg:col-span-6 space-y-4">
               {identities.map((item, idx) => {
-                const isItemActive = isReduced || p > 0.8 || activeIndex === idx;
-
+                const isActive = p > idx * 0.22;
                 return (
                   <div
                     key={item.id}
                     className={cn(
-                      'transition-all duration-300 space-y-1.5',
-                      isItemActive ? 'opacity-100 translate-x-1' : 'opacity-70'
+                      'p-4 rounded-xl border transition-all duration-300',
+                      isActive
+                        ? 'border-theme-border bg-theme-surface/60 shadow-sm'
+                        : 'border-transparent opacity-60'
                     )}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <span
-                        className="w-2 h-2 rounded-full"
-                        style={{ backgroundColor: item.accentVar }}
-                      />
-                      <h3 className="font-serif font-normal text-lg sm:text-xl text-theme-text">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={cn('text-xs font-mono uppercase font-semibold', item.textColor)}>
                         {item.role}
-                      </h3>
+                      </span>
                     </div>
-
-                    <p className="text-xs sm:text-sm text-theme-muted leading-relaxed max-w-[42ch]">
-                      {item.description}
-                    </p>
-
+                    <p className="text-xs text-theme-text mb-1 leading-relaxed">{item.description}</p>
                     <p className="text-xs font-serif italic text-theme-muted/80 leading-relaxed max-w-[42ch]">
                       &ldquo;{item.feedsOthers}&rdquo;
                     </p>
@@ -328,7 +211,7 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
           </div>
         </div>
 
-        {/* Bottom: Narrative Bridge (Rule 5: Quiet first-person line, no box, no label) */}
+        {/* Bottom: Narrative Bridge (Rule 5: Quiet first-person line) */}
         <footer className="relative z-10 max-w-5xl mx-auto w-full pt-4">
           <p
             className={cn(
@@ -336,7 +219,7 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
               p > 0.8 || isReduced ? 'opacity-90' : 'opacity-40'
             )}
           >
-            &ldquo;{chapter.bridgeToNext}&rdquo;
+            &ldquo;<Content value={chapter.bridge} />&rdquo;
           </p>
         </footer>
       </div>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { X, Film, Compass, ChevronRight, Volume2, VolumeX, ShieldCheck } from 'lucide-react';
 import { chapters } from '@/content/chapters';
+import { Content } from '@/components/content/Content';
 import { CKWordmark } from '@/components/ui/CKWordmark';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ModeSwitch } from '@/components/ui/ModeSwitch';
@@ -86,7 +87,7 @@ export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
           </div>
 
           <div className="space-y-1.5">
-            {chapters.map((ch, idx) => {
+            {(chapters.visible ? chapters.visible() : chapters).map((ch, idx) => {
               const formattedNum =
                 typeof ch.number === 'number'
                   ? ch.number === 0
@@ -106,7 +107,7 @@ export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
                     <span className="w-2 h-2 rounded-full bg-chapter-accent shrink-0" />
                     <div>
                       <div className="font-serif font-bold text-sm text-theme-text group-hover:text-chapter-accent transition-colors">
-                        {ch.title}
+                        <Content value={ch.title} />
                       </div>
                       <div className="text-[11px] font-mono text-theme-muted">
                         Movement {formattedNum} · {ch.emotionalArc}

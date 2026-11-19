@@ -1,85 +1,85 @@
-export interface TimelineMilestone {
-  id: string;
-  yearOrPeriod: string;
-  title: string;
-  stage:
-    | 'Curiosity'
-    | 'Discovery'
-    | 'Experimentation'
-    | 'Creation'
-    | 'Expression'
-    | 'Exploration'
-    | 'Growth'
-    | 'Possibility';
-  summary: string;
-  details?: string;
-  isPlaceholder: boolean;
-}
+import { z } from 'zod';
+import { contentFieldSchema, ContentField, draft, placeholder } from './schema';
 
-export const timeline: TimelineMilestone[] = [
+export const timelineStageSchema = z.enum([
+  'Curiosity',
+  'Discovery',
+  'Experimentation',
+  'Creation',
+  'Expression',
+  'Exploration',
+  'Growth',
+  'Possibility',
+]);
+export type TimelineStage = z.infer<typeof timelineStageSchema>;
+
+export const timelineMilestoneSchema = z.object({
+  id: z.string(),
+  yearOrPeriod: contentFieldSchema,
+  title: contentFieldSchema,
+  stage: timelineStageSchema,
+  summary: contentFieldSchema,
+  details: contentFieldSchema.optional(),
+});
+export type TimelineMilestone = z.infer<typeof timelineMilestoneSchema>;
+
+const rawTimeline: TimelineMilestone[] = [
   {
     id: 'timeline-early-spark',
-    yearOrPeriod: 'Origins',
-    title: 'The Inquisitive Spark',
+    yearOrPeriod: draft('Origins'),
+    title: draft('The Inquisitive Spark'),
     stage: 'Curiosity',
-    summary: 'First encounters with computing, disassembly, and questioning internal mechanisms.',
-    isPlaceholder: true,
+    summary: draft('First encounters with computing, disassembly, and questioning internal mechanisms.'),
   },
   {
     id: 'timeline-first-code',
-    yearOrPeriod: 'Foundations',
-    title: 'Writing the First Code',
+    yearOrPeriod: draft('Foundations'),
+    title: draft('Writing the First Code'),
     stage: 'Discovery',
-    summary: 'Stepping into software engineering through foundational programming languages.',
-    isPlaceholder: true,
+    summary: draft('Stepping into software engineering through foundational programming languages.'),
   },
   {
     id: 'timeline-prototyping',
-    yearOrPeriod: 'Prototypes',
-    title: 'Rapid Prototyping & Breakdowns',
+    yearOrPeriod: draft('Prototypes'),
+    title: draft('Rapid Prototyping & Breakdowns'),
     stage: 'Experimentation',
-    summary: 'Building experimental tools, hackathon participations, and learning through failure.',
-    isPlaceholder: true,
+    summary: draft('Building experimental tools, hackathon participations, and learning through failure.'),
   },
   {
     id: 'timeline-fullstack-architecture',
-    yearOrPeriod: 'Architecture',
-    title: 'Engineering Cohesive Systems',
+    yearOrPeriod: draft('Architecture'),
+    title: draft('Engineering Cohesive Systems'),
     stage: 'Creation',
-    summary: 'Developing full-stack architectures like Librarium 2.0 and structured data systems.',
-    isPlaceholder: true,
+    summary: draft('Developing full-stack architectures like Librarium 2.0 and structured data systems.'),
   },
   {
     id: 'timeline-visual-craft',
-    yearOrPeriod: 'Craft',
-    title: 'Harmonizing Motion, 3D & User Interfaces',
+    yearOrPeriod: draft('Craft'),
+    title: draft('Harmonizing Motion, 3D & User Interfaces'),
     stage: 'Expression',
-    summary: 'Refining typography, spatial interactions, Three.js canvases, and fluid transitions.',
-    isPlaceholder: true,
+    summary: draft('Refining typography, spatial interactions, Three.js canvases, and fluid transitions.'),
   },
   {
     id: 'timeline-frontiers-web3-ai',
-    yearOrPeriod: 'Frontiers',
-    title: 'Decentralized & Intelligent Systems',
+    yearOrPeriod: draft('Frontiers'),
+    title: draft('Decentralized & Intelligent Systems'),
     stage: 'Exploration',
-    summary: 'Explorations in Sahyog Cryptos, autonomous LLM agents, and decentralized topologies.',
-    isPlaceholder: true,
+    summary: draft('Explorations in Sahyog Cryptos, autonomous LLM agents, and decentralized topologies.'),
   },
   {
     id: 'timeline-civic-and-campus-scale',
-    yearOrPeriod: 'Production',
-    title: 'Deploying for Real Organizations',
+    yearOrPeriod: draft('Production'),
+    title: draft('Deploying for Real Organizations'),
     stage: 'Growth',
-    summary: 'Building GCU Campus Flow and IRDMS Assam for real community impact and resilience.',
-    isPlaceholder: true,
+    summary: draft('Building GCU Campus Flow and IRDMS Assam for real community impact and resilience.'),
   },
   {
     id: 'timeline-current-horizon',
-    yearOrPeriod: 'Present & Beyond',
-    title: 'A Story Still Unfolding',
+    yearOrPeriod: draft('Present & Beyond'),
+    title: draft('A Story Still Unfolding'),
     stage: 'Possibility',
-    summary:
-      'Continuing research, open-source work, and looking for transformative collaborations.',
-    isPlaceholder: true,
+    summary: draft('Continuing research, open-source work, and looking for transformative collaborations.'),
   },
 ];
+
+export const timeline: TimelineMilestone[] = z.array(timelineMilestoneSchema).parse(rawTimeline);

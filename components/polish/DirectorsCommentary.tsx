@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { usePolish } from './PolishContext';
-import { getCommentaryFor, hasAnyCommentary } from '@/content/commentary';
-import { Film, HelpCircle } from 'lucide-react';
+import { getCommentaryFor } from '@/content/commentary';
+import { Content } from '@/components/content/Content';
+import { Film } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function CommentaryToggle({ className }: { className?: string }) {
@@ -65,17 +66,10 @@ export function DirectorsCommentary({ id, className }: { id: string; className?:
           <Film className="w-3 h-3" />
           <span>DIRECTOR&apos;S COMMENTARY · {item.category}</span>
         </div>
-
-        {item.isPlaceholder && (
-          <span className="text-[9px] font-mono text-theme-ember flex items-center gap-1">
-            <HelpCircle className="w-3 h-3" />
-            [Pending Author Note]
-          </span>
-        )}
       </div>
 
       <p className="font-serif italic text-xs sm:text-sm text-theme-text leading-relaxed">
-        &ldquo;{item.note}&rdquo;
+        &ldquo;<Content value={item.note} />&rdquo;
       </p>
     </div>
   );

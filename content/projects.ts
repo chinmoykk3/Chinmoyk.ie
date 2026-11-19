@@ -1,27 +1,43 @@
-export type ProjectStatus = 'completed' | 'in-progress' | 'prototype';
+import { z } from 'zod';
+import { contentFieldSchema, ContentField, draft, placeholder } from './schema';
 
-export interface ProjectTenPointFramework {
-  /** 1. Core premise and concept */
-  idea: string;
-  /** 2. Specific friction, inefficiency, or pain point */
-  problem: string;
-  /** 3. Catalyst and personal motivation */
-  motivation: string;
-  /** 4. The ideal end-state or long-term aspiration */
-  vision: string;
-  /** 5. Chinmoy's individual engineering and architectural authorship */
-  contribution: string;
-  /** 6. Research, prototyping, testing, and implementation process */
-  process: string;
-  /** 7. Technologies, libraries, infra, and tools */
-  stack: string[];
-  /** 8. Roadblocks and technical obstacles */
-  challenges: string;
-  /** 9. Measurable results, verified benchmarks, or delivery milestones */
-  outcomes: string;
-  /** 10. Core takeaways and engineering lessons */
-  lessons: string;
-}
+export const projectStatusSchema = z.enum([
+  'unknown',
+  'completed',
+  'in-progress',
+  'prototype',
+]);
+export type ProjectStatus = z.infer<typeof projectStatusSchema>;
+
+export const projectCategorySchema = z.enum([
+  'Full-Stack & Systems',
+  'Decentralized / Web3',
+  'Civic Tech & Gov',
+  'Educational & Campus',
+]);
+export type ProjectCategory = z.infer<typeof projectCategorySchema>;
+
+export const projectTenPointFrameworkSchema = z.object({
+  idea: contentFieldSchema,
+  problem: contentFieldSchema,
+  motivation: contentFieldSchema,
+  vision: contentFieldSchema,
+  contribution: contentFieldSchema,
+  process: contentFieldSchema,
+  stack: z.array(contentFieldSchema),
+  challenges: contentFieldSchema,
+  outcomes: contentFieldSchema,
+  lessons: contentFieldSchema,
+});
+export type ProjectTenPointFramework = z.infer<typeof projectTenPointFrameworkSchema>;
+
+export const architectureNodeSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  sublabel: z.string(),
+  type: z.enum(['client', 'gateway', 'service', 'db', 'ledger', 'ai']),
+});
+export type ArchitectureNode = z.infer<typeof architectureNodeSchema>;
 
 export interface ProjectEvidence {
   screenshots: { caption: string; url?: string; placeholder: string }[];
@@ -30,303 +46,172 @@ export interface ProjectEvidence {
   liveLink: { url?: string; placeholder: string };
 }
 
-export interface ArchitectureNode {
-  id: string;
-  label: string;
-  sublabel: string;
-  type: 'client' | 'gateway' | 'service' | 'db' | 'ledger' | 'ai';
-}
+export const projectSchema = z.object({
+  id: z.string(),
+  slug: z.string(),
+  title: contentFieldSchema,
+  tagline: contentFieldSchema,
+  status: projectStatusSchema,
+  category: projectCategorySchema,
+  featured: z.boolean(),
+  framework: projectTenPointFrameworkSchema,
+  architectureNodes: z.array(architectureNodeSchema),
+  evidence: z.any().optional(),
+  links: z
+    .object({
+      demo: z.string().optional(),
+      github: z.string().optional(),
+      caseStudy: z.string().optional(),
+    })
+    .optional(),
+});
+export type Project = z.infer<typeof projectSchema>;
 
-export interface Project {
-  id: string;
-  slug: string;
-  title: string;
-  tagline: string;
-  year?: string;
-  status: ProjectStatus;
-  isPlaceholder: boolean;
-  category:
-    'Full-Stack & Systems' | 'Decentralized / Web3' | 'Civic Tech & Gov' | 'Educational & Campus';
-  featured: boolean;
-  framework: ProjectTenPointFramework;
-  architectureNodes: ArchitectureNode[];
-  evidence: ProjectEvidence;
-  links?: {
-    demo?: string;
-    github?: string;
-    caseStudy?: string;
-  };
-}
-
-export const projects: Project[] = [
+const rawProjects: Project[] = [
   {
     id: 'sahyog-cryptos',
     slug: 'sahyog-cryptos',
-    title: 'Sahyog Cryptos',
-    tagline: 'Collaborative crypto-asset management and decentralized transaction framework',
-    year: '[TODO: Add project year/dates]',
-    status: 'prototype',
-    isPlaceholder: true,
+    title: draft('Sahyog Cryptos'),
+    tagline: draft('Collaborative crypto-asset management and decentralized transaction framework'),
+    status: 'unknown', // Requirement 6: status field starts as "unknown" and must be set by Chinmoy
     category: 'Decentralized / Web3',
     featured: true,
     framework: {
-      idea: '[TODO: Define core idea for Sahyog Cryptos — e.g. cooperative crypto-asset custody or micro-community staking]',
-      problem:
-        '[TODO: Specify problem statement — friction in group management, transparency, or trust in decentralized crypto transactions]',
-      motivation: '[TODO: Add personal motivation for building Sahyog Cryptos]',
-      vision:
-        '[TODO: Add vision for decentralized collective finance or community trust protocols]',
-      contribution:
-        '[TODO: Detail Chinmoy’s specific technical role — smart contracts, frontend, state management, or architecture]',
-      process: '[TODO: Document the technical process, prototyping phase, and testing setup]',
+      idea: draft(
+        'Collaborative crypto-asset management and decentralized transaction framework',
+        'One-line premise from project brief'
+      ),
+      problem: placeholder('[TODO: specify problem statement — friction in group management, transparency, or trust]'),
+      motivation: placeholder('[TODO: add personal motivation for building Sahyog Cryptos]'),
+      vision: placeholder('[TODO: add long-term vision for decentralized collective finance or community trust protocols]'),
+      contribution: placeholder('[TODO: detail Chinmoy’s specific technical authorship — smart contracts, state management, or architecture]'),
+      process: placeholder('[TODO: document research, prototyping phase, and testing setup]'),
       stack: [
-        'Web3 / Smart Contracts [TODO: verify chain / Solidity]',
-        'TypeScript',
-        'Next.js / React',
-        'Tailwind CSS',
-        '[TODO: Add real node/indexer/wallet provider]',
+        placeholder('[TODO: confirm web3 chain & smart contract framework]'),
+        placeholder('[TODO: confirm frontend & indexing stack]'),
       ],
-      challenges:
-        '[TODO: Document key technical roadblocks — e.g. gas optimization, multi-sig consensus, or state synchronization]',
-      outcomes:
-        '[TODO: Add real verified metrics, testing outcomes, or deployment milestones — DO NOT INVENT]',
-      lessons:
-        '[TODO: Key lessons learned about blockchain mechanics, trustless systems, or UX friction]',
-    },
-    links: {
-      github: '[TODO: add repo URL if public]',
-      demo: '[TODO: add live demo URL if deployed]',
+      challenges: placeholder('[TODO: document key technical roadblocks — e.g. gas optimization or consensus]'),
+      outcomes: placeholder('[TODO: add real verified metrics, benchmarks, or delivery milestones — DO NOT INVENT]'),
+      lessons: placeholder('[TODO: key engineering takeaways about blockchain mechanics or UX friction]'),
     },
     architectureNodes: [
-      { id: 'n1', label: 'Client Interface', sublabel: 'React / Web3 Provider', type: 'client' },
-      { id: 'n2', label: 'RPC Router', sublabel: 'EIP-1193 Gateway', type: 'gateway' },
-      { id: 'n3', label: 'Multi-Sig Engine', sublabel: 'Consensus Coordinator', type: 'service' },
-      { id: 'n4', label: 'On-Chain Ledger', sublabel: 'EVM Contract State', type: 'ledger' },
+      { id: 'sc-1', label: 'Wallet Client', sublabel: 'EIP-1193 Provider', type: 'client' },
+      { id: 'sc-2', label: 'Gateway Node', sublabel: 'RPC Node / Infura', type: 'gateway' },
+      { id: 'sc-3', label: 'Smart Contract', sublabel: 'Multi-Sig Treasury', type: 'ledger' },
     ],
-    evidence: {
-      screenshots: [
-        {
-          caption: 'Transaction Reconciliation & Custody Dashboard',
-          placeholder: '[TODO: Add verified dashboard screenshot / wireframe]',
-        },
-        {
-          caption: 'Smart Contract Interaction Matrix',
-          placeholder: '[TODO: Add verified interaction screenshot]',
-        },
-      ],
-      demoVideo: {
-        caption: 'Interactive Walkthrough of Asset Flow',
-        placeholder: '[TODO: Add Loom or MP4 demo link when recorded]',
-      },
-      repoLink: {
-        placeholder: '[TODO: Add public GitHub link or request access]',
-      },
-      liveLink: {
-        placeholder: '[TODO: Add testnet or production deployment link]',
-      },
+    links: {
+      github: '',
+      demo: '',
     },
   },
   {
     id: 'librarium-2-0',
     slug: 'librarium-2-0',
-    title: 'Librarium 2.0',
-    tagline: 'Next-generation intelligent library information and resource orchestration platform',
-    year: '[TODO: Add project year/dates]',
-    status: 'prototype',
-    isPlaceholder: true,
+    title: draft('Librarium 2.0'),
+    tagline: draft('Modern digital library management system and resource catalog'),
+    status: 'unknown', // Requirement 6: status field starts as "unknown" and must be set by Chinmoy
     category: 'Full-Stack & Systems',
     featured: true,
     framework: {
-      idea: '[TODO: Define core premise of Librarium 2.0 — e.g. modern digital cataloging, intelligent indexing, and physical resource tracking]',
-      problem:
-        '[TODO: Specific pain point in legacy library systems — search latency, manual checkout overhead, fragmented indexes]',
-      motivation:
-        '[TODO: Motivation for re-engineering the library experience into a 2.0 architecture]',
-      vision: '[TODO: Vision for seamless knowledge discovery and open resource access]',
-      contribution:
-        '[TODO: Detail Chinmoy’s individual engineering contributions — DB schema, full-stack API, client UI]',
-      process: '[TODO: Step-by-step development process, user research, schema normalization]',
+      idea: draft(
+        'Modern digital library management system and resource catalog',
+        'One-line premise from project brief'
+      ),
+      problem: placeholder('[TODO: legacy institutional library inefficiencies and catalog friction addressed]'),
+      motivation: placeholder('[TODO: what sparked the rebuild for Librarium 2.0]'),
+      vision: placeholder('[TODO: modern digital resource ecosystem and seamless academic access vision]'),
+      contribution: placeholder('[TODO: Chinmoy’s personal backend, schema, indexing, and interface code]'),
+      process: placeholder('[TODO: database design, relational schema indexing, and deployment methodology]'),
       stack: [
-        'TypeScript',
-        'Next.js / React',
-        'Database [TODO: PostgreSQL / MongoDB / Supabase]',
-        'Search / Query Indexing [TODO: specify]',
-        'Tailwind CSS',
+        placeholder('[TODO: confirm backend, database, and search indexing stack]'),
+        placeholder('[TODO: confirm frontend UI library and state management]'),
       ],
-      challenges:
-        '[TODO: Real challenges faced — e.g. catalog search latency, concurrency handling, or asset tagging]',
-      outcomes:
-        '[TODO: Real metrics or project outcome — e.g. number of cataloged items, adoption status — DO NOT INVENT]',
-      lessons:
-        '[TODO: Engineering insights gained regarding data relational integrity and search ergonomics]',
-    },
-    links: {
-      github: '[TODO: add repo URL if public]',
-      demo: '[TODO: add live demo URL if deployed]',
+      challenges: placeholder('[TODO: concurrency, query latency, or asset tagging obstacles]'),
+      outcomes: placeholder('[TODO: real adoption numbers, catalog count, or deployment status — DO NOT INVENT]'),
+      lessons: placeholder('[TODO: architecture and relational schema takeaways]'),
     },
     architectureNodes: [
-      { id: 'n1', label: 'Catalog Portal', sublabel: 'Next.js App Client', type: 'client' },
-      { id: 'n2', label: 'Edge Gateway', sublabel: 'REST & Search Edge', type: 'gateway' },
-      { id: 'n3', label: 'Indexing Engine', sublabel: 'Faceted Search Core', type: 'service' },
-      { id: 'n4', label: 'Relational Store', sublabel: 'Normalized Catalog DB', type: 'db' },
+      { id: 'lib-1', label: 'Web Client', sublabel: 'Next.js App', type: 'client' },
+      { id: 'lib-2', label: 'API Layer', sublabel: 'Server Routes', type: 'service' },
+      { id: 'lib-3', label: 'Catalog DB', sublabel: 'PostgreSQL Relational DB', type: 'db' },
     ],
-    evidence: {
-      screenshots: [
-        {
-          caption: 'Resource Search & Filtering Interface',
-          placeholder: '[TODO: Add screenshot of search results and filters]',
-        },
-        {
-          caption: 'Administrative Asset Tracking Portal',
-          placeholder: '[TODO: Add screenshot of checkout & asset management]',
-        },
-      ],
-      demoVideo: {
-        caption: 'End-to-End Search & Checkout Demo',
-        placeholder: '[TODO: Add video walkthrough link]',
-      },
-      repoLink: {
-        placeholder: '[TODO: Add repository URL if public]',
-      },
-      liveLink: {
-        placeholder: '[TODO: Add deployed URL if available]',
-      },
+    links: {
+      github: '',
+      demo: '',
     },
   },
   {
     id: 'gcu-campus-flow',
     slug: 'gcu-campus-flow',
-    title: 'GCU Campus Flow',
-    tagline: 'Unified campus workflow management and digital operational hub for university life',
-    year: '[TODO: Add project year/dates]',
-    status: 'prototype',
-    isPlaceholder: true,
+    title: draft('GCU Campus Flow'),
+    tagline: draft('Integrated digital workflow and approval automation platform for university campus operations'),
+    status: 'unknown', // Requirement 6: status field starts as "unknown" and must be set by Chinmoy
     category: 'Educational & Campus',
     featured: true,
     framework: {
-      idea: '[TODO: Define core premise of GCU Campus Flow — centralized digital operations, attendance, event flow, or admin workflows]',
-      problem:
-        '[TODO: Disjointed university administration, paper trails, or siloed departmental portals at Girijananda Chowdhury University (GCU)]',
-      motivation: '[TODO: Motivation for tackling university operational friction]',
-      vision: '[TODO: Vision for a frictionless, unified digital campus ecosystem]',
-      contribution:
-        '[TODO: Chinmoy’s specific engineering scope — full-stack architecture, role-based auth, dashboard design]',
-      process:
-        '[TODO: Stakeholder consultation, workflow mapping, rapid prototyping, campus iteration]',
+      idea: draft(
+        'Integrated digital workflow and approval automation platform for university campus operations',
+        'One-line premise from project brief'
+      ),
+      problem: placeholder('[TODO: administrative paper log bottlenecks and campus department friction]'),
+      motivation: placeholder('[TODO: personal catalyst for building campus administrative automation]'),
+      vision: placeholder('[TODO: vision for cohesive, paperless, real-time university digital services]'),
+      contribution: placeholder('[TODO: Chinmoy’s architecture, role hierarchies, and approval pipeline code]'),
+      process: placeholder('[TODO: user feedback cycles across campus faculty and deployment milestones]'),
       stack: [
-        'TypeScript',
-        'React / Next.js',
-        'Node.js / Express or Next.js App Router API',
-        'Database [TODO: specify SQL / NoSQL]',
-        'Tailwind CSS',
-        'Auth [TODO: specify auth provider or JWT setup]',
+        placeholder('[TODO: confirm authentication, database, and workflow engine stack]'),
+        placeholder('[TODO: confirm frontend notification and review UI]'),
       ],
-      challenges:
-        '[TODO: Real challenges — role permissions hierarchy, peak traffic loads, or user onboarding]',
-      outcomes:
-        '[TODO: Real verified outcome — pilot user count, admin adoption, or status — DO NOT INVENT]',
-      lessons:
-        '[TODO: Architectural lessons learned when building for diverse non-technical institutional users]',
-    },
-    links: {
-      github: '[TODO: add repo URL if public]',
-      demo: '[TODO: add live demo URL if deployed]',
+      challenges: placeholder('[TODO: role hierarchy, security permissions, or faculty adoption friction]'),
+      outcomes: placeholder('[TODO: verified user numbers, departmental adoption, or pilot milestones — DO NOT INVENT]'),
+      lessons: placeholder('[TODO: takeaways on engineering mission-critical institutional software]'),
     },
     architectureNodes: [
-      { id: 'n1', label: 'Campus Web Portal', sublabel: 'Role-Based Dashboard', type: 'client' },
-      { id: 'n2', label: 'Auth Gateway', sublabel: 'RBAC & Session Broker', type: 'gateway' },
-      { id: 'n3', label: 'Workflow Engine', sublabel: 'Departmental Routing', type: 'service' },
-      { id: 'n4', label: 'Institutional DB', sublabel: 'Secure Academic Store', type: 'db' },
+      { id: 'gcu-1', label: 'Campus Portal', sublabel: 'Role-Based Dashboard', type: 'client' },
+      { id: 'gcu-2', label: 'Workflow Engine', sublabel: 'Approval State Machine', type: 'service' },
+      { id: 'gcu-3', label: 'Audit Store', sublabel: 'Encrypted Records DB', type: 'db' },
     ],
-    evidence: {
-      screenshots: [
-        {
-          caption: 'Student & Faculty Operations Hub',
-          placeholder: '[TODO: Add screenshot of role-based campus overview]',
-        },
-        {
-          caption: 'Departmental Approval Pipeline View',
-          placeholder: '[TODO: Add screenshot of approval queues]',
-        },
-      ],
-      demoVideo: {
-        caption: 'Campus Workflow Demonstration',
-        placeholder: '[TODO: Add demo screen recording link]',
-      },
-      repoLink: {
-        placeholder: '[TODO: Add institutional repository link if public]',
-      },
-      liveLink: {
-        placeholder: '[TODO: Add live staging or campus domain URL]',
-      },
+    links: {
+      github: '',
+      demo: '',
     },
   },
   {
     id: 'irdms-assam',
     slug: 'irdms-assam',
-    title: 'IRDMS Assam',
-    tagline: 'Integrated Resource and Disaster Management System for regional resilience',
-    year: '[TODO: Add project year/dates]',
-    status: 'prototype',
-    isPlaceholder: true,
+    title: draft('IRDMS Assam'),
+    tagline: draft('Integrated regional disaster and resource management system for low-bandwidth civic resilience'),
+    status: 'unknown', // Requirement 6: status field starts as "unknown" and must be set by Chinmoy
     category: 'Civic Tech & Gov',
     featured: true,
     framework: {
-      idea: '[TODO: Define core premise of IRDMS Assam — regional resource allocation, disaster reporting, geospatial or relief coordination for Assam]',
-      problem:
-        '[TODO: Emergency communication breakdowns, flood response delays, or fragmented resource inventories in regional crisis management]',
-      motivation: '[TODO: Motivation for building civic resilience technology for Assam]',
-      vision:
-        '[TODO: Long-term vision for data-driven, rapid emergency mobilization in vulnerable regions]',
-      contribution:
-        '[TODO: Chinmoy’s specific contribution — GIS mapping integration, alert dispatch system, or incident reporting interface]',
-      process:
-        '[TODO: Research on regional crisis response workflows, mock incident drills, API integration]',
+      idea: draft(
+        'Integrated regional disaster and resource management system for low-bandwidth civic resilience',
+        'One-line premise from project brief'
+      ),
+      problem: placeholder('[TODO: disaster management communication breakdowns and resource allocation delays in Assam]'),
+      motivation: placeholder('[TODO: personal imperative for building low-bandwidth civic disaster tooling]'),
+      vision: placeholder('[TODO: offline-first, highly accessible emergency coordination framework]'),
+      contribution: placeholder('[TODO: Chinmoy’s data architecture, offline caching, and resource dispatch modeling]'),
+      process: placeholder('[TODO: field assessment, emergency service workflow analysis, and pilot testing]'),
       stack: [
-        'TypeScript',
-        'Next.js / React',
-        'Mapping / Geospatial [TODO: Leaflet / Mapbox / OpenStreetMap]',
-        'Backend / Real-time updates [TODO: specify WebSockets / Server-Sent Events]',
-        'Tailwind CSS',
+        placeholder('[TODO: confirm GIS / mapping, offline synchronization, and edge caching stack]'),
+        placeholder('[TODO: confirm SMS/USSD or low-bandwidth protocol integrations]'),
       ],
-      challenges:
-        '[TODO: Critical challenges — low-bandwidth offline resilience, data verification in high-stress scenarios]',
-      outcomes:
-        '[TODO: Real project outcomes — deployment status, demo presentation, institutional review — DO NOT INVENT]',
-      lessons:
-        '[TODO: Fundamental takeaways on high-reliability, mission-critical public infrastructure design]',
-    },
-    links: {
-      github: '[TODO: add repo URL if public]',
-      demo: '[TODO: add live demo URL if deployed]',
+      challenges: placeholder('[TODO: low-bandwidth connectivity, intermittent electricity, and real-time validation]'),
+      outcomes: placeholder('[TODO: verified pilot trials, simulated response metrics, or civic partner tests — DO NOT INVENT]'),
+      lessons: placeholder('[TODO: engineering for catastrophic failure conditions and vulnerable populations]'),
     },
     architectureNodes: [
-      { id: 'n1', label: 'Field Responder App', sublabel: 'Offline-First Client', type: 'client' },
-      { id: 'n2', label: 'Crisis Dispatch', sublabel: 'Realtime WebSocket Edge', type: 'gateway' },
-      { id: 'n3', label: 'Geospatial Service', sublabel: 'Regional GIS Engine', type: 'service' },
-      { id: 'n4', label: 'Incident State DB', sublabel: 'Sync Queue & History', type: 'db' },
+      { id: 'ir-1', label: 'Field Client', sublabel: 'PWA Offline Cache', type: 'client' },
+      { id: 'ir-2', label: 'Sync Broker', sublabel: 'Conflict-Free Replicator', type: 'service' },
+      { id: 'ir-3', label: 'Spatial Registry', sublabel: 'GIS Resource DB', type: 'db' },
     ],
-    evidence: {
-      screenshots: [
-        {
-          caption: 'Assam Regional Crisis Mapping View',
-          placeholder: '[TODO: Add screenshot of live incident heatmaps and relief zones]',
-        },
-        {
-          caption: 'Resource Inventory & Dispatch Table',
-          placeholder: '[TODO: Add screenshot of dispatch coordination]',
-        },
-      ],
-      demoVideo: {
-        caption: 'Disaster Simulation & Dispatch Runthrough',
-        placeholder: '[TODO: Add simulation walkthrough link]',
-      },
-      repoLink: {
-        placeholder: '[TODO: Add repository URL if open-sourced]',
-      },
-      liveLink: {
-        placeholder: '[TODO: Add deployment or regional demo URL]',
-      },
+    links: {
+      github: '',
+      demo: '',
     },
   },
 ];
+
+export const projects: Project[] = z.array(projectSchema).parse(rawProjects);

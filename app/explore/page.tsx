@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { chapters } from '@/content/chapters';
 import { projects } from '@/content/projects';
-import { designWorks } from '@/content/designWork';
+import { designWork, designWorks } from '@/content/designWork';
 import { aiWork } from '@/content/aiWork';
 import { contactData } from '@/content/contact';
 import { timeline } from '@/content/timeline';
@@ -10,14 +10,14 @@ import { beyond } from '@/content/beyond';
 import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Tag';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/Card';
+import { Content } from '@/components/content/Content';
+import { isContentRenderable } from '@/content/schema';
 import {
   ArrowRight,
   Layers,
   Cpu,
   Clock,
   Compass,
-  AlertCircle,
-  Film,
   Palette,
   Mail,
   ExternalLink,
@@ -35,6 +35,8 @@ export const metadata = {
 };
 
 export default function ExplorePage() {
+  const visibleChapters = chapters.visible ? chapters.visible() : chapters;
+
   return (
     <Container className="py-12 sm:py-16 space-y-16">
       {/* Hub Hero Header */}
@@ -62,7 +64,7 @@ export default function ExplorePage() {
             href="#explore-chapters"
             className="px-3 py-1.5 rounded-full bg-theme-surface border border-theme-border hover:border-theme-border-strong hover:bg-theme-surface-elevated text-theme-text transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-chapter-accent"
           >
-            01. Chapters ({chapters.length})
+            01. Chapters ({visibleChapters.length})
           </a>
           <a
             href="#explore-projects"
@@ -100,16 +102,16 @@ export default function ExplorePage() {
       <section id="explore-chapters" className="space-y-6 scroll-mt-24">
         <div className="flex items-center justify-between flex-wrap gap-2 border-b border-theme-border pb-4">
           <div className="flex items-center gap-2.5">
-            <Film className="w-5 h-5 text-theme-gold" />
-            <h2 className="text-2xl font-serif font-bold text-theme-text">The Story Chapters</h2>
+            <Compass className="w-5 h-5 text-theme-gold" />
+            <h2 className="text-2xl font-serif font-bold text-theme-text">Documentary Movements</h2>
           </div>
           <span className="text-xs font-mono text-theme-muted">
-            8 Chronological Movements · Narrative Arc
+            {visibleChapters.length} Verified Chapters
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {chapters.map((ch, idx) => {
+          {visibleChapters.map((ch, idx) => {
             const formattedNum =
               typeof ch.number === 'number'
                 ? ch.number === 0
@@ -133,12 +135,18 @@ export default function ExplorePage() {
                   </div>
 
                   <h3 className="font-serif font-bold text-base text-theme-text mt-1">
-                    {ch.title}
+                    <Content value={ch.title} />
                   </h3>
-                  <p className="text-xs font-serif italic text-theme-muted mt-0.5">{ch.subtitle}</p>
-                  <p className="text-xs text-theme-muted mt-2 line-clamp-3 leading-relaxed">
-                    {ch.summary}
-                  </p>
+                  {ch.subtitle && (
+                    <p className="text-xs font-serif italic text-theme-muted mt-0.5">
+                      <Content value={ch.subtitle} />
+                    </p>
+                  )}
+                  {ch.bridge && (
+                    <p className="text-xs text-theme-muted mt-2 line-clamp-3 leading-relaxed">
+                      &ldquo;<Content value={ch.bridge} />&rdquo;
+                    </p>
+                  )}
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-theme-border flex items-center justify-end">
@@ -181,12 +189,16 @@ export default function ExplorePage() {
                     {project.category}
                   </Tag>
                   <Tag variant="status" size="sm">
-                    STATUS: {project.status}
+                    STATUS: {project.status.toUpperCase()}
                   </Tag>
                 </CardHeader>
 
-                <CardTitle className="text-xl">{project.title}</CardTitle>
-                <p className="text-xs text-theme-muted italic mt-0.5">{project.tagline}</p>
+                <CardTitle className="text-xl">
+                  <Content value={project.title} />
+                </CardTitle>
+                <p className="text-xs text-theme-muted italic mt-0.5">
+                  <Content value={project.tagline} />
+                </p>
 
                 {/* 10-point framework preview: Problem & Idea */}
                 <div className="mt-4 space-y-2 text-xs">
@@ -195,7 +207,7 @@ export default function ExplorePage() {
                       The Idea
                     </span>
                     <span className="text-theme-muted leading-relaxed">
-                      {project.framework.idea}
+                      <Content value={project.framework.idea} />
                     </span>
                   </div>
                   <div className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border">
@@ -203,7 +215,7 @@ export default function ExplorePage() {
                       The Problem
                     </span>
                     <span className="text-theme-muted leading-relaxed">
-                      {project.framework.problem}
+                      <Content value={project.framework.problem} />
                     </span>
                   </div>
                 </div>
@@ -212,21 +224,14 @@ export default function ExplorePage() {
                 <div className="mt-4 flex flex-wrap gap-1.5">
                   {project.framework.stack.map((tech, i) => (
                     <Tag key={i} variant="default" size="sm">
-                      {tech}
+                      <Content value={tech} />
                     </Tag>
                   ))}
                 </div>
               </div>
 
               <CardFooter>
-                {project.isPlaceholder ? (
-                  <span className="text-[11px] font-mono text-theme-ember flex items-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                    Placeholders marked in /content
-                  </span>
-                ) : (
-                  <span />
-                )}
+                <div />
                 <Link
                   href={`/projects/${project.slug}`}
                   className="inline-flex items-center gap-1.5 text-xs font-semibold text-theme-gold hover:underline ml-auto"
@@ -247,17 +252,17 @@ export default function ExplorePage() {
         <div className="flex items-center justify-between flex-wrap gap-2 border-b border-theme-border pb-4">
           <div className="flex items-center gap-2.5">
             <Palette className="w-5 h-5 text-theme-rose" />
-            <h2 className="text-2xl font-serif font-bold text-theme-text">Design Systems & Work</h2>
+            <h2 className="text-2xl font-serif font-bold text-theme-text">Design Systems &amp; Work</h2>
           </div>
           <Link
-            href="/design"
+            href="/styleguide"
             className="text-xs font-mono font-semibold text-theme-gold hover:underline"
           >
             Visit Live Styleguide &rarr;
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {designWorks.map((work) => (
             <Card key={work.id} className="flex flex-col justify-between">
               <div>
@@ -265,12 +270,13 @@ export default function ExplorePage() {
                   <Tag variant="rose" size="sm">
                     {work.category}
                   </Tag>
-                  <span className="text-theme-muted">{work.year}</span>
                 </div>
 
-                <CardTitle className="text-lg">{work.title}</CardTitle>
+                <CardTitle className="text-lg">
+                  <Content value={work.title} />
+                </CardTitle>
                 <CardDescription className="mt-2 text-xs leading-relaxed">
-                  {work.description}
+                  <Content value={work.description} />
                 </CardDescription>
 
                 {/* Deliverables */}
@@ -282,7 +288,7 @@ export default function ExplorePage() {
                     {work.deliverables.map((deliv, i) => (
                       <li key={i} className="flex items-start gap-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5 text-theme-rose shrink-0 mt-0.5" />
-                        <span>{deliv}</span>
+                        <span><Content value={deliv} /></span>
                       </li>
                     ))}
                   </ul>
@@ -292,31 +298,16 @@ export default function ExplorePage() {
                 <div className="mt-4 flex flex-wrap gap-1">
                   {work.tools.map((tool, i) => (
                     <Tag key={i} variant="default" size="sm">
-                      {tool}
+                      <Content value={tool} />
                     </Tag>
                   ))}
                 </div>
               </div>
 
               <CardFooter>
-                {work.isPlaceholder && (
-                  <span className="text-[11px] font-mono text-theme-ember flex items-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                    Draft / Placeholder
-                  </span>
-                )}
-                {work.caseStudyAvailable ? (
-                  <Link
-                    href="/design"
-                    className="inline-flex items-center gap-1 text-xs font-mono font-semibold text-theme-gold hover:underline ml-auto"
-                  >
-                    View System <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                ) : (
-                  <span className="text-[11px] font-mono text-theme-muted ml-auto">
-                    Design Artifact
-                  </span>
-                )}
+                <span className="text-[11px] font-mono text-theme-muted ml-auto">
+                  Design Artifact
+                </span>
               </CardFooter>
             </Card>
           ))}
@@ -332,7 +323,7 @@ export default function ExplorePage() {
           <div className="flex items-center gap-2.5">
             <Cpu className="w-5 h-5 text-theme-iris" />
             <h2 className="text-2xl font-serif font-bold text-theme-text">
-              AI Work & Research Tracks
+              AI Work &amp; Research Tracks
             </h2>
           </div>
           <span className="text-xs font-mono text-theme-muted">
@@ -345,21 +336,29 @@ export default function ExplorePage() {
             <Card key={track} className="p-5 flex flex-col justify-between">
               <div>
                 <h3 className="text-xs font-mono uppercase tracking-widest text-theme-iris font-semibold mb-3">
-                  {track} ({aiWork[track].length})
+                  {track} ({aiWork[track].filter((i) => isContentRenderable(i.title)).length})
                 </h3>
                 <div className="space-y-3">
-                  {aiWork[track].map((item) => (
-                    <div
-                      key={item.id}
-                      className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs"
-                    >
-                      <div className="font-semibold text-theme-text">{item.title}</div>
-                      <div className="text-theme-muted text-[11px] mt-1">{item.focusArea}</div>
-                      <div className="text-theme-muted text-[10px] mt-2 font-mono">
-                        {item.dateOrQuarter}
+                  {aiWork[track]
+                    .filter((item) => isContentRenderable(item.title))
+                    .map((item) => (
+                      <div
+                        key={item.id}
+                        className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs"
+                      >
+                        <div className="font-semibold text-theme-text">
+                          <Content value={item.title} />
+                        </div>
+                        <div className="text-theme-muted text-[11px] mt-1">
+                          <Content value={item.focusArea} />
+                        </div>
+                        {item.dateOrQuarter && (
+                          <div className="text-theme-muted text-[10px] mt-2 font-mono">
+                            <Content value={item.dateOrQuarter} />
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
             </Card>
@@ -376,7 +375,7 @@ export default function ExplorePage() {
           <div className="flex items-center gap-2.5">
             <Mail className="w-5 h-5 text-theme-gold" />
             <h2 className="text-2xl font-serif font-bold text-theme-text">
-              Contact & Collaboration
+              Contact &amp; Collaboration
             </h2>
           </div>
           <Link
@@ -394,27 +393,30 @@ export default function ExplorePage() {
                 Get In Touch
               </Tag>
               <h3 className="text-xl font-serif font-bold text-theme-text mt-2">
-                {contactData.name}
+                <Content value={contactData.name} />
               </h3>
-              <p className="text-xs text-theme-muted font-mono mt-0.5">
-                {contactData.currentRoleOrStatus}
-              </p>
+              {isContentRenderable(contactData.currentRoleOrStatus) && (
+                <p className="text-xs text-theme-muted font-mono mt-0.5">
+                  <Content value={contactData.currentRoleOrStatus} />
+                </p>
+              )}
             </div>
 
-            <p className="text-sm text-theme-muted leading-relaxed">{contactData.bioSnippet}</p>
+            <p className="text-sm text-theme-muted leading-relaxed">
+              <Content value={contactData.bioSnippet} />
+            </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs">
-              <div className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-theme-gold shrink-0" />
-                <span className="text-theme-muted">{contactData.location}</span>
-              </div>
+              {isContentRenderable(contactData.location) && (
+                <div className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-theme-gold shrink-0" />
+                  <span className="text-theme-muted"><Content value={contactData.location} /></span>
+                </div>
+              )}
               <div className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border flex items-center gap-2">
                 <Mail className="w-4 h-4 text-theme-gold shrink-0" />
                 <a
-                  href={
-                    contactData.socials.find((s) => s.platform === 'Email')?.url ||
-                    `mailto:${contactData.email}`
-                  }
+                  href={`mailto:${contactData.email}`}
                   className="text-theme-text hover:underline truncate"
                 >
                   {contactData.email}
@@ -424,14 +426,14 @@ export default function ExplorePage() {
 
             <div className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs">
               <span className="font-semibold text-theme-text">Availability: </span>
-              <span className="text-theme-muted">{contactData.availability}</span>
+              <span className="text-theme-muted"><Content value={contactData.availability} /></span>
             </div>
           </Card>
 
           <Card className="p-6 flex flex-col justify-between space-y-4">
             <div>
               <div className="text-xs font-mono uppercase tracking-widest text-theme-muted mb-3">
-                Verified Socials & Links
+                Verified Socials &amp; Links
               </div>
               <div className="space-y-2">
                 {contactData.socials.map((social) => (
@@ -468,29 +470,32 @@ export default function ExplorePage() {
         <div className="flex items-center gap-2">
           <Compass className="w-5 h-5 text-theme-azure" />
           <h2 className="text-2xl font-serif font-bold text-theme-text">
-            Beyond: Active Investigations & Principles
+            Beyond: Active Investigations &amp; Principles
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {beyond.map((item) => (
-            <Card key={item.id} className="space-y-3">
-              <div className="flex items-center justify-between text-xs font-mono">
-                <Tag variant="azure" size="sm">
-                  {item.category}
-                </Tag>
-                {item.isPlaceholder && (
-                  <span className="text-theme-ember text-[10px]">Placeholder Marked</span>
-                )}
-              </div>
-              <CardTitle className="text-lg">{item.title}</CardTitle>
-              <CardDescription>{item.description}</CardDescription>
-              <div className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-muted">
-                <span className="font-semibold text-theme-text">Investigation: </span>
-                {item.currentInvestigation}
-              </div>
-            </Card>
-          ))}
+          {beyond
+            .filter((item) => isContentRenderable(item.title))
+            .map((item) => (
+              <Card key={item.id} className="space-y-3">
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <Tag variant="azure" size="sm">
+                    {item.category}
+                  </Tag>
+                </div>
+                <CardTitle className="text-lg">
+                  <Content value={item.title} />
+                </CardTitle>
+                <CardDescription>
+                  <Content value={item.description} />
+                </CardDescription>
+                <div className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-muted">
+                  <span className="font-semibold text-theme-text">Investigation: </span>
+                  <Content value={item.currentInvestigation} />
+                </div>
+              </Card>
+            ))}
         </div>
       </section>
 
@@ -508,11 +513,15 @@ export default function ExplorePage() {
               className="p-4 rounded-xl bg-theme-surface border border-theme-border text-xs space-y-2"
             >
               <div className="flex items-center justify-between font-mono text-[11px] text-theme-gold">
-                <span>{item.yearOrPeriod}</span>
+                <span><Content value={item.yearOrPeriod} /></span>
                 <span className="uppercase">{item.stage}</span>
               </div>
-              <h4 className="font-serif font-semibold text-theme-text text-sm">{item.title}</h4>
-              <p className="text-theme-muted leading-relaxed">{item.summary}</p>
+              <h4 className="font-serif font-semibold text-theme-text text-sm">
+                <Content value={item.title} />
+              </h4>
+              <p className="text-theme-muted leading-relaxed">
+                <Content value={item.summary} />
+              </p>
             </div>
           ))}
         </div>

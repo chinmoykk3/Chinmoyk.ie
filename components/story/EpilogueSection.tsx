@@ -1,27 +1,25 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
+import React, { useState } from 'react';
 import { Chapter } from '@/content/chapters';
 import { contactData } from '@/content/contact';
-import { ChapterLabel } from '@/components/ui/ChapterLabel';
 import { Container } from '@/components/ui/Container';
-import { Tag } from '@/components/ui/Tag';
 import { Card } from '@/components/ui/Card';
-import { ContactForm } from '@/components/ui/ContactForm';
+import { Tag } from '@/components/ui/Tag';
 import { Button } from '@/components/ui/Button';
+import { Content } from '@/components/content/Content';
+import { isContentRenderable } from '@/content/schema';
 import {
-  Sparkles,
-  RotateCcw,
-  Compass,
   Mail,
   MapPin,
-  ExternalLink,
-  Target,
+  Send,
+  Sparkles,
   Rocket,
   Code,
   Users2,
-  HelpCircle,
+  CheckCircle,
+  AlertCircle,
+  Target,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -30,23 +28,51 @@ export interface EpilogueSectionProps {
 }
 
 export function EpilogueSection({ chapter }: EpilogueSectionProps) {
-  const handleReplay = () => {
-    if (typeof window !== 'undefined') {
-      sessionStorage.removeItem('ck_intro_viewed');
-      window.dispatchEvent(new Event('ck_replay_intro'));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) {
+      setErrorMessage('Please fill out all fields.');
+      setStatus('error');
+      return;
+    }
+
+    setStatus('submitting');
+    setErrorMessage('');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to send message. Please try again.');
+      }
+
+      setStatus('success');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (err: unknown) {
+      setStatus('error');
+      setErrorMessage(
+        err instanceof Error ? err.message : 'Something went wrong. Please email directly.'
+      );
     }
   };
 
   return (
-    <section
+    <article
       id={chapter.id}
       data-chapter="epilogue"
       data-accent="sunrise"
       aria-labelledby="epilogue-heading"
-      className="relative w-full border-t border-theme-border transition-colors duration-300"
+      className="relative w-full border-t border-theme-border/60 transition-colors duration-300 min-h-screen"
     >
-      {/* Sunrise Horizon Wash (Token-based) */}
+      {/* Ambient Wash */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0 bg-chapter-wash"
@@ -64,7 +90,7 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
                 ·
               </span>
               <span className="font-mono text-xs uppercase tracking-widest text-theme-muted">
-                {chapter.title}
+                <Content value={chapter.title} />
               </span>
             </div>
           </div>
@@ -74,11 +100,11 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
               id="epilogue-heading"
               className="text-fluid-h1 font-serif font-normal tracking-tight text-theme-text leading-[1.08]"
             >
-              {chapter.title}
+              <Content value={chapter.title} />
             </h2>
             {chapter.subtitle && (
               <p className="text-fluid-narration font-serif italic text-theme-muted mt-2 max-w-[32ch] leading-[1.35]">
-                {chapter.subtitle}
+                <Content value={chapter.subtitle} />
               </p>
             )}
           </div>
@@ -86,138 +112,82 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
 
         {/* Central Narration Statement */}
         <Container size="md" className="w-full text-center space-y-6 my-8">
-          <blockquote className="text-fluid-narration sm:text-2xl font-serif italic text-theme-text leading-[1.35] max-w-2xl mx-auto">
-            &ldquo;I don&apos;t know exactly where this journey will lead me. And perhaps
-            that&apos;s what makes it interesting. There are still ideas to explore, problems to
-            solve and things to create.&rdquo;
-          </blockquote>
+          {chapter.narration[0] && (
+            <blockquote className="text-fluid-narration sm:text-2xl font-serif italic text-theme-text leading-[1.35] max-w-2xl mx-auto">
+              &ldquo;<Content value={chapter.narration[0]} />&rdquo;
+            </blockquote>
+          )}
 
-          <p className="text-xs sm:text-sm text-theme-muted font-sans leading-relaxed max-w-xl mx-auto">
-            A documentary portfolio is never an obituary of finished accomplishments. It is a living
-            reflection of trajectory, curiosity, and the unfinished craft ahead.
-          </p>
-
-          {/* =================================================================
-              UNFINISHED THREADSPINE: Stops mid-line in gold with blinking cursor
-              ================================================================= */}
+          {/* Unfinished Thread: stops mid-line in gold */}
           <div
-            aria-label="The ThreadSpine ends unfinished: a gold line stopping mid-way with a softly blinking cursor"
+            aria-label="The ThreadSpine ends unfinished: a gold line stopping mid-way"
             className="pt-8 pb-4 flex flex-col items-center justify-center select-none"
           >
-            {/* Upper vertical line coming down */}
             <div className="w-[2px] h-16 bg-theme-gold/80 rounded-t-full" />
-
-            {/* Abrupt terminus with blinking gold cursor block */}
             <div className="flex items-center gap-2 mt-1">
               <span className="w-2 h-4 bg-theme-gold rounded-sm animate-pulse shadow-[0_0_12px_var(--color-gold)]" />
-              <span className="text-[10px] font-mono uppercase tracking-widest text-theme-gold font-semibold">
-                [THREAD UNFINISHED · ACTIVELY BEING WRITTEN]
-              </span>
             </div>
           </div>
         </Container>
 
-        {/* ===================================================================
-            CONTENT BLOCKS FROM /content/contact.ts (Aspirations & Future)
-            =================================================================== */}
-        <Container size="lg" className="w-full my-12 space-y-8">
-          <div className="flex items-center justify-between border-b border-theme-border pb-3 flex-wrap gap-2">
-            <h3 className="font-serif font-bold text-xl text-theme-text">
-              Horizons & Active Convictions
-            </h3>
-            <span className="text-xs font-mono text-theme-muted">
-              Structured Aspirations from /content/contact.ts
-            </span>
-          </div>
+        {/* Aspirations & Horizons (Rendered only when content is verified/draft) */}
+        {(isContentRenderable(contactData.whatIWantToBecome) ||
+          isContentRenderable(contactData.whatIWantToBuild) ||
+          isContentRenderable(contactData.ambitions)) && (
+          <Container size="lg" className="w-full my-12 space-y-8">
+            <div className="flex items-center justify-between border-b border-theme-border pb-3 flex-wrap gap-2">
+              <h3 className="font-serif font-bold text-xl text-theme-text">
+                Horizons & Active Convictions
+              </h3>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Block 1: What I Want to Become */}
-            <Card className="p-6 space-y-3 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-mono text-theme-gold font-semibold uppercase tracking-wider mb-2">
-                  <Target className="w-4 h-4" />
-                  <span>What I Want to Become</span>
-                </div>
-                <p className="text-xs text-theme-text leading-relaxed font-sans">
-                  {contactData.whatIWantToBecome}
-                </p>
-              </div>
-              <div className="text-[10px] font-mono text-theme-ember flex items-center gap-1">
-                <HelpCircle className="w-3 h-3" />
-                <span>[Placeholder: Chinmoy to supply]</span>
-              </div>
-            </Card>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {isContentRenderable(contactData.whatIWantToBecome) && (
+                <Card className="p-6 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 text-xs font-mono text-theme-gold font-semibold uppercase tracking-wider mb-2">
+                      <Target className="w-4 h-4" />
+                      <span>What I Want to Become</span>
+                    </div>
+                    <p className="text-xs text-theme-text leading-relaxed font-sans">
+                      <Content value={contactData.whatIWantToBecome} />
+                    </p>
+                  </div>
+                </Card>
+              )}
 
-            {/* Block 2: What I Want to Build */}
-            <Card className="p-6 space-y-3 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-mono text-theme-azure font-semibold uppercase tracking-wider mb-2">
-                  <Rocket className="w-4 h-4" />
-                  <span>What I Want to Build</span>
-                </div>
-                <p className="text-xs text-theme-text leading-relaxed font-sans">
-                  {contactData.whatIWantToBuild}
-                </p>
-              </div>
-              <div className="text-[10px] font-mono text-theme-ember flex items-center gap-1">
-                <HelpCircle className="w-3 h-3" />
-                <span>[Placeholder: Chinmoy to supply]</span>
-              </div>
-            </Card>
+              {isContentRenderable(contactData.whatIWantToBuild) && (
+                <Card className="p-6 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 text-xs font-mono text-theme-azure font-semibold uppercase tracking-wider mb-2">
+                      <Rocket className="w-4 h-4" />
+                      <span>What I Want to Build</span>
+                    </div>
+                    <p className="text-xs text-theme-text leading-relaxed font-sans">
+                      <Content value={contactData.whatIWantToBuild} />
+                    </p>
+                  </div>
+                </Card>
+              )}
 
-            {/* Block 3: Ambitions */}
-            <Card className="p-6 space-y-3 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-mono text-theme-rose font-semibold uppercase tracking-wider mb-2">
-                  <Sparkles className="w-4 h-4" />
-                  <span>Core Ambition</span>
-                </div>
-                <p className="text-xs text-theme-text leading-relaxed font-sans">
-                  {contactData.ambitions}
-                </p>
-              </div>
-              <div className="text-[10px] font-mono text-theme-ember flex items-center gap-1">
-                <HelpCircle className="w-3 h-3" />
-                <span>[Placeholder: Chinmoy to supply]</span>
-              </div>
-            </Card>
+              {isContentRenderable(contactData.ambitions) && (
+                <Card className="p-6 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 text-xs font-mono text-theme-rose font-semibold uppercase tracking-wider mb-2">
+                      <Sparkles className="w-4 h-4" />
+                      <span>Core Ambition</span>
+                    </div>
+                    <p className="text-xs text-theme-text leading-relaxed font-sans">
+                      <Content value={contactData.ambitions} />
+                    </p>
+                  </div>
+                </Card>
+              )}
+            </div>
+          </Container>
+        )}
 
-            {/* Block 4: Technologies to Explore */}
-            <Card className="p-6 space-y-3 md:col-span-2 lg:col-span-2">
-              <div className="flex items-center gap-2 text-xs font-mono text-theme-iris font-semibold uppercase tracking-wider mb-2">
-                <Code className="w-4 h-4" />
-                <span>Technologies to Explore</span>
-              </div>
-              <div className="flex flex-wrap gap-2 pt-1">
-                {contactData.technologiesToExplore.map((tech, i) => (
-                  <Tag key={i} variant="default" size="sm">
-                    {tech}
-                  </Tag>
-                ))}
-              </div>
-            </Card>
-
-            {/* Block 5: Collaboration Opportunities */}
-            <Card className="p-6 space-y-3">
-              <div className="flex items-center gap-2 text-xs font-mono text-theme-ember font-semibold uppercase tracking-wider mb-2">
-                <Users2 className="w-4 h-4" />
-                <span>Collaboration Opportunities</span>
-              </div>
-              <ul className="space-y-1.5 text-xs text-theme-muted">
-                {contactData.collaborationOpportunities.map((collab, i) => (
-                  <li key={i} className="flex items-start gap-1.5 leading-snug">
-                    <span className="text-theme-ember select-none">&bull;</span>
-                    <span>{collab}</span>
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          </div>
-        </Container>
-
-        {/* ===================================================================
-            CONTACT EXPERIENCE: Accessible Form + Direct Verified Channels
-            =================================================================== */}
+        {/* Contact Experience */}
         <Container size="lg" className="w-full my-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Column (5 cols): Direct Channels & Availability */}
@@ -230,16 +200,18 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
                   Initiate a Dialogue
                 </h3>
                 <p className="text-xs text-theme-muted mt-2 leading-relaxed font-sans">
-                  {contactData.availability}
+                  <Content value={contactData.availability} />
                 </p>
               </div>
 
               {/* Direct Details */}
               <div className="p-4 rounded-xl bg-theme-surface border border-theme-border space-y-3 text-xs">
-                <div className="flex items-center gap-2 text-theme-muted">
-                  <MapPin className="w-4 h-4 text-theme-gold shrink-0" />
-                  <span>{contactData.location}</span>
-                </div>
+                {isContentRenderable(contactData.location) && (
+                  <div className="flex items-center gap-2 text-theme-muted">
+                    <MapPin className="w-4 h-4 text-theme-gold shrink-0" />
+                    <span><Content value={contactData.location} /></span>
+                  </div>
+                )}
                 <div className="flex items-center gap-2 text-theme-muted">
                   <Mail className="w-4 h-4 text-theme-gold shrink-0" />
                   <a
@@ -251,95 +223,114 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
                 </div>
               </div>
 
-              {/* Verified Social Networks */}
+              {/* Verified Social Channels */}
               <div className="space-y-2">
-                <div className="text-[11px] font-mono uppercase tracking-widest text-theme-muted">
-                  Verified Networks
-                </div>
-                <div className="space-y-2">
-                  {contactData.socials.map((social) => (
+                <span className="text-[11px] font-mono text-theme-muted uppercase tracking-wider block">
+                  Network Anchors
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {contactData.socials.map((s) => (
                     <a
-                      key={social.platform}
-                      href={social.url}
+                      key={s.platform}
+                      href={s.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-3 rounded-xl bg-theme-surface border border-theme-border hover:border-theme-border-strong flex items-center justify-between text-xs transition-colors group"
+                      className="px-3 py-1.5 rounded-lg border border-theme-border bg-theme-surface hover:bg-theme-surface-elevated text-xs font-mono text-theme-text transition-colors flex items-center gap-2"
                     >
-                      <div>
-                        <div className="font-semibold text-theme-text group-hover:text-theme-gold transition-colors">
-                          {social.platform}
-                        </div>
-                        <div className="text-[11px] font-mono text-theme-muted">
-                          {social.handle}
-                        </div>
-                      </div>
-                      <ExternalLink className="w-3.5 h-3.5 text-theme-muted group-hover:text-theme-gold transition-colors" />
+                      <span>{s.platform}</span>
                     </a>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Right Column (7 cols): Full Accessible Contact Form */}
+            {/* Right Column (7 cols): Contact Form */}
             <div className="lg:col-span-7">
-              <Card className="p-6 sm:p-8 space-y-6">
-                <div>
-                  <h4 className="font-serif font-bold text-xl text-theme-text">
-                    Send a Direct Dispatch
-                  </h4>
-                  <p className="text-xs text-theme-muted mt-1 leading-relaxed">
-                    Client and server validated with anti-spam honeypot and mailto fallback.
-                  </p>
-                </div>
+              <Card className="p-6 sm:p-8 border-theme-border bg-theme-surface shadow-xl">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label htmlFor="name" className="text-xs font-mono text-theme-muted block">
+                        YOUR NAME
+                      </label>
+                      <input
+                        id="name"
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-text focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold"
+                        placeholder="Ada Lovelace"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label htmlFor="email" className="text-xs font-mono text-theme-muted block">
+                        EMAIL ADDRESS
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        required
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-text focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold"
+                        placeholder="ada@example.com"
+                      />
+                    </div>
+                  </div>
 
-                <ContactForm />
+                  <div className="space-y-1.5">
+                    <label htmlFor="message" className="text-xs font-mono text-theme-muted block">
+                      MESSAGE &amp; PROPOSAL
+                    </label>
+                    <textarea
+                      id="message"
+                      rows={5}
+                      required
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-text focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold resize-none"
+                      placeholder="Share a vision, question, or project inquiry..."
+                    />
+                  </div>
+
+                  {status === 'error' && (
+                    <div className="p-3 rounded-lg bg-theme-rose/10 border border-theme-rose/30 text-theme-rose text-xs flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <span>{errorMessage}</span>
+                    </div>
+                  )}
+
+                  {status === 'success' && (
+                    <div className="p-3 rounded-lg bg-theme-azure/10 border border-theme-azure/30 text-theme-azure text-xs flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 shrink-0" />
+                      <span>Message received. I will reply to your transmission promptly.</span>
+                    </div>
+                  )}
+
+                  <Button
+                    type="submit"
+                    variant="accent"
+                    size="md"
+                    disabled={status === 'submitting'}
+                    className="w-full sm:w-auto"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>{status === 'submitting' ? 'Transmitting...' : 'Send Message'}</span>
+                  </Button>
+                </form>
               </Card>
             </div>
           </div>
         </Container>
 
-        {/* ===================================================================
-            EXPERIENCE ACTION CONTROLS: "Replay the story" & "Back to Explore Mode"
-            =================================================================== */}
-        <Container size="md" className="w-full pt-16 text-center space-y-6">
-          <div className="p-8 rounded-3xl bg-theme-surface border border-theme-border shadow-lg flex flex-col items-center justify-center space-y-6">
-            <div>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-theme-muted block mb-1">
-                Documentary Journey Controls
-              </span>
-              <h4 className="font-serif font-bold text-xl text-theme-text">
-                Continue Exploring Chinmoy Kalita&apos;s Work
-              </h4>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              {/* Replay the story button */}
-              <Button
-                type="button"
-                variant="accent"
-                size="lg"
-                onClick={handleReplay}
-                className="shadow-md"
-              >
-                <RotateCcw className="w-4 h-4" />
-                <span>Replay the Story</span>
-              </Button>
-
-              {/* Back to Explore Mode button */}
-              <Link href="/explore">
-                <Button type="button" variant="secondary" size="lg">
-                  <Compass className="w-4 h-4 text-theme-azure" />
-                  <span>Back to Explore Mode</span>
-                </Button>
-              </Link>
-            </div>
-
-            <p className="text-[11px] font-mono text-theme-muted">
-              A STORY STILL UNFOLDING · CHINMOY KALITA · 2026
-            </p>
-          </div>
+        {/* Narrative Bridge (Closing) */}
+        <Container size="lg" className="w-full pt-16 pb-4">
+          <p className="text-sm sm:text-base font-serif italic text-theme-muted text-center sm:text-left">
+            &ldquo;<Content value={chapter.bridge} />&rdquo;
+          </p>
         </Container>
       </div>
-    </section>
+    </article>
   );
 }

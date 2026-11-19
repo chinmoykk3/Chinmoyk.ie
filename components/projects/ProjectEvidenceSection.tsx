@@ -7,11 +7,12 @@ import { Tag } from '@/components/ui/Tag';
 import { Image as ImageIcon, Video, GitBranch, Globe, AlertCircle, FileCheck2 } from 'lucide-react';
 
 export interface ProjectEvidenceSectionProps {
-  evidence: ProjectEvidence;
+  evidence?: ProjectEvidence;
   projectTitle: string;
 }
 
 export function ProjectEvidenceSection({ evidence, projectTitle }: ProjectEvidenceSectionProps) {
+  if (!evidence || !evidence.screenshots) return null;
   return (
     <section className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-2 border-b border-theme-border pb-3">
