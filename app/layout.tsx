@@ -14,6 +14,7 @@ import { ConsoleCredits } from '@/components/polish/ConsoleCredits';
 import { JsonLdPerson } from '@/components/seo/JsonLdPerson';
 import { PrivacyAnalytics } from '@/components/analytics/PrivacyAnalytics';
 import { instrumentSerif, geistSans, geistMono } from '@/lib/fonts';
+import { Analytics } from '@vercel/analytics/next';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://chinmoyk-ie.vercel.app';
 
@@ -103,6 +104,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
           </PolishProvider>
         </MotionProvider>
+        <Analytics />
       </body>
     </html>
   );
