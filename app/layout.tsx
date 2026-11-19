@@ -5,6 +5,12 @@ import { Footer } from '@/components/ui/Footer';
 import { MotionProvider } from '@/components/motion/MotionProvider';
 import { ThreadSpine } from '@/components/motion/ThreadSpine';
 import { BackgroundStage } from '@/components/background/BackgroundStage';
+import { PolishProvider } from '@/components/polish/PolishContext';
+import { Preloader } from '@/components/polish/Preloader';
+import { ViewfinderCursor } from '@/components/polish/ViewfinderCursor';
+import { LowerThird } from '@/components/polish/LowerThird';
+import { TimecodeHUD } from '@/components/polish/TimecodeHUD';
+import { ConsoleCredits } from '@/components/polish/ConsoleCredits';
 import { JsonLdPerson } from '@/components/seo/JsonLdPerson';
 import { PrivacyAnalytics } from '@/components/analytics/PrivacyAnalytics';
 import { instrumentSerif, geistSans, geistMono } from '@/lib/fonts';
@@ -82,13 +88,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </noscript>
         <MotionProvider>
-          <BackgroundStage />
-          <ThreadSpine />
-          <Navbar />
-          <main id="main-content" className="flex-1 w-full">
-            {children}
-          </main>
-          <Footer />
+          <PolishProvider>
+            <Preloader />
+            <ConsoleCredits />
+            <ViewfinderCursor />
+            <BackgroundStage />
+            <ThreadSpine />
+            <Navbar />
+            <main id="main-content" className="flex-1 w-full">
+              {children}
+            </main>
+            <LowerThird />
+            <TimecodeHUD />
+            <Footer />
+          </PolishProvider>
         </MotionProvider>
       </body>
     </html>

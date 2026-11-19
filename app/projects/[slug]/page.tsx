@@ -8,6 +8,7 @@ import { Tag } from '@/components/ui/Tag';
 import { Card } from '@/components/ui/Card';
 import { ArchitectureDiagram } from '@/components/projects/ArchitectureDiagram';
 import { ProjectEvidenceSection } from '@/components/projects/ProjectEvidenceSection';
+import { DirectorsCommentary } from '@/components/polish/DirectorsCommentary';
 import {
   ArrowLeft,
   AlertTriangle,
@@ -180,6 +181,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               </div>
             </div>
           )}
+          {/* Director's Commentary Note (Behind-the-scenes) */}
+          <DirectorsCommentary id={project.slug} />
         </header>
 
         {/* Two-Column Grid: Sticky Section Index (3 cols) + 10-Point Framework (9 cols) */}

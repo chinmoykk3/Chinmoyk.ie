@@ -7,6 +7,7 @@ import { Menu } from 'lucide-react';
 import { CKWordmark } from '@/components/ui/CKWordmark';
 import { ModeSwitch } from '@/components/ui/ModeSwitch';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { PolishControls } from '@/components/polish/PolishControls';
 import { MobileNavMenu } from '@/components/ui/MobileNavMenu';
 import { cn } from '@/lib/utils';
 
@@ -67,6 +68,7 @@ export function Navbar() {
               </Link>
             </nav>
 
+            <PolishControls />
             <ThemeToggle />
 
             {/* Mobile Hamburger Trigger */}

@@ -8,6 +8,7 @@ import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Tag';
 import { Card } from '@/components/ui/Card';
 import { Sparkles, ArrowDown, HelpCircle, Layers, Cpu, Palette, Compass } from 'lucide-react';
+import { DirectorsCommentary } from '@/components/polish/DirectorsCommentary';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { cn } from '@/lib/utils';
@@ -375,6 +376,9 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
                     );
                   })}
                 </div>
+
+                {/* Director's Behind-The-Scenes Commentary */}
+                <DirectorsCommentary id="chapter-02" />
               </div>
             </div>
           </Container>

@@ -8,6 +8,7 @@ import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Tag';
 import { Card } from '@/components/ui/Card';
 import { Sparkles, ArrowDown, HelpCircle } from 'lucide-react';
+import { DirectorsCommentary } from '@/components/polish/DirectorsCommentary';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { cn } from '@/lib/utils';
@@ -207,6 +208,9 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
                     style={{ width: `${Math.round(scrollProgress * 100)}%` }}
                   />
                 </div>
+
+                {/* Director's Behind-The-Scenes Commentary */}
+                <DirectorsCommentary id="chapter-01" />
               </div>
 
               {/* Right Column (7 cols): The 3 Curiosity Slots with Drawing SVG Diagrams */}

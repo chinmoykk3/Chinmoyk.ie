@@ -3,12 +3,13 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { X, Film, Compass, ChevronRight } from 'lucide-react';
+import { X, Film, Compass, ChevronRight, Volume2, VolumeX, ShieldCheck } from 'lucide-react';
 import { chapters } from '@/content/chapters';
 import { CKWordmark } from '@/components/ui/CKWordmark';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ModeSwitch } from '@/components/ui/ModeSwitch';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
+import { usePolish } from '@/components/polish/PolishContext';
 import { cn } from '@/lib/utils';
 
 export interface MobileNavMenuProps {
@@ -19,6 +20,14 @@ export interface MobileNavMenuProps {
 export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
   const pathname = usePathname();
   const trapRef = useFocusTrap(isOpen, onClose);
+  const {
+    commentaryEnabled,
+    toggleCommentary,
+    soundEnabled,
+    toggleSound,
+    reduceEffects,
+    toggleReduceEffects,
+  } = usePolish();
 
   // Prevent background scroll when mobile menu is active
   useEffect(() => {
@@ -109,6 +118,57 @@ export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
                 </Link>
               );
             })}
+          </div>
+        </div>
+
+        {/* Director Polish Controls on Mobile */}
+        <div className="py-4 border-t border-theme-border space-y-2">
+          <div className="text-xs font-mono uppercase tracking-widest text-theme-muted mb-2">
+            Director Experience
+          </div>
+          <div className="grid grid-cols-3 gap-2 text-xs font-mono">
+            <button
+              onClick={toggleCommentary}
+              className={cn(
+                'p-2.5 rounded-lg border text-center transition-colors flex flex-col items-center gap-1',
+                commentaryEnabled
+                  ? 'bg-theme-gold/15 border-theme-gold text-theme-gold font-semibold'
+                  : 'bg-theme-surface border-theme-border text-theme-muted'
+              )}
+            >
+              <Film className="w-4 h-4" />
+              <span>Notes</span>
+            </button>
+
+            <button
+              onClick={toggleSound}
+              className={cn(
+                'p-2.5 rounded-lg border text-center transition-colors flex flex-col items-center gap-1',
+                soundEnabled
+                  ? 'bg-theme-gold/15 border-theme-gold text-theme-gold font-semibold'
+                  : 'bg-theme-surface border-theme-border text-theme-muted'
+              )}
+            >
+              {soundEnabled ? (
+                <Volume2 className="w-4 h-4 text-theme-gold" />
+              ) : (
+                <VolumeX className="w-4 h-4" />
+              )}
+              <span>Audio</span>
+            </button>
+
+            <button
+              onClick={toggleReduceEffects}
+              className={cn(
+                'p-2.5 rounded-lg border text-center transition-colors flex flex-col items-center gap-1',
+                reduceEffects
+                  ? 'bg-theme-azure/15 border-theme-azure text-theme-azure font-semibold'
+                  : 'bg-theme-surface border-theme-border text-theme-muted'
+              )}
+            >
+              <ShieldCheck className="w-4 h-4" />
+              <span>Simple</span>
+            </button>
           </div>
         </div>
 
