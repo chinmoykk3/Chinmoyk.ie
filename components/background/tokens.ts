@@ -46,6 +46,11 @@ const DEFAULT_DARK_TOKENS: AccentColours = {
   azureRgb: { r: 76, g: 141, b: 255 },
   bgRgb: { r: 0, g: 0, b: 0 },
   textRgb: { r: 245, g: 245, b: 245 },
+  goldTextSafeRgb: { r: 255, g: 200, b: 87 },
+  emberTextSafeRgb: { r: 255, g: 138, b: 76 },
+  roseTextSafeRgb: { r: 255, g: 92, b: 138 },
+  irisTextSafeRgb: { r: 155, g: 123, b: 255 },
+  azureTextSafeRgb: { r: 76, g: 141, b: 255 },
 };
 
 const DEFAULT_LIGHT_TOKENS: AccentColours = {
@@ -66,6 +71,11 @@ const DEFAULT_LIGHT_TOKENS: AccentColours = {
   azureRgb: { r: 46, g: 107, b: 255 },
   bgRgb: { r: 255, g: 248, b: 236 },
   textRgb: { r: 20, g: 18, b: 31 },
+  goldTextSafeRgb: { r: 138, g: 90, b: 0 },
+  emberTextSafeRgb: { r: 194, g: 65, b: 12 },
+  roseTextSafeRgb: { r: 200, g: 30, b: 91 },
+  irisTextSafeRgb: { r: 91, g: 53, b: 216 },
+  azureTextSafeRgb: { r: 27, g: 79, b: 214 },
 };
 
 export function getAccentColours(theme: ThemeMode): AccentColours {
@@ -87,6 +97,12 @@ export function getAccentColours(theme: ThemeMode): AccentColours {
   const roseStr = getVar('--color-rose', defaults.rose);
   const irisStr = getVar('--color-iris', defaults.iris);
   const azureStr = getVar('--color-azure', defaults.azure);
+  const goldTextStr = getVar('--color-gold-text', goldStr);
+  const emberTextStr = getVar('--color-ember-text', emberStr);
+  const roseTextStr = getVar('--color-rose-text', roseStr);
+  const irisTextStr = getVar('--color-iris-text', irisStr);
+  const azureTextStr = getVar('--color-azure-text', azureStr);
+
   const textStr = getVar('--color-text', defaults.text);
   const textMutedStr = getVar('--color-text-muted', defaults.textMuted);
   const bgStr = getVar('--color-bg', defaults.bg);
@@ -121,6 +137,11 @@ export function getAccentColours(theme: ThemeMode): AccentColours {
     azureRgb: parseRgb(azureStr, defaults.azureRgb),
     bgRgb,
     textRgb: parseRgb(textStr, defaults.textRgb),
+    goldTextSafeRgb: parseRgb(goldTextStr, defaults.goldTextSafeRgb),
+    emberTextSafeRgb: parseRgb(emberTextStr, defaults.emberTextSafeRgb),
+    roseTextSafeRgb: parseRgb(roseTextStr, defaults.roseTextSafeRgb),
+    irisTextSafeRgb: parseRgb(irisTextStr, defaults.irisTextSafeRgb),
+    azureTextSafeRgb: parseRgb(azureTextStr, defaults.azureTextSafeRgb),
   };
 }
 

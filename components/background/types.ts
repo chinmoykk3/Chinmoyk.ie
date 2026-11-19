@@ -34,6 +34,12 @@ export interface AccentColours {
   azureRgb: RgbTuple;
   bgRgb: RgbTuple;
   textRgb: RgbTuple;
+  // Text-safe accents for light mode ink drawing (WCAG AA compliant)
+  goldTextSafeRgb: RgbTuple;
+  emberTextSafeRgb: RgbTuple;
+  roseTextSafeRgb: RgbTuple;
+  irisTextSafeRgb: RgbTuple;
+  azureTextSafeRgb: RgbTuple;
 }
 
 export interface PointerState {
