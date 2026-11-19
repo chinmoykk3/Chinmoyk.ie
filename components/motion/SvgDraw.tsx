@@ -81,16 +81,16 @@ export function SvgDraw({
         strokeDashoffset: 0,
         duration,
         ease: 'power2.out',
-        onStart: () => {
-          pathEl.style.willChange = 'stroke-dashoffset';
-        },
-        onComplete: () => {
-          pathEl.style.willChange = 'auto';
-        },
         scrollTrigger: {
           trigger: svgEl,
           start,
           once: true,
+          onStart: () => {
+            pathEl.style.willChange = 'stroke-dashoffset';
+          },
+          onComplete: () => {
+            pathEl.style.willChange = 'auto';
+          },
         },
       });
 
@@ -123,3 +123,4 @@ export function SvgDraw({
     </svg>
   );
 }
+
