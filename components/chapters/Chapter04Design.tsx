@@ -109,14 +109,13 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
       aria-labelledby="chapter-04-heading"
       className="relative w-full border-t border-theme-border transition-colors duration-300"
     >
-      <div className="w-full py-16 bg-theme-bg/95 relative overflow-hidden">
+      <div className="w-full py-16 relative overflow-hidden">
         {/* Subtle Rose Ambient Radial Wash */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_25%,rgba(225,29,72,0.08)_0%,transparent_70%)]"
         />
 
-        {/* Chapter Metadata Header */}
         {/* Chapter Metadata Header (Rule 2: One label only) */}
         <Container size="lg" className="relative z-10 w-full mb-12">
           <div className="flex items-center justify-between border-b border-theme-border/60 pb-4 flex-wrap gap-3">

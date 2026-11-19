@@ -82,10 +82,10 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
     const trigger = ScrollTrigger.create({
       trigger: triggerEl,
       start: 'top top',
-      end: '+=180%',
+      end: '+=100%',
       pin: contentEl,
       pinSpacing: true,
-      scrub: 0.5,
+      scrub: 0.4,
       onUpdate: (self) => {
         setConvergenceProgress(self.progress);
       },
@@ -301,7 +301,7 @@ export function Chapter02Worlds({ chapter }: Chapter02WorldsProps) {
                     key={item.id}
                     className={cn(
                       'transition-all duration-300 space-y-1.5',
-                      isItemActive ? 'opacity-100 translate-x-1' : 'opacity-25'
+                      isItemActive ? 'opacity-100 translate-x-1' : 'opacity-70'
                     )}
                   >
                     <div className="flex items-center gap-2.5">

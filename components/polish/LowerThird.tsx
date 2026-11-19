@@ -18,8 +18,8 @@ export function LowerThird() {
       aria-live="polite"
       aria-atomic="true"
       className={cn(
-        'fixed left-4 sm:left-8 bottom-6 sm:bottom-8 z-30 pointer-events-none select-none max-w-[calc(100vw-2rem)] sm:max-w-md',
-        'bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))]'
+        'fixed left-4 sm:left-6 z-30 pointer-events-none select-none max-w-[calc(100vw-2rem)] sm:max-w-md',
+        'bottom-[calc(4.25rem+env(safe-area-inset-bottom,0px))]'
       )}
     >
       <div

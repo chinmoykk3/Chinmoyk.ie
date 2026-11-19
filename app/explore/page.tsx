@@ -141,10 +141,7 @@ export default function ExplorePage() {
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-theme-border flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-theme-muted uppercase">
-                    ACCENT: {ch.accentKey}
-                  </span>
+                <div className="mt-4 pt-3 border-t border-theme-border flex items-center justify-end">
                   <Link
                     href={`/#${ch.id}`}
                     className="inline-flex items-center gap-1 text-xs font-mono font-semibold text-chapter-accent hover:underline"

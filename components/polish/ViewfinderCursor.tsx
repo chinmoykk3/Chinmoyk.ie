@@ -67,7 +67,7 @@ export function ViewfinderCursor() {
         return;
       }
 
-      // Check explicit data-cursor attributes
+      // Check explicit data-cursor attributes on interactive media/cards
       const cursorTarget = target.closest('[data-cursor]') as HTMLElement | null;
       if (cursorTarget) {
         const type = cursorTarget.getAttribute('data-cursor') as CursorVariant;
@@ -77,12 +77,8 @@ export function ViewfinderCursor() {
         return;
       }
 
-      // Images or interactive project / design cards
-      if (
-        target.tagName === 'IMG' ||
-        target.closest('article') ||
-        target.closest('[data-chapter]')
-      ) {
+      // Explicit image gallery or interactive project previews
+      if (target.tagName === 'IMG' && target.closest('a, button, [role="button"]')) {
         setVariant('view');
         setLabel('VIEW');
         return;

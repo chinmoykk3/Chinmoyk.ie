@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { useMotion } from '@/hooks/useMotion';
 import { usePolish } from './PolishContext';
 import { cn } from '@/lib/utils';
 
 export function Preloader() {
+  const pathname = usePathname();
   const { prefersReducedMotion } = useMotion();
   const { reduceEffects } = usePolish();
 
@@ -29,6 +31,8 @@ export function Preloader() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    // On the story home page, OpeningExperience provides the documentary overture.
+    if (pathname === '/') return;
 
     // 1. Session check: only run once per browser session
     try {
@@ -93,7 +97,7 @@ export function Preloader() {
       timeouts.forEach(clearTimeout);
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [isReduced, dismiss]);
+  }, [isReduced, dismiss, pathname]);
 
   if (!shouldRender) return null;
 

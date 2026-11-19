@@ -237,7 +237,7 @@ export function BackgroundStage({
     return (
       <div
         aria-hidden="true"
-        className={cn('fixed inset-0 -z-30 pointer-events-none bg-theme-bg', className)}
+        className={cn('fixed inset-0 z-0 pointer-events-none bg-theme-bg', className)}
       />
     );
   }
@@ -245,10 +245,7 @@ export function BackgroundStage({
   return (
     <div
       aria-hidden="true"
-      className={cn(
-        'fixed inset-0 -z-30 pointer-events-none overflow-hidden select-none',
-        className
-      )}
+      className={cn('fixed inset-0 z-0 pointer-events-none overflow-hidden select-none', className)}
     >
       {/* Primary Fixed Canvas */}
       <canvas

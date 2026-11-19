@@ -34,7 +34,7 @@ export function ThreadSpine() {
           =================================================================== */}
       <div
         aria-hidden="true"
-        className="fixed top-0 left-0 right-0 z-50 h-[3px] bg-theme-border md:hidden pointer-events-none"
+        className="fixed top-0 left-0 right-0 z-50 h-[3px] bg-theme-border xl:hidden pointer-events-none"
       >
         <div
           data-accent={activeChapter.accentKey}
@@ -48,7 +48,7 @@ export function ThreadSpine() {
           =================================================================== */}
       <nav
         aria-label="Documentary Spine Navigation"
-        className="fixed left-6 top-1/2 -translate-y-1/2 z-30 hidden md:flex flex-col items-center select-none"
+        className="fixed left-6 top-1/2 -translate-y-1/2 z-30 hidden xl:flex flex-col items-center select-none"
       >
         {/* Background Guide Line */}
         <div className="absolute top-0 bottom-0 w-[2px] bg-theme-border rounded-full" />

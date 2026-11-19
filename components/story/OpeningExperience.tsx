@@ -16,7 +16,16 @@ export function OpeningExperience() {
   // 4: Narration subtitle fades in ("Every story starts somewhere...")
   // 5: Gold point stretches downward + "Begin the story ↓" cue appears
   const [stage, setStage] = useState<number>(0);
-  const [isDismissed, setIsDismissed] = useState<boolean>(false);
+  const [isDismissed, setIsDismissed] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        return sessionStorage.getItem('ck_intro_viewed') === 'true';
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  });
   const [isShortened, setIsShortened] = useState<boolean>(false);
   const [grainUrl, setGrainUrl] = useState<string>('');
   const timersRef = useRef<NodeJS.Timeout[]>([]);
@@ -27,6 +36,39 @@ export function OpeningExperience() {
     timersRef.current.forEach((t) => clearTimeout(t));
     timersRef.current = [];
   }, []);
+
+  // Dismiss immediately on user scroll gesture or keyboard navigation
+  const dismissIntro = useCallback(() => {
+    clearAllTimers();
+    setIsDismissed(true);
+    try {
+      sessionStorage.setItem('ck_intro_viewed', 'true');
+    } catch {}
+  }, [clearAllTimers]);
+
+  useEffect(() => {
+    if (isDismissed) return;
+
+    const onGesture = () => {
+      dismissIntro();
+    };
+
+    const onKey = (e: KeyboardEvent) => {
+      if (['ArrowDown', 'ArrowUp', ' ', 'Space', 'PageDown', 'Escape', 'Enter'].includes(e.key)) {
+        dismissIntro();
+      }
+    };
+
+    window.addEventListener('wheel', onGesture, { passive: true });
+    window.addEventListener('touchmove', onGesture, { passive: true });
+    window.addEventListener('keydown', onKey);
+
+    return () => {
+      window.removeEventListener('wheel', onGesture);
+      window.removeEventListener('touchmove', onGesture);
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [isDismissed, dismissIntro]);
 
   // 1. Generate lightweight procedural noise texture (< 2KB runtime memory, 0 KB network)
   useEffect(() => {

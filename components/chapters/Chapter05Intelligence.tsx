@@ -116,7 +116,7 @@ export function Chapter05Intelligence({ chapter }: Chapter05IntelligenceProps) {
       aria-labelledby="chapter-05-heading"
       className="relative w-full border-t border-theme-border transition-colors duration-300"
     >
-      <div className="w-full py-16 bg-theme-bg/95 relative overflow-hidden">
+      <div className="w-full py-16 relative overflow-hidden">
         {/* Iris Ambient Radial Wash */}
         <div
           aria-hidden="true"

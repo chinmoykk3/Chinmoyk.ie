@@ -1,21 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { chapters } from '@/content/chapters';
 import { Button } from '@/components/ui/Button';
+import { useMotion } from '@/hooks/useMotion';
 import { Play, Compass, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function StoryHero() {
   const [indexOpen, setIndexOpen] = useState(false);
+  const { lenis, motionEnabled } = useMotion();
+
+  const scrollToSection = useCallback(
+    (id: string) => {
+      const el = document.getElementById(id);
+      if (el) {
+        if (lenis && motionEnabled) {
+          lenis.scrollTo(el, { offset: -40, duration: 1.2 });
+        } else {
+          el.scrollIntoView({ behavior: motionEnabled ? 'smooth' : 'auto' });
+        }
+      }
+    },
+    [lenis, motionEnabled]
+  );
 
   return (
     <section
       id="prologue"
       data-chapter="0"
       data-accent="gold"
-      className="relative w-full min-h-[90svh] flex flex-col justify-center items-center px-6 sm:px-12 py-24 text-center select-none"
+      className="relative w-full min-h-[90svh] flex flex-col justify-center items-center px-6 sm:px-12 py-24 text-center"
     >
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Single minimal chapter identifier */}
@@ -44,12 +60,15 @@ export function StoryHero() {
 
         {/* Primary Story Actions */}
         <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
-          <a href="#chapter-01">
-            <Button size="lg" variant="accent" className="shadow-lg">
-              <Play className="w-4 h-4 fill-current" />
-              Begin Documentary
-            </Button>
-          </a>
+          <Button
+            size="lg"
+            variant="accent"
+            onClick={() => scrollToSection('chapter-01')}
+            className="shadow-lg"
+          >
+            <Play className="w-4 h-4 fill-current" />
+            Begin Documentary
+          </Button>
 
           <Link href="/explore">
             <Button size="lg" variant="secondary">
@@ -82,11 +101,14 @@ export function StoryHero() {
               className="mt-6 text-left border-t border-theme-border/60 pt-4 divide-y divide-theme-border/40"
             >
               {chapters.map((ch, idx) => (
-                <a
+                <button
                   key={ch.id}
-                  href={`#${ch.id}`}
-                  onClick={() => setIndexOpen(false)}
-                  className="flex items-baseline justify-between py-2.5 text-xs font-mono group hover:text-chapter-accent transition-colors"
+                  type="button"
+                  onClick={() => {
+                    setIndexOpen(false);
+                    scrollToSection(ch.id);
+                  }}
+                  className="w-full flex items-baseline justify-between py-2.5 text-xs font-mono group hover:text-chapter-accent transition-colors text-left"
                 >
                   <span className="text-theme-muted group-hover:text-chapter-accent">
                     {idx === 0
@@ -98,7 +120,7 @@ export function StoryHero() {
                   <span className="text-theme-muted/50 font-serif italic text-[11px]">
                     {ch.emotionalArc}
                   </span>
-                </a>
+                </button>
               ))}
             </nav>
           )}

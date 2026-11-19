@@ -99,7 +99,7 @@ export function ChapterRail() {
       tabIndex={0}
       onKeyDown={handleKeyDown}
       aria-label="Story Mode Chapter Rail. Use arrow keys to jump between movements."
-      className="fixed right-6 top-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col gap-1.5 p-3 rounded-2xl bg-theme-surface/85 backdrop-blur-md border border-theme-border shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-chapter-accent select-none transition-colors"
+      className="fixed right-6 top-1/2 -translate-y-1/2 z-30 hidden 2xl:flex flex-col gap-1.5 p-3 rounded-2xl bg-theme-surface/85 backdrop-blur-md border border-theme-border shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-chapter-accent select-none transition-colors"
     >
       <div className="text-[10px] font-mono uppercase tracking-widest text-theme-muted px-2 pb-1 border-b border-theme-border">
         Movements

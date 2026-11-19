@@ -41,10 +41,10 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
     const trigger = ScrollTrigger.create({
       trigger: triggerEl,
       start: 'top top',
-      end: '+=180%',
+      end: '+=100%',
       pin: contentEl,
       pinSpacing: true,
-      scrub: 0.5,
+      scrub: 0.4,
       onUpdate: (self) => {
         setScrollProgress(self.progress);
       },
@@ -151,10 +151,10 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
 
               <p
                 className={cn(
-                  'font-serif text-fluid-narration sm:text-3xl max-w-[28ch] leading-[1.35] transition-opacity duration-300',
-                  gearProgress > 0.15
+                  'font-serif text-fluid-narration sm:text-3xl max-w-[28ch] leading-[1.35] transition-all duration-300',
+                  gearProgress > 0.05
                     ? 'text-theme-text opacity-100'
-                    : 'text-theme-muted opacity-30'
+                    : 'text-theme-text/85 opacity-90'
                 )}
               >
                 &ldquo;{narrationLines[0]}&rdquo;
@@ -182,10 +182,10 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
 
               <p
                 className={cn(
-                  'font-serif text-fluid-narration sm:text-3xl max-w-[28ch] leading-[1.35] transition-opacity duration-300',
+                  'font-serif text-fluid-narration sm:text-3xl max-w-[28ch] leading-[1.35] transition-all duration-300',
                   circuitProgress > 0.15
                     ? 'text-theme-text opacity-100'
-                    : 'text-theme-muted opacity-25'
+                    : 'text-theme-muted opacity-70'
                 )}
               >
                 &ldquo;{narrationLines[1]}&rdquo;
@@ -221,10 +221,10 @@ export function Chapter01Curiosity({ chapter }: Chapter01CuriosityProps) {
 
               <p
                 className={cn(
-                  'font-serif text-fluid-narration sm:text-3xl max-w-[28ch] leading-[1.35] transition-opacity duration-300',
+                  'font-serif text-fluid-narration sm:text-3xl max-w-[28ch] leading-[1.35] transition-all duration-300',
                   sketchProgress > 0.15
                     ? 'text-theme-text opacity-100 font-medium'
-                    : 'text-theme-muted opacity-25'
+                    : 'text-theme-muted opacity-60'
                 )}
               >
                 &ldquo;{narrationLines[2]}&rdquo;

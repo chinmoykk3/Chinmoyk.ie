@@ -95,7 +95,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <BackgroundStage />
             <ThreadSpine />
             <Navbar />
-            <main id="main-content" className="flex-1 w-full">
+            <main id="main-content" className="relative z-10 flex-1 w-full">
               {children}
             </main>
             <LowerThird />
