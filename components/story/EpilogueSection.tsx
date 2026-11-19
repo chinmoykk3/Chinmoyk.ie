@@ -46,14 +46,10 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
       aria-labelledby="epilogue-heading"
       className="relative w-full border-t border-theme-border transition-colors duration-300"
     >
-      {/* ===================================================================
-          SUNRISE HORIZON GRADIENT:
-          azure -> iris -> rose -> ember -> gold rising from pure black bottom
-          (Dark mode: zero navy/indigo tint, true neutral black horizon)
-          =================================================================== */}
+      {/* Sunrise Horizon Wash (Token-based) */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 opacity-90 bg-[linear-gradient(to_top,var(--color-bg)_0%,rgba(251,191,36,0.12)_25%,rgba(251,146,60,0.09)_45%,rgba(251,113,133,0.07)_65%,rgba(167,139,250,0.05)_85%,rgba(56,189,248,0.03)_100%)]"
+        className="pointer-events-none absolute inset-0 z-0 bg-chapter-wash"
       />
 
       <div className="relative z-10 w-full py-20 lg:py-28 flex flex-col justify-between">

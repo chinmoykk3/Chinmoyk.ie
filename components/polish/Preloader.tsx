@@ -108,8 +108,8 @@ export function Preloader() {
       aria-modal="true"
       className={cn(
         'fixed inset-0 z-50 flex items-center justify-center select-none overflow-hidden',
-        // Pure neutral black background (rgb(0, 0, 0), zero blue tint)
-        'bg-black text-white transition-opacity duration-300',
+        // Pure neutral black background (zero blue tint)
+        'bg-cinema-bg text-cinema-text transition-opacity duration-300',
         fadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       )}
     >
@@ -119,12 +119,12 @@ export function Preloader() {
         aria-hidden="true"
       >
         {/* Outer Circular Target */}
-        <div className="absolute inset-0 rounded-full border border-white/15 animate-spin duration-[8000ms] linear" />
+        <div className="absolute inset-0 rounded-full border border-cinema-border animate-spin duration-[8000ms] linear" />
         {/* Inner Target */}
         <div className="absolute inset-8 rounded-full border border-theme-gold/30" />
         {/* Film Leader Crosshairs */}
-        <span className="absolute w-full h-[1px] bg-white/15" />
-        <span className="absolute h-full w-[1px] bg-white/15" />
+        <span className="absolute w-full h-[1px] bg-cinema-border" />
+        <span className="absolute h-full w-[1px] bg-cinema-border" />
 
         {/* Big Golden Countdown Numeral */}
         <span className="font-serif font-black text-7xl sm:text-8xl text-theme-gold tracking-tight animate-scale-in">
@@ -133,11 +133,11 @@ export function Preloader() {
       </div>
 
       {/* Film Slate Label & Skip Button */}
-      <div className="absolute bottom-10 flex items-center justify-between w-full max-w-sm px-6 text-xs font-mono text-white/50">
+      <div className="absolute bottom-10 flex items-center justify-between w-full max-w-sm px-6 text-xs font-mono text-cinema-muted">
         <span>FILM LEADER · 35MM</span>
         <button
           onClick={dismiss}
-          className="hover:text-white transition-colors underline underline-offset-4 focus:outline-none focus:ring-1 focus:ring-theme-gold"
+          className="hover:text-cinema-text transition-colors underline underline-offset-4 focus:outline-none focus:ring-1 focus:ring-theme-gold"
         >
           Skip &rarr;
         </button>

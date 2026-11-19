@@ -110,10 +110,10 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
       className="relative w-full border-t border-theme-border transition-colors duration-300"
     >
       <div className="w-full py-16 relative overflow-hidden">
-        {/* Subtle Rose Ambient Radial Wash */}
+        {/* Chapter Ambient Wash (Token-based) */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_25%,rgba(225,29,72,0.08)_0%,transparent_70%)]"
+          className="pointer-events-none absolute inset-0 z-0 bg-chapter-wash"
         />
 
         {/* Chapter Metadata Header (Rule 2: One label only) */}

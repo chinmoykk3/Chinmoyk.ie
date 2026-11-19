@@ -83,10 +83,10 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
     >
       <div ref={sceneRef} className="relative w-full overflow-hidden">
         <div className="w-full min-h-screen py-16 flex flex-col justify-between relative">
-          {/* Azure Ambient Radial Wash */}
+          {/* Chapter Ambient Wash (Token-based) */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(2,132,199,0.08)_0%,transparent_70%)]"
+            className="pointer-events-none absolute inset-0 z-0 bg-chapter-wash"
           />
 
           {/* Chapter Header (Rule 2: One label only) */}

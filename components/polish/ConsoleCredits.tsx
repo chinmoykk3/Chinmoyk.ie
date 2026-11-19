@@ -10,11 +10,11 @@ export function ConsoleCredits() {
     loggedRef.current = true;
 
     const titleStyle =
-      'color: rgb(251, 191, 36); font-family: Georgia, serif; font-size: 16px; font-weight: bold; background: rgb(0, 0, 0); padding: 4px 8px; border-radius: 4px;';
+      'color: rgb(255, 200, 87); font-family: Georgia, serif; font-size: 16px; font-weight: bold; background: rgb(0, 0, 0); padding: 4px 8px; border-radius: 4px;';
     const subStyle =
       'color: rgb(163, 163, 163); font-family: monospace; font-size: 11px; line-height: 1.6;';
     const linkStyle =
-      'color: rgb(56, 189, 248); font-family: monospace; font-size: 11px; text-decoration: underline;';
+      'color: rgb(76, 141, 255); font-family: monospace; font-size: 11px; text-decoration: underline;';
 
     console.log('%c🎬 A STORY STILL UNFOLDING · Chinmoy Kalita', titleStyle);
     console.log(

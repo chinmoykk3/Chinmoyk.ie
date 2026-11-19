@@ -20,6 +20,23 @@ export function NarrationText({
 }: NarrationTextProps) {
   const isTodo = text.startsWith('[TODO:');
 
+  // Rule 3: Missing content renders nothing in production
+  if (isTodo && process.env.NODE_ENV === 'production') {
+    return null;
+  }
+
+  // Rule 4: In development, quiet tiny muted chip
+  if (isTodo) {
+    return (
+      <aside
+        aria-label="Content placeholder"
+        className="my-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono text-theme-muted/60 border border-theme-border/40 bg-theme-surface/40 select-none"
+      >
+        <span>[TODO]</span>
+      </aside>
+    );
+  }
+
   const sizeClasses = {
     sm: 'text-lg sm:text-xl',
     md: 'text-fluid-narration sm:text-2xl',
@@ -29,11 +46,8 @@ export function NarrationText({
   return (
     <blockquote
       className={cn(
-        'relative font-serif font-normal italic leading-relaxed transition-colors duration-200',
+        'relative font-serif font-normal italic leading-[1.35] text-theme-text transition-colors duration-200',
         sizeClasses[size],
-        isTodo
-          ? 'font-mono not-italic text-xs p-4 rounded-xl border border-theme-ember/40 bg-theme-ember/10 text-theme-text'
-          : 'text-theme-text',
         className
       )}
       {...props}
@@ -42,16 +56,11 @@ export function NarrationText({
       {text}
       <span className="select-none text-chapter-accent ml-1">&rdquo;</span>
 
-      {(speaker || note || isDraft) && (
+      {(speaker || note) && (
         <footer className="mt-3 not-italic font-sans flex flex-wrap items-center gap-2 text-xs text-theme-muted font-normal">
           {speaker && <span className="font-medium text-theme-text">{speaker}</span>}
           {speaker && note && <span>&middot;</span>}
           {note && <span>{note}</span>}
-          {isDraft && (
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono tracking-wider bg-theme-ember/15 text-theme-ember uppercase">
-              Draft Narration
-            </span>
-          )}
         </footer>
       )}
     </blockquote>

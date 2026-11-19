@@ -17,10 +17,12 @@ const config: Config = {
           surface: 'var(--color-surface)',
           'surface-elevated': 'var(--color-surface-elevated)',
           'surface-subtle': 'var(--color-surface-subtle)',
+          sand: 'var(--color-surface-elevated)',
           text: 'var(--color-text)',
           muted: 'var(--color-text-muted)',
           border: 'var(--color-border)',
           'border-strong': 'var(--color-border-strong)',
+          thread: 'var(--color-thread-gold)',
           gold: 'var(--color-gold)',
           ember: 'var(--color-ember)',
           rose: 'var(--color-rose)',
@@ -30,6 +32,7 @@ const config: Config = {
         // Active chapter dynamic variables
         chapter: {
           accent: 'var(--accent)',
+          'accent-text': 'var(--accent-text)',
           wash: 'var(--wash)',
         },
         // Sunrise-ramp dedicated token palette

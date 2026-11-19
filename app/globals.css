@@ -9,67 +9,109 @@
    ========================================================================== */
 
 :root {
-  /* Default Light Mode tokens — Warm Cream */
-  --color-bg: #FAF8F5;
+  /* =========================================================================
+     LIGHT "Daylight" THEME TOKENS
+     ========================================================================= */
+  --color-bg: #FFF8EC;
   --color-surface: #FFFFFF;
-  --color-surface-elevated: #F4F0E6;
-  --color-surface-subtle: #EFE9DC;
-  --color-text: #121110;
-  --color-text-muted: #615E59;
-  --color-border: rgba(18, 17, 16, 0.08);
-  --color-border-strong: rgba(18, 17, 16, 0.16);
+  --color-surface-elevated: #F3ECDD; /* sand */
+  --color-surface-subtle: #EDE4D3;
+  --color-border: #E8DCC4;
+  --color-border-strong: #D8C6A4;
+  --color-text: #14121F;
+  --color-text-muted: #5E5A70;
+  --color-thread-gold: #FFB000;
 
-  /* Sunrise-ramp color tokens (Light mode high-contrast WCAG AA passing) */
-  --color-gold: #B45309;
-  --color-ember: #C2410C;
-  --color-rose: #E11D48;
-  --color-iris: #7C3AED;
-  --color-azure: #0284C7;
+  /* Accent Fills (Light mode) */
+  --color-azure-fill: #2E6BFF;
+  --color-iris-fill: #7B4DFF;
+  --color-rose-fill: #F43F7A;
+  --color-ember-fill: #FF6A1F;
+  --color-gold-fill: #FFB000;
 
-  /* Default active accent (Gold) */
-  --accent: var(--color-gold);
-  --accent-raw: #F59E0B;
-  --wash: rgba(180, 83, 9, 0.05);
+  /* Accent Text-Safe (Light mode WCAG AA on #FFF8EC and #FFFFFF) */
+  --color-azure-text: #1B4FD6;
+  --color-iris-text: #5B35D8;
+  --color-rose-text: #C81E5B;
+  --color-ember-text: #C2410C;
+  --color-gold-text: #8A5A00;
 
-  /* Pure cinematic tokens for documentary opening experience */
+  /* Accent Washes (Light mode subtle backgrounds) */
+  --color-azure-wash: #E7EEFF;
+  --color-iris-wash: #EFE8FF;
+  --color-rose-wash: #FFE6EE;
+  --color-ember-wash: #FFEBDD;
+  --color-gold-wash: #FFF0CC;
+
+  /* Standard aliases */
+  --color-azure: var(--color-azure-fill);
+  --color-iris: var(--color-iris-fill);
+  --color-rose: var(--color-rose-fill);
+  --color-ember: var(--color-ember-fill);
+  --color-gold: var(--color-gold-fill);
+
+  /* Active chapter variables (Default: Gold) */
+  --accent: var(--color-gold-fill);
+  --accent-text: var(--color-gold-text);
+  --wash: var(--color-gold-wash);
+
+  /* Cinema tokens for opening overture */
   --color-cinema-bg: #000000;
-  --color-cinema-surface: #0A0A0A;
+  --color-cinema-surface: #0D0D0D;
   --color-cinema-text: #F5F5F5;
   --color-cinema-muted: #A3A3A3;
-  --color-cinema-border: rgba(255, 255, 255, 0.12);
-  --color-cinema-gold: #FBBF24;
+  --color-cinema-border: #262626;
+  --color-cinema-gold: #FFC857;
 }
 
 .dark {
-  /* Dark Mode tokens — True Neutral Blacks (Zero navy/slate/indigo tint) */
-  --color-bg: #000000;
-  --color-surface: #0A0A0A;
-  --color-surface-elevated: #141414;
-  --color-surface-subtle: #1C1C1C;
+  /* =========================================================================
+     DARK "Noir" THEME TOKENS (True Neutral Blacks: R = G = B, Zero Blue Tint)
+     ========================================================================= */
+  /* --exposure lifts dark bg from #000000 to at most #0F0F0F in pure neutral steps */
+  --exposure-step: calc(15 * var(--exposure, 0));
+  --color-bg: rgb(var(--exposure-step), var(--exposure-step), var(--exposure-step));
+  --color-surface: #0D0D0D;
+  --color-surface-elevated: #171717; /* raised */
+  --color-surface-subtle: #1F1F1F;
+  --color-border: #262626;
+  --color-border-strong: #383838;
   --color-text: #F5F5F5;
   --color-text-muted: #A3A3A3;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-strong: rgba(255, 255, 255, 0.16);
+  --color-thread-gold: #FFC857;
 
-  /* Pure cinematic tokens for documentary opening experience */
+  /* Accent Dark Glows (Dark mode radiance) */
+  --color-azure: #4C8DFF;
+  --color-iris: #9B7BFF;
+  --color-rose: #FF5C8A;
+  --color-ember: #FF8A4C;
+  --color-gold: #FFC857;
+
+  --color-azure-text: #4C8DFF;
+  --color-iris-text: #9B7BFF;
+  --color-rose-text: #FF5C8A;
+  --color-ember-text: #FF8A4C;
+  --color-gold-text: #FFC857;
+
+  /* Dark mode soft washes (large blur, 20-30% opacity, never flat fills) */
+  --color-azure-wash: radial-gradient(ellipse at 50% 0%, rgba(76, 141, 255, 0.12) 0%, transparent 70%);
+  --color-iris-wash: radial-gradient(ellipse at 50% 0%, rgba(155, 123, 255, 0.12) 0%, transparent 70%);
+  --color-rose-wash: radial-gradient(ellipse at 50% 0%, rgba(255, 92, 138, 0.12) 0%, transparent 70%);
+  --color-ember-wash: radial-gradient(ellipse at 50% 0%, rgba(255, 138, 76, 0.12) 0%, transparent 70%);
+  --color-gold-wash: radial-gradient(ellipse at 50% 0%, rgba(255, 200, 87, 0.12) 0%, transparent 70%);
+
+  /* Default active accent (Gold) */
+  --accent: var(--color-gold);
+  --accent-text: var(--color-gold);
+  --wash: var(--color-gold-wash);
+
+  /* Cinema tokens */
   --color-cinema-bg: #000000;
-  --color-cinema-surface: #0A0A0A;
+  --color-cinema-surface: #0D0D0D;
   --color-cinema-text: #F5F5F5;
   --color-cinema-muted: #A3A3A3;
-  --color-cinema-border: rgba(255, 255, 255, 0.12);
-  --color-cinema-gold: #FBBF24;
-
-  /* Sunrise-ramp color tokens (Dark mode high-radiance WCAG AA passing) */
-  --color-gold: #FBBF24;
-  --color-ember: #FB923C;
-  --color-rose: #FB7185;
-  --color-iris: #A78BFA;
-  --color-azure: #38BDF8;
-
-  /* Default active accent */
-  --accent: var(--color-gold);
-  --accent-raw: #FBBF24;
-  --wash: radial-gradient(ellipse at 50% 0%, rgba(251, 191, 36, 0.08) 0%, transparent 70%);
+  --color-cinema-border: #262626;
+  --color-cinema-gold: #FFC857;
 }
 
 /* ==========================================================================
@@ -81,100 +123,130 @@
 [data-accent='gold'],
 [data-chapter='prologue'],
 [data-chapter='0'],
+[data-chapter='chapter-01'],
 [data-chapter='1'] {
-  --accent: var(--color-gold);
-  --wash: rgba(180, 83, 9, 0.05);
+  --accent: var(--color-gold-fill);
+  --accent-text: var(--color-gold-text);
+  --wash: var(--color-gold-wash);
 }
 .dark [data-accent='gold'],
 .dark [data-chapter='prologue'],
 .dark [data-chapter='0'],
+.dark [data-chapter='chapter-01'],
 .dark [data-chapter='1'] {
   --accent: var(--color-gold);
-  --wash: radial-gradient(ellipse at 50% 0%, rgba(251, 191, 36, 0.09) 0%, transparent 75%);
+  --accent-text: var(--color-gold);
+  --wash: var(--color-gold-wash);
 }
 
-/* ALL (Chapter 02 - Experimentation: Multi-Tone) */
+/* ALL FOUR CONVERGING (Chapter 02 - Convergence: azure, iris, rose, ember) */
 [data-accent='all'],
+[data-chapter='chapter-02'],
 [data-chapter='2'] {
-  --accent: var(--color-azure);
-  --wash: linear-gradient(135deg, rgba(2, 132, 199, 0.04) 0%, rgba(225, 29, 72, 0.04) 100%);
+  --accent: var(--color-azure-fill);
+  --accent-text: var(--color-azure-text);
+  --wash: linear-gradient(135deg, var(--color-azure-wash) 0%, var(--color-iris-wash) 35%, var(--color-rose-wash) 70%, var(--color-ember-wash) 100%);
 }
 .dark [data-accent='all'],
+.dark [data-chapter='chapter-02'],
 .dark [data-chapter='2'] {
   --accent: var(--color-azure);
-  --wash: radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.09) 0%, rgba(251, 113, 133, 0.06) 50%, transparent 75%);
+  --accent-text: var(--color-azure);
+  --wash: radial-gradient(ellipse at 50% 0%, rgba(76, 141, 255, 0.1) 0%, rgba(155, 123, 255, 0.08) 35%, rgba(255, 92, 138, 0.06) 70%, transparent 85%);
 }
 
 /* AZURE (Chapter 03 - Creation) */
 [data-accent='azure'],
+[data-chapter='chapter-03'],
 [data-chapter='3'] {
-  --accent: var(--color-azure);
-  --wash: rgba(2, 132, 199, 0.05);
+  --accent: var(--color-azure-fill);
+  --accent-text: var(--color-azure-text);
+  --wash: var(--color-azure-wash);
 }
 .dark [data-accent='azure'],
+.dark [data-chapter='chapter-03'],
 .dark [data-chapter='3'] {
   --accent: var(--color-azure);
-  --wash: radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.1) 0%, transparent 75%);
+  --accent-text: var(--color-azure);
+  --wash: var(--color-azure-wash);
 }
 
 /* ROSE (Chapter 04 - Expression) */
 [data-accent='rose'],
+[data-chapter='chapter-04'],
 [data-chapter='4'] {
-  --accent: var(--color-rose);
-  --wash: rgba(225, 29, 72, 0.05);
+  --accent: var(--color-rose-fill);
+  --accent-text: var(--color-rose-text);
+  --wash: var(--color-rose-wash);
 }
 .dark [data-accent='rose'],
+.dark [data-chapter='chapter-04'],
 .dark [data-chapter='4'] {
   --accent: var(--color-rose);
-  --wash: radial-gradient(ellipse at 50% 0%, rgba(251, 113, 133, 0.1) 0%, transparent 75%);
+  --accent-text: var(--color-rose);
+  --wash: var(--color-rose-wash);
 }
 
 /* IRIS (Chapter 05 - Exploration) */
 [data-accent='iris'],
+[data-chapter='chapter-05'],
 [data-chapter='5'] {
-  --accent: var(--color-iris);
-  --wash: rgba(124, 58, 237, 0.05);
+  --accent: var(--color-iris-fill);
+  --accent-text: var(--color-iris-text);
+  --wash: var(--color-iris-wash);
 }
 .dark [data-accent='iris'],
+.dark [data-chapter='chapter-05'],
 .dark [data-chapter='5'] {
   --accent: var(--color-iris);
-  --wash: radial-gradient(ellipse at 50% 0%, rgba(167, 139, 250, 0.1) 0%, transparent 75%);
+  --accent-text: var(--color-iris);
+  --wash: var(--color-iris-wash);
 }
 
 /* GOLD-EMBER (Chapter 06 - Growth) */
 [data-accent='gold-ember'],
+[data-chapter='chapter-06'],
 [data-chapter='6'] {
-  --accent: var(--color-ember);
-  --wash: linear-gradient(135deg, rgba(180, 83, 9, 0.05) 0%, rgba(194, 65, 12, 0.05) 100%);
+  --accent: var(--color-ember-fill);
+  --accent-text: var(--color-ember-text);
+  --wash: linear-gradient(135deg, var(--color-gold-wash) 0%, var(--color-ember-wash) 100%);
 }
 .dark [data-accent='gold-ember'],
+.dark [data-chapter='chapter-06'],
 .dark [data-chapter='6'] {
   --accent: var(--color-ember);
-  --wash: radial-gradient(ellipse at 50% 0%, rgba(251, 146, 60, 0.1) 0%, rgba(251, 191, 36, 0.06) 60%, transparent 75%);
+  --accent-text: var(--color-ember);
+  --wash: radial-gradient(ellipse at 50% 0%, rgba(255, 200, 87, 0.1) 0%, rgba(255, 138, 76, 0.1) 60%, transparent 80%);
 }
 
 /* EMBER (Chapter 07 - Possibility) */
 [data-accent='ember'],
+[data-chapter='chapter-07'],
 [data-chapter='7'] {
-  --accent: var(--color-ember);
-  --wash: rgba(194, 65, 12, 0.05);
+  --accent: var(--color-ember-fill);
+  --accent-text: var(--color-ember-text);
+  --wash: var(--color-ember-wash);
 }
 .dark [data-accent='ember'],
+.dark [data-chapter='chapter-07'],
 .dark [data-chapter='7'] {
   --accent: var(--color-ember);
-  --wash: radial-gradient(ellipse at 50% 0%, rgba(251, 146, 60, 0.1) 0%, transparent 75%);
+  --accent-text: var(--color-ember);
+  --wash: var(--color-ember-wash);
 }
 
 /* SUNRISE (Epilogue - A Story Still Unfolding) */
 [data-accent='sunrise'],
 [data-chapter='epilogue'] {
-  --accent: var(--color-gold);
-  --wash: linear-gradient(180deg, rgba(180, 83, 9, 0.06) 0%, rgba(194, 65, 12, 0.04) 50%, rgba(225, 29, 72, 0.02) 100%);
+  --accent: var(--color-gold-fill);
+  --accent-text: var(--color-gold-text);
+  --wash: linear-gradient(to top, var(--color-gold-wash) 0%, var(--color-ember-wash) 25%, var(--color-rose-wash) 50%, var(--color-iris-wash) 75%, var(--color-azure-wash) 100%);
 }
 .dark [data-accent='sunrise'],
 .dark [data-chapter='epilogue'] {
   --accent: var(--color-gold);
-  --wash: radial-gradient(ellipse at 50% 0%, rgba(251, 191, 36, 0.1) 0%, rgba(251, 146, 60, 0.06) 50%, transparent 80%);
+  --accent-text: var(--color-gold);
+  --wash: linear-gradient(to top, rgba(255, 200, 87, 0.12) 0%, rgba(255, 138, 76, 0.09) 25%, rgba(255, 92, 138, 0.07) 50%, rgba(155, 123, 255, 0.05) 75%, rgba(76, 141, 255, 0.03) 100%);
 }
 
 /* ==========================================================================
@@ -187,6 +259,8 @@ html {
   scroll-behavior: smooth;
   transition: background-color 0.25s ease, color 0.25s ease;
   overflow-x: clip;
+  font-feature-settings: "zero" 0, "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
 body {
@@ -196,6 +270,28 @@ body {
   min-height: 100vh;
   overflow-x: clip;
   max-width: 100vw;
+  font-feature-settings: "zero" 0, "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Canonical Instrument Serif typographic rules */
+.font-serif {
+  letter-spacing: -0.005em;
+}
+
+h1.font-serif,
+h2.font-serif,
+h3.font-serif,
+.text-fluid-display,
+.text-fluid-h1,
+.text-fluid-h2 {
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.text-fluid-narration,
+blockquote.font-serif {
+  line-height: 1.35;
 }
 
 /* Accessible focus ring for WCAG AA compliance (no hex, token-based) */

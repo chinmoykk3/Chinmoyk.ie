@@ -89,7 +89,7 @@ export function ThreadSpine() {
                   )}
                 />
 
-                {/* Hover Tooltip / Label */}
+                {/* Hover Tooltip / Canonical Chapter Title */}
                 <div
                   className={cn(
                     'pointer-events-none absolute left-6 px-2.5 py-1 rounded-md text-[11px] font-mono tracking-wider whitespace-nowrap opacity-0 transition-opacity duration-200 border border-theme-border bg-theme-surface shadow-md',
@@ -98,19 +98,11 @@ export function ThreadSpine() {
                   )}
                 >
                   <span className="font-semibold">{ch.number === 0 ? 'P' : ch.number}: </span>
-                  <span>{ch.emotionalArc}</span>
+                  <span>{ch.title}</span>
                 </div>
               </button>
             );
           })}
-        </div>
-
-        {/* Narrative Bridge Indicator */}
-        <div
-          data-accent={activeChapter.accentKey}
-          className="mt-4 text-[9px] font-mono tracking-widest text-chapter-accent uppercase rotate-90 origin-left translate-x-2"
-        >
-          {activeChapter.accentKey} &rarr; {nextChapter.accentKey}
         </div>
       </nav>
     </>

@@ -25,7 +25,7 @@ export function Navbar() {
         Skip to main content
       </a>
 
-      <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-theme-bg/85 border-b border-theme-border transition-colors duration-200">
+      <header className="sticky top-0 z-40 w-full bg-theme-bg/95 backdrop-blur-xs border-b border-theme-border transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           {/* Left: Minimal Custom Typographic Wordmark */}
           <div className="flex items-center gap-3">
