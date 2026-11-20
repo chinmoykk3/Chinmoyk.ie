@@ -10,6 +10,7 @@ import { Card } from '@/components/ui/Card';
 import { ChapterTitleCard } from '@/components/motion/ChapterTitleCard';
 import { Content } from '@/components/content/Content';
 import { getContentText } from '@/content/schema';
+import { usePolish } from '@/components/polish/PolishContext';
 import { Palette, Eye, Sliders, ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import gsap from 'gsap';
@@ -26,6 +27,7 @@ export interface Chapter04DesignProps {
 
 export function Chapter04Design({ chapter }: Chapter04DesignProps) {
   const { motionEnabled, prefersReducedMotion } = useMotion();
+  const { triggerLowerThird } = usePolish();
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -126,6 +128,15 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
     setLightboxIndex(index);
     setLightboxOpen(true);
     setLensPos(null);
+
+    const piece = filteredItems[index];
+    if (piece) {
+      triggerLowerThird({
+        title: getContentText(piece.title) || '',
+        subtitle: getContentText(piece.description) || '',
+        category: piece.category,
+      });
+    }
   };
 
   return (
@@ -259,6 +270,8 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
                     <Card
                       withWash
                       hoverEffect
+                      data-cursor="view"
+                      data-cursor-label="VIEW"
                       className="group cursor-pointer overflow-hidden p-5 sm:p-6 border-theme-border/80 bg-theme-surface flex flex-col justify-between h-full transition-all duration-300 focus-within:ring-2 focus-within:ring-theme-rose"
                       onClick={() => openLightbox(index)}
                       onMouseEnter={(e) => handleMouseEnter(titleText, e)}

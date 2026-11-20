@@ -23,6 +23,7 @@ export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
   const trapRef = useFocusTrap(isOpen, onClose);
   const {
     commentaryEnabled,
+    hasCommentary,
     toggleCommentary,
     soundEnabled,
     toggleSound,
@@ -127,19 +128,25 @@ export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
           <div className="text-xs font-mono uppercase tracking-widest text-theme-muted mb-2">
             Director Experience
           </div>
-          <div className="grid grid-cols-3 gap-2 text-xs font-mono">
-            <button
-              onClick={toggleCommentary}
-              className={cn(
-                'p-2.5 rounded-lg border text-center transition-colors flex flex-col items-center gap-1',
-                commentaryEnabled
-                  ? 'bg-theme-gold/15 border-theme-gold text-theme-gold font-semibold'
-                  : 'bg-theme-surface border-theme-border text-theme-muted'
-              )}
-            >
-              <Film className="w-4 h-4" />
-              <span>Notes</span>
-            </button>
+          <div
+            className={cn('grid gap-2 text-xs font-mono', hasCommentary ? 'grid-cols-3' : 'grid-cols-2')}
+          >
+            {hasCommentary && (
+              <button
+                onClick={toggleCommentary}
+                aria-pressed={commentaryEnabled}
+                aria-label="Toggle Director's Commentary behind-the-scenes annotations"
+                className={cn(
+                  'p-2.5 rounded-lg border text-center transition-colors flex flex-col items-center gap-1',
+                  commentaryEnabled
+                    ? 'bg-theme-gold/15 border-theme-gold text-theme-gold font-semibold'
+                    : 'bg-theme-surface border-theme-border text-theme-muted'
+                )}
+              >
+                <Film className="w-4 h-4" />
+                <span>Notes</span>
+              </button>
+            )}
 
             <button
               onClick={toggleSound}
@@ -160,6 +167,8 @@ export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
 
             <button
               onClick={toggleReduceEffects}
+              aria-pressed={reduceEffects}
+              aria-label="Toggle Reduce Effects (disables cursor, magnetics, ambient sound, and lower-thirds)"
               className={cn(
                 'p-2.5 rounded-lg border text-center transition-colors flex flex-col items-center gap-1',
                 reduceEffects
@@ -168,7 +177,7 @@ export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
               )}
             >
               <ShieldCheck className="w-4 h-4" />
-              <span>Simple</span>
+              <span>Reduce Effects</span>
             </button>
           </div>
         </div>

@@ -126,7 +126,11 @@ export function ViewfinderCursor() {
     return null;
   }
 
-  const isViewfinder = variant === 'view' || variant === 'play' || variant === 'drag';
+  const isViewfinder =
+    variant === 'view' ||
+    variant === 'play' ||
+    variant === 'drag' ||
+    (variant === 'open' && Boolean(label));
 
   return (
     <div

@@ -10,7 +10,8 @@ import { Tag } from '@/components/ui/Tag';
 import { Card } from '@/components/ui/Card';
 import { ChapterTitleCard } from '@/components/motion/ChapterTitleCard';
 import { Content } from '@/components/content/Content';
-import { isContentRenderable } from '@/content/schema';
+import { isContentRenderable, getContentText } from '@/content/schema';
+import { usePolish } from '@/components/polish/PolishContext';
 import { ArrowUpRight, Layers } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import gsap from 'gsap';
@@ -26,6 +27,7 @@ export interface Chapter03RealProps {
 
 export function Chapter03Real({ chapter }: Chapter03RealProps) {
   const { motionEnabled, prefersReducedMotion } = useMotion();
+  const { triggerLowerThird } = usePolish();
   const sceneRef = useRef<HTMLDivElement>(null);
   const reelRef = useRef<HTMLDivElement>(null);
   const [activeProjectIndex, setActiveProjectIndex] = useState(0);
@@ -34,6 +36,16 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
 
   const notifyProjectChange = useCallback((index: number) => {
     setActiveProjectIndex(index);
+    const p = projects[index];
+    if (p) {
+      const titleStr = getContentText(p.title) || '';
+      const taglineStr = getContentText(p.tagline) || '';
+      triggerLowerThird({
+        title: titleStr,
+        subtitle: taglineStr,
+        category: p.category,
+      });
+    }
     if (typeof window !== 'undefined') {
       window.dispatchEvent(
         new CustomEvent('story:project-change', {
@@ -41,7 +53,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
         })
       );
     }
-  }, []);
+  }, [triggerLowerThird]);
 
   useEffect(() => {
     const sceneEl = sceneRef.current;
@@ -207,6 +219,8 @@ function ProjectSceneCard({
     <Card
       withWash
       hoverEffect
+      data-cursor="view"
+      data-cursor-label="SPEC"
       className={cn(
         'p-6 sm:p-8 flex flex-col justify-between border-theme-border/80 bg-theme-surface/90 shadow-md transition-all duration-300 focus-within:ring-2 focus-within:ring-theme-azure',
         isDesktop ? 'w-[480px] xl:w-[540px] shrink-0' : 'w-full',

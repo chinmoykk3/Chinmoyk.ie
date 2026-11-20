@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/Button';
 import { Content } from '@/components/content/Content';
 import { isContentRenderable } from '@/content/schema';
 import { ContactForm } from '@/components/ui/ContactForm';
+import { Magnetic } from '@/components/polish/Magnetic';
 import {
   Mail,
   MapPin,
@@ -292,22 +293,26 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
 
           {/* Action Bar: Replay the Story & Back to Explore Mode */}
           <div className="pt-6 border-t border-theme-border/60 flex flex-wrap items-center justify-between gap-4">
-            <button
-              type="button"
-              onClick={replayStory}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-theme-border bg-theme-surface hover:bg-theme-surface-elevated hover:border-theme-gold/50 text-xs font-mono text-theme-text transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold shadow-sm"
-            >
-              <RotateCcw className="w-3.5 h-3.5 text-theme-gold" />
-              <span>Replay the story</span>
-            </button>
+            <Magnetic maxPull={6}>
+              <button
+                type="button"
+                onClick={replayStory}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-theme-border bg-theme-surface hover:bg-theme-surface-elevated hover:border-theme-gold/50 text-xs font-mono text-theme-text transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold shadow-sm"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-theme-gold" />
+                <span>Replay the story</span>
+              </button>
+            </Magnetic>
 
-            <Link
-              href="/explore"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-theme-border bg-theme-surface hover:bg-theme-surface-elevated hover:border-theme-azure/50 text-xs font-mono text-theme-text transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-azure shadow-sm"
-            >
-              <Compass className="w-3.5 h-3.5 text-theme-azure" />
-              <span>Back to Explore Mode &rarr;</span>
-            </Link>
+            <Magnetic maxPull={6}>
+              <Link
+                href="/explore"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-theme-border bg-theme-surface hover:bg-theme-surface-elevated hover:border-theme-azure/50 text-xs font-mono text-theme-text transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-azure shadow-sm"
+              >
+                <Compass className="w-3.5 h-3.5 text-theme-azure" />
+                <span>Back to Explore Mode &rarr;</span>
+              </Link>
+            </Magnetic>
           </div>
         </Container>
       </div>

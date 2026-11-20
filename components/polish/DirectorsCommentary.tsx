@@ -10,30 +10,40 @@ import { cn } from '@/lib/utils';
 export function CommentaryToggle({ className }: { className?: string }) {
   const { commentaryEnabled, toggleCommentary, hasCommentary } = usePolish();
 
+  // Toggle hidden if the whole commentary file has no confirmed/draft items
   if (!hasCommentary) return null;
 
   return (
-    <button
-      type="button"
-      onClick={toggleCommentary}
-      aria-pressed={commentaryEnabled}
-      aria-label="Toggle Director's Commentary behind-the-scenes annotations"
-      title="Director's Commentary"
-      className={cn(
-        'relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-mono transition-all',
-        'border focus:outline-none focus-visible:ring-2 focus-visible:ring-chapter-accent',
-        commentaryEnabled
-          ? 'bg-theme-gold/15 border-theme-gold text-theme-gold font-semibold shadow-xs'
-          : 'bg-theme-surface border-theme-border text-theme-muted hover:text-theme-text hover:bg-theme-surface-elevated',
-        className
-      )}
-    >
-      <Film className="w-3.5 h-3.5 shrink-0" />
-      <span className="hidden sm:inline">Commentary</span>
-      {commentaryEnabled && (
-        <span className="w-1.5 h-1.5 rounded-full bg-theme-gold animate-pulse" />
-      )}
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={toggleCommentary}
+        aria-pressed={commentaryEnabled}
+        aria-label="Toggle Director's Commentary behind-the-scenes annotations"
+        title="Director's Commentary"
+        className={cn(
+          'relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-mono transition-all',
+          'border focus:outline-none focus-visible:ring-2 focus-visible:ring-chapter-accent',
+          commentaryEnabled
+            ? 'bg-theme-gold/15 border-theme-gold text-theme-gold font-semibold shadow-xs'
+            : 'bg-theme-surface border-theme-border text-theme-muted hover:text-theme-text hover:bg-theme-surface-elevated',
+          className
+        )}
+      >
+        <Film className="w-3.5 h-3.5 shrink-0" />
+        <span className="hidden sm:inline">Commentary</span>
+        {commentaryEnabled && (
+          <span className="w-1.5 h-1.5 rounded-full bg-theme-gold animate-pulse" />
+        )}
+      </button>
+
+      {/* Polite screen reader status announcement */}
+      <div className="sr-only" aria-live="polite" role="status">
+        {commentaryEnabled
+          ? "Director's commentary annotations enabled"
+          : "Director's commentary annotations disabled"}
+      </div>
+    </>
   );
 }
 
@@ -41,6 +51,7 @@ export function DirectorsCommentary({ id, className }: { id: string; className?:
   const { commentaryEnabled } = usePolish();
   const item = getCommentaryFor(id);
 
+  // Hidden when empty or disabled
   if (!commentaryEnabled || !item) return null;
 
   return (
