@@ -8,7 +8,7 @@
 
 > **Live Deployment:** [https://chinmoyk-ie.vercel.app/](https://chinmoyk-ie.vercel.app/)
 
-An interactive first-person documentary portfolio tracing curiosity, systems engineering, creative expression, and AI frontiers. Built with Next.js App Router, strict TypeScript, Tailwind CSS, Framer Motion, GSAP ScrollTrigger, Lenis smooth scrolling, and Three.js / React Three Fiber.
+An interactive first-person documentary portfolio tracing curiosity, systems engineering, creative expression, and AI frontiers. Built with Next.js App Router, strict TypeScript, Tailwind CSS, Framer Motion, GSAP ScrollTrigger, Lenis smooth scrolling, and Three.js / React Three Fiber. a
 
 ---
 
@@ -101,4 +101,4 @@ For technical collaborations, research proposals, or engineering roles:
 
 - **Live Portfolio**: [https://chinmoyk-ie.vercel.app/](https://chinmoyk-ie.vercel.app/)
 - **Direct Dialogue**: [https://chinmoyk-ie.vercel.app/contact](https://chinmoyk-ie.vercel.app/contact)
-- **Email**: chinmoykk3@gmail.com
+- **Email**: <chinmoykk3@gmail.com>
