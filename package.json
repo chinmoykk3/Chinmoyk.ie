@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "content:report": "node scripts/content-report.js",
-    "tokens:verify": "node scripts/verify-tokens.js"
+    "tokens:verify": "node scripts/verify-tokens.js",
+    "verify:html": "node scripts/verify-production-html.js"
   },
   "dependencies": {
     "@react-three/drei": "^10.0.0",

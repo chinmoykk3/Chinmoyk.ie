@@ -1,7 +1,9 @@
 import React from 'react';
 import { chapters } from '@/content/chapters';
+import { getContentText } from '@/content/schema';
 import { CinematicOpening } from '@/components/story/CinematicOpening';
-import { Chapter01Curiosity } from '@/components/chapters/Chapter01Curiosity';
+import { ChapterErrorBoundary } from '@/components/story/ChapterErrorBoundary';
+import { Chapter01 } from '@/components/chapters/chapter01/Chapter01';
 import { Chapter02Worlds } from '@/components/chapters/Chapter02Worlds';
 import { Chapter03Real } from '@/components/chapters/Chapter03Real';
 import { Chapter04Design } from '@/components/chapters/Chapter04Design';
@@ -21,31 +23,38 @@ export default function StoryModePage() {
       {/* Full-bleed Chapter Scenes: Scene, Not Card (Rule 1) */}
       <main className="w-full relative">
         {visibleChapters.map((chapter) => {
+          const titleStr = getContentText(chapter.title) || chapter.id;
+
+          let content = null;
           if (chapter.id === 'chapter-01') {
-            return <Chapter01Curiosity key={chapter.id} chapter={chapter} />;
+            content = <Chapter01 chapter={chapter} />;
+          } else if (chapter.id === 'chapter-02') {
+            content = <Chapter02Worlds chapter={chapter} />;
+          } else if (chapter.id === 'chapter-03') {
+            content = <Chapter03Real chapter={chapter} />;
+          } else if (chapter.id === 'chapter-04') {
+            content = <Chapter04Design chapter={chapter} />;
+          } else if (chapter.id === 'chapter-05') {
+            content = <Chapter05Intelligence chapter={chapter} />;
+          } else if (chapter.id === 'chapter-06') {
+            content = <Chapter06Scale chapter={chapter} />;
+          } else if (chapter.id === 'chapter-07') {
+            content = <Chapter07Possibility chapter={chapter} />;
+          } else if (chapter.id === 'epilogue') {
+            content = <EpilogueSection chapter={chapter} />;
           }
-          if (chapter.id === 'chapter-02') {
-            return <Chapter02Worlds key={chapter.id} chapter={chapter} />;
-          }
-          if (chapter.id === 'chapter-03') {
-            return <Chapter03Real key={chapter.id} chapter={chapter} />;
-          }
-          if (chapter.id === 'chapter-04') {
-            return <Chapter04Design key={chapter.id} chapter={chapter} />;
-          }
-          if (chapter.id === 'chapter-05') {
-            return <Chapter05Intelligence key={chapter.id} chapter={chapter} />;
-          }
-          if (chapter.id === 'chapter-06') {
-            return <Chapter06Scale key={chapter.id} chapter={chapter} />;
-          }
-          if (chapter.id === 'chapter-07') {
-            return <Chapter07Possibility key={chapter.id} chapter={chapter} />;
-          }
-          if (chapter.id === 'epilogue') {
-            return <EpilogueSection key={chapter.id} chapter={chapter} />;
-          }
-          return null;
+
+          if (!content) return null;
+
+          return (
+            <ChapterErrorBoundary
+              key={chapter.id}
+              chapterId={chapter.id}
+              chapterTitle={titleStr}
+            >
+              {content}
+            </ChapterErrorBoundary>
+          );
         })}
       </main>
     </div>

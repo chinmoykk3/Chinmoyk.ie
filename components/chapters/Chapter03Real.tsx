@@ -112,7 +112,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
       className="relative w-full border-t border-theme-border transition-colors duration-300"
     >
       <div ref={sceneRef} className="relative w-full overflow-hidden">
-        <div className="w-full min-h-screen py-16 sm:py-24 flex flex-col justify-between relative">
+        <div className="w-full min-h-[100dvh] py-16 sm:py-24 flex flex-col justify-between relative">
           {/* Chapter Ambient Wash */}
           <div
             aria-hidden="true"

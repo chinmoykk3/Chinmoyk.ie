@@ -55,7 +55,7 @@ export function PinnedScene({
 
   return (
     <div ref={triggerRef} className={cn('relative w-full', className)} {...props}>
-      <div ref={pinContentRef} className="w-full min-h-screen flex flex-col justify-center">
+      <div ref={pinContentRef} className="w-full min-h-[100dvh] flex flex-col justify-center">
         {children}
       </div>
     </div>

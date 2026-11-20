@@ -45,10 +45,19 @@ export class Ch01ConnectingDotsScene implements Scene {
     const h = state.size.height;
     const activeCount = Math.floor(this.maxDots * (state.qualityLevel < 0.5 ? 0.5 : 1));
 
+    // Slow down dots during held beat (48% - 62% chapterProgress)
+    let speedMult = 1.0;
+    if (state.chapterProgress >= 0.45 && state.chapterProgress <= 0.65) {
+      const centerDist = Math.abs(state.chapterProgress - 0.55) / 0.1;
+      speedMult = 0.08 + 0.92 * Math.min(1, centerDist);
+    }
+
+    const effectiveDt = dt * speedMult;
+
     for (let i = 0; i < activeCount; i++) {
       const dot = this.dots[i];
-      dot.x += dot.vx * dt;
-      dot.y += dot.vy * dt;
+      dot.x += dot.vx * effectiveDt;
+      dot.y += dot.vy * effectiveDt;
 
       // Wrap boundaries
       if (dot.x < -10) dot.x = w + 10;

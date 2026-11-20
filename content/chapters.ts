@@ -20,7 +20,7 @@ export const curiositySlotSchema = z.object({
   label: z.string(),
   question: contentFieldSchema,
   visualType: z.enum(['gear', 'circuit', 'sketch']),
-  placeholder: z.string(),
+  placeholder: z.string().optional(),
 });
 export type CuriositySlot = z.infer<typeof curiositySlotSchema>;
 
@@ -75,29 +75,6 @@ const rawChapters: Chapter[] = [
       'Bridge leading into Chapter 02'
     ),
     narration: narration['chapter-01'],
-    curiositySlots: [
-      {
-        id: 'slot-spark',
-        label: 'THE SPARK',
-        question: draft('What first sparked curiosity?'),
-        visualType: 'gear',
-        placeholder: '[TODO: what first sparked curiosity]',
-      },
-      {
-        id: 'slot-first-build',
-        label: 'FIRST BUILD',
-        question: draft('A first thing I built?'),
-        visualType: 'circuit',
-        placeholder: '[TODO: a first thing I built]',
-      },
-      {
-        id: 'slot-experimentation',
-        label: 'RECURSIVE DRIVE',
-        question: draft('What keeps me experimenting?'),
-        visualType: 'sketch',
-        placeholder: '[TODO: what keeps me experimenting]',
-      },
-    ],
   },
   {
     id: 'chapter-02',

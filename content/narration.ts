@@ -24,8 +24,16 @@ export const narration: Record<string, ContentField[]> = {
   ],
   'chapter-01': [
     draft(
-      "I've always been fascinated by understanding how things work. But eventually, understanding wasn't enough. I wanted to create things myself.",
-      'Verified draft narration Ch01'
+      "I've always been fascinated by understanding how things work.",
+      'Ch01 Line 1: Curiosity & Understanding'
+    ),
+    draft(
+      "But eventually, understanding wasn't enough.",
+      'Ch01 Line 2: The Deconstruction / Questioning'
+    ),
+    draft(
+      'I wanted to create things myself.',
+      'Ch01 Line 3: The Reconstruction / Creation'
     ),
   ],
   'chapter-02': [

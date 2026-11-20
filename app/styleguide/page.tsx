@@ -208,7 +208,7 @@ export default function StyleguidePage() {
                 <div className="flex items-center justify-between">
                   <h3 className="font-serif font-bold text-lg text-theme-text">{acc.name}</h3>
                   <Tag variant={acc.accentKey as 'gold' | 'rose' | 'azure' | 'iris' | 'ember'} size="sm">
-                    {acc.accentKey.toUpperCase()}
+                    {acc.name} Accent
                   </Tag>
                 </div>
                 <p className="text-[11px] font-mono text-theme-muted">{acc.chapter}</p>
@@ -370,7 +370,7 @@ export default function StyleguidePage() {
               <div className="flex flex-wrap gap-2">
                 <Tag variant="default">DEFAULT</Tag>
                 <Tag variant="accent">ACCENT</Tag>
-                <Tag variant="gold">GOLD</Tag>
+                <Tag variant="gold">Gold Token</Tag>
                 <Tag variant="rose">ROSE</Tag>
                 <Tag variant="azure">AZURE</Tag>
                 <Tag variant="iris">IRIS</Tag>

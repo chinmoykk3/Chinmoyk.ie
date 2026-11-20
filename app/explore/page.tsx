@@ -212,33 +212,44 @@ export default function ExplorePage() {
                 </p>
 
                 {/* 10-point framework preview: Problem & Idea */}
-                <div className="mt-4 space-y-2 text-xs">
-                  <div className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border">
-                    <span className="font-semibold text-theme-text font-mono text-[11px] uppercase tracking-wider block mb-1">
-                      The Idea
-                    </span>
-                    <span className="text-theme-muted leading-relaxed">
-                      <Content value={project.framework.idea} />
-                    </span>
+                {(isContentRenderable(project.framework.idea) ||
+                  isContentRenderable(project.framework.problem)) && (
+                  <div className="mt-4 space-y-2 text-xs">
+                    {isContentRenderable(project.framework.idea) && (
+                      <div className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border">
+                        <span className="font-semibold text-theme-text font-mono text-[11px] uppercase tracking-wider block mb-1">
+                          The Idea
+                        </span>
+                        <span className="text-theme-muted leading-relaxed">
+                          <Content value={project.framework.idea} />
+                        </span>
+                      </div>
+                    )}
+                    {isContentRenderable(project.framework.problem) && (
+                      <div className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border">
+                        <span className="font-semibold text-theme-text font-mono text-[11px] uppercase tracking-wider block mb-1">
+                          The Problem
+                        </span>
+                        <span className="text-theme-muted leading-relaxed">
+                          <Content value={project.framework.problem} />
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  <div className="p-3 rounded-lg bg-theme-surface-elevated border border-theme-border">
-                    <span className="font-semibold text-theme-text font-mono text-[11px] uppercase tracking-wider block mb-1">
-                      The Problem
-                    </span>
-                    <span className="text-theme-muted leading-relaxed">
-                      <Content value={project.framework.problem} />
-                    </span>
-                  </div>
-                </div>
+                )}
 
                 {/* Stack Tags */}
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {project.framework.stack.map((tech, i) => (
-                    <Tag key={i} variant="default" size="sm">
-                      <Content value={tech} />
-                    </Tag>
-                  ))}
-                </div>
+                {project.framework.stack.filter(isContentRenderable).length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {project.framework.stack
+                      .filter(isContentRenderable)
+                      .map((tech, i) => (
+                        <Tag key={i} variant="default" size="sm">
+                          <Content value={tech} />
+                        </Tag>
+                      ))}
+                  </div>
+                )}
               </div>
 
               <CardFooter>

@@ -118,7 +118,7 @@ export function CinematicOpening() {
       data-accent="gold"
       aria-label="Prologue — The Story of Chinmoy Kalita"
       className={cn(
-        'relative w-full min-h-screen flex flex-col justify-between items-center select-none overflow-hidden',
+        'relative w-full min-h-[100dvh] flex flex-col justify-between items-center select-none overflow-hidden',
         // Pure black base with no borders or panels (Rule 1: Scene, Not Card)
         'bg-cinema-bg text-cinema-text'
       )}

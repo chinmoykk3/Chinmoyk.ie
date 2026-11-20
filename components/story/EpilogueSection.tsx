@@ -55,7 +55,7 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
       data-chapter="epilogue"
       data-accent="sunrise"
       aria-labelledby="epilogue-heading"
-      className="relative w-full border-t border-theme-border/60 transition-colors duration-300 min-h-screen"
+      className="relative w-full border-t border-theme-border/60 transition-colors duration-300 min-h-[100dvh]"
     >
       {/* Ambient Wash with sunrise gradient */}
       <div
