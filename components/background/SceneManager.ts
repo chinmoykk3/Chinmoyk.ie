@@ -4,7 +4,7 @@ import { chapters } from '@/content/chapters';
 import { GrainLayer } from './layers/Grain';
 import { VignetteLayer } from './layers/Vignette';
 import { PrologueDustScene } from './scenes/PrologueDust';
-import { Ch01ConnectingDotsScene } from './scenes/Ch01ConnectingDots';
+import { Ch01DustInTheLightScene } from './scenes/ch01';
 import { Ch02LightInTheBeamsScene } from './scenes/ch02';
 import { Ch03BlueprintScene } from './scenes/Ch03Blueprint';
 import { Ch04InkRegistrationScene } from './scenes/Ch04InkRegistration';
@@ -29,7 +29,7 @@ export class SceneManager {
   // Registry of all scene factories
   private sceneFactories: Record<ChapterKey, () => Scene> = {
     prologue: () => new PrologueDustScene(),
-    ch01: () => new Ch01ConnectingDotsScene(),
+    ch01: () => new Ch01DustInTheLightScene(),
     ch02: () => new Ch02LightInTheBeamsScene(),
     ch03: () => new Ch03BlueprintScene(),
     ch04: () => new Ch04InkRegistrationScene(),

@@ -1,137 +1,91 @@
 /**
- * Chapter 01 "The Mechanism" — Geometric and Kinematic Configuration
+ * Chapter 01: "The Lamp" — Geometric and Kinematic Configuration
  * 
- * Defines the 8 distinct mechanical and electronic components:
- * 1. outerRing     - Structural casing ring & index datum
- * 2. largeGear     - 12-tooth master spur gear with spoke lightening apertures
- * 3. smallGear     - 8-tooth precision pinion gear
- * 4. shaft         - Stepped central arbor / transmission axis
- * 5. circuitPlate  - Substrate PCB with angular signal traces & IC footprint
- * 6. coilSpring    - Helical balance / inductive resonator spring
- * 7. screw1        - Precision chassis machine fastener (left)
- * 8. screw2        - Precision chassis machine fastener (right)
+ * Coordinate space: 1000 x 600 viewBox
  * 
- * Coordinate space: 600 x 600 viewBox
- * Center datum: (300, 300)
+ * Workbench Layout:
+ * - Table top plane: x: 0 to 1000, y: 400 to 570
+ * - 4 Objects on bench:
+ *   1. Pocket Watch : (180, 360)
+ *   2. Radio        : (340, 310)
+ *   3. Center Gap   : (500, 340) [Where the Lamp will assemble]
+ *   4. Camera Lens  : (660, 330)
+ *   5. Circuit Board: (820, 370)
+ * 
+ * Lamp Assembly Mapping:
+ * - Base     <-- Pocket Watch gear
+ * - Stem     <-- Radio induction coil
+ * - Switch   <-- Circuit Board trace switch
+ * - Shade    <-- Camera Lens glass element
+ * - Filament <-- Camera Lens aperture blades
+ * - Spark    <-- Gold point descending from Prologue
  */
 
-export interface PartTransform {
-  x: number;
-  y: number;
-  rotation: number;
-  scale?: number;
-}
-
-export interface ExplodedDelta {
-  dx: number;
-  dy: number;
-  rotation: number;
-  depth: number; // For fine pointer parallax weighting (0.5 to 1.5)
-}
-
-export interface MechanismPartConfig {
-  id: string;
+export interface ObjectConfig {
+  id: 'pocketWatch' | 'radio' | 'cameraLens' | 'circuitBoard';
   name: string;
-  assembled: PartTransform;
-  exploded: ExplodedDelta;
-  rebuilt: PartTransform;
-}
-
-export const MECHANISM_PARTS: MechanismPartConfig[] = [
-  {
-    id: 'outerRing',
-    name: 'Outer Casing Ring',
-    // Symmetrical outer datum collar at center
-    assembled: { x: 300, y: 280, rotation: 0, scale: 1 },
-    exploded: { dx: 0, dy: -55, rotation: -8, depth: 1.2 },
-    // Rebuilt: forms the upper structural canopy of the new instrument
-    rebuilt: { x: 300, y: 190, rotation: 45, scale: 0.92 },
-  },
-  {
-    id: 'largeGear',
-    name: 'Master Spur Gear',
-    // Intermeshed gear train at upper-left
-    assembled: { x: 260, y: 265, rotation: 0, scale: 1 },
-    exploded: { dx: -75, dy: -40, rotation: -28, depth: 0.9 },
-    // Rebuilt: shifts down to flank the central logic core
-    rebuilt: { x: 215, y: 310, rotation: 110, scale: 0.9 },
-  },
-  {
-    id: 'smallGear',
-    name: 'Pinion Gear',
-    // Meshes with large gear at upper-right
-    assembled: { x: 345, y: 230, rotation: 15, scale: 1 },
-    exploded: { dx: 70, dy: -50, rotation: 38, depth: 0.8 },
-    // Rebuilt: flanks opposite side of logic core
-    rebuilt: { x: 385, y: 275, rotation: -50, scale: 0.88 },
-  },
-  {
-    id: 'shaft',
-    name: 'Transmission Arbor',
-    // Central mechanical axis
-    assembled: { x: 260, y: 265, rotation: 0, scale: 1 },
-    exploded: { dx: -25, dy: 65, rotation: 15, depth: 1.1 },
-    // Rebuilt: vertical spine linking mechanical crown to circuit bus
-    rebuilt: { x: 300, y: 285, rotation: 90, scale: 1.05 },
-  },
-  {
-    id: 'circuitPlate',
-    name: 'Circuit Plate & Traces',
-    // Electronic substrate alongside gear train
-    assembled: { x: 330, y: 335, rotation: 0, scale: 1 },
-    exploded: { dx: 65, dy: 60, rotation: -14, depth: 0.7 },
-    // Rebuilt: forms the grounded base whose central bus trace leads directly down to the terminal node
-    rebuilt: { x: 300, y: 415, rotation: 0, scale: 1.05 },
-  },
-  {
-    id: 'coilSpring',
-    name: 'Resonator Coil',
-    // Mechanical balance spring at lower-left
-    assembled: { x: 260, y: 350, rotation: 0, scale: 1 },
-    exploded: { dx: -65, dy: 55, rotation: 42, depth: 0.65 },
-    // Rebuilt: forms an inductive filter coil in the new architecture
-    rebuilt: { x: 240, y: 430, rotation: -20, scale: 0.95 },
-  },
-  {
-    id: 'screw1',
-    name: 'Left Fastener',
-    assembled: { x: 210, y: 210, rotation: 0, scale: 1 },
-    exploded: { dx: -60, dy: -70, rotation: 80, depth: 1.4 },
-    // Rebuilt: secures upper-left anchor node
-    rebuilt: { x: 195, y: 240, rotation: 45, scale: 1 },
-  },
-  {
-    id: 'screw2',
-    name: 'Right Fastener',
-    assembled: { x: 390, y: 345, rotation: 0, scale: 1 },
-    exploded: { dx: 70, dy: 65, rotation: -95, depth: 1.35 },
-    // Rebuilt: secures lower-right circuit anchor node
-    rebuilt: { x: 405, y: 375, rotation: -30, scale: 1 },
-  },
-];
-
-/**
- * Question Mark glyph anchors (Beat 1: Curiosity/Understanding)
- * Morphs into small solid anchor dots in Beat 2 (Taking apart).
- */
-export interface QuestionGlyph {
-  id: string;
   x: number;
   y: number;
-  associatedPart: string;
+  questionWord: string;
+  questionOffset: { x: number; y: number };
 }
 
-export const QUESTION_GLYPHS: QuestionGlyph[] = [
-  { id: 'q1', x: 200, y: 245, associatedPart: 'largeGear' },
-  { id: 'q2', x: 385, y: 215, associatedPart: 'smallGear' },
-  { id: 'q3', x: 390, y: 315, associatedPart: 'circuitPlate' },
-  { id: 'q4', x: 230, y: 385, associatedPart: 'coilSpring' },
+export const WORKBENCH_OBJECTS: ObjectConfig[] = [
+  {
+    id: 'pocketWatch',
+    name: 'Pocket Watch',
+    x: 180,
+    y: 360,
+    questionWord: 'how?',
+    questionOffset: { x: -45, y: -65 },
+  },
+  {
+    id: 'radio',
+    name: 'Vacuum Tube Radio',
+    x: 340,
+    y: 310,
+    questionWord: 'why?',
+    questionOffset: { x: -35, y: -80 },
+  },
+  {
+    id: 'cameraLens',
+    name: 'Camera Lens',
+    x: 660,
+    y: 330,
+    questionWord: "what's inside?",
+    questionOffset: { x: 30, y: -75 },
+  },
+  {
+    id: 'circuitBoard',
+    name: 'Circuit Board',
+    x: 820,
+    y: 370,
+    questionWord: 'what if…?',
+    questionOffset: { x: 25, y: -65 },
+  },
 ];
 
+export const LAMP_CONFIG = {
+  center: { x: 500, y: 340 },
+  base: { x: 500, y: 440 },
+  stem: { x: 500, y: 350 },
+  switch: { x: 480, y: 435 },
+  shade: { x: 500, y: 240 },
+  filament: { x: 500, y: 255 },
+  spark: { x: 500, y: 255 },
+  // Beam exit ray: down vertical axis from lamp to bottom edge
+  exitRay: { x: 500, startY: 270, endY: 600 },
+};
+
 /**
- * Terminal pulse path:
- * Follows the central bus trace down out of the circuit plate and terminates
- * at the glowing node (300, 560), which seamlessly meets the ThreadSpine.
+ * Assembly Flight Paths (Cubic Bezier curve data)
+ * Defining how detached parts fly from object centroids to the lamp
  */
-export const TERMINAL_TRACE_PATH = 'M 300,380 L 300,430 L 285,445 L 285,490 L 300,505 L 300,560';
-export const TERMINAL_NODE_COORDS = { x: 300, y: 560 };
+export const ASSEMBLY_PATHS = {
+  watchGear: 'M 180,360 C 260,280 400,380 500,440',
+  radioCoil: 'M 340,310 C 390,260 450,290 500,350',
+  circuitSwitch: 'M 820,370 C 720,440 560,450 480,435',
+  lensShade: 'M 660,330 C 620,220 540,210 500,240',
+  lensFilament: 'M 660,330 C 600,250 530,240 500,255',
+  sparkPoint: 'M 500,60 C 500,120 500,190 500,255',
+};

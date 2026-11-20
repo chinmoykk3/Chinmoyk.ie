@@ -71,7 +71,7 @@ const rawChapters: Chapter[] = [
     emotionalArc: 'Curiosity',
     accentKey: 'gold',
     bridge: draft(
-      'Building taught me that pure engineering was only one half of what I was looking for.',
+      'The light I made showed me more than one way forward.',
       'Bridge leading into Chapter 02'
     ),
     narration: narration['chapter-01'],
