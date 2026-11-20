@@ -175,13 +175,20 @@ export function MobileNavMenu({ isOpen, onClose }: MobileNavMenuProps) {
 
         {/* Secondary Links & Footprint */}
         <div className="mt-auto pt-6 border-t border-theme-border space-y-4">
-          <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono">
+          <div className="grid grid-cols-2 gap-2 text-center text-xs font-mono">
             <Link
               href="/explore"
               onClick={onClose}
               className="p-2.5 rounded-lg bg-theme-surface border border-theme-border hover:bg-theme-surface-elevated text-theme-text"
             >
               Explore Hub
+            </Link>
+            <Link
+              href="/projects"
+              onClick={onClose}
+              className="p-2.5 rounded-lg bg-theme-surface border border-theme-border hover:bg-theme-surface-elevated text-theme-text"
+            >
+              Projects
             </Link>
             <Link
               href="/design"

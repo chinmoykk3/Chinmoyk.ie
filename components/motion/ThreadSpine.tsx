@@ -101,6 +101,15 @@ export function ThreadSpine() {
             }}
           />
         )}
+        {/* Unfinished blinking cursor at progress edge */}
+        <div
+          aria-hidden="true"
+          className="absolute top-0 bottom-0 w-2 bg-theme-gold animate-pulse"
+          style={{
+            left: `max(0px, calc(${Math.min(100, Math.max(0, scrollProgress * 100))}% - 4px))`,
+            boxShadow: '0 0 8px var(--color-gold)',
+          }}
+        />
       </div>
 
       {/* ===================================================================
@@ -142,6 +151,20 @@ export function ThreadSpine() {
               className="transition-all duration-100 ease-out"
               style={{
                 filter: 'drop-shadow(0 0 4px var(--color-gold))',
+              }}
+            />
+
+            {/* Unfinished tip: softly blinking gold cursor */}
+            <rect
+              x="10"
+              y={Math.max(4, Math.min(spineHeight - 8, currentDrawY))}
+              width="4"
+              height="8"
+              rx="1"
+              fill="var(--color-gold)"
+              className="animate-pulse"
+              style={{
+                filter: 'drop-shadow(0 0 6px var(--color-gold))',
               }}
             />
           </svg>

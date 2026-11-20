@@ -5,6 +5,7 @@ import { Tag } from '@/components/ui/Tag';
 import { Card } from '@/components/ui/Card';
 import { Content } from '@/components/content/Content';
 import { isContentRenderable } from '@/content/schema';
+import { ContactForm } from '@/components/ui/ContactForm';
 import {
   Mail,
   MapPin,
@@ -125,13 +126,26 @@ export default function ContactPage() {
           </Card>
         </div>
 
-        {/* Right Column: Narrative Message */}
-        <div className="lg:col-span-7">
-          <Card className="p-8 border-theme-border bg-theme-surface space-y-4">
+        {/* Right Column: Narrative Message & Contact Form */}
+        <div className="lg:col-span-7 space-y-6">
+          <Card className="p-6 sm:p-8 border-theme-border bg-theme-surface space-y-3">
             <h3 className="font-serif font-bold text-xl text-theme-text">About Chinmoy</h3>
             <p className="text-xs sm:text-sm text-theme-muted leading-relaxed">
               <Content value={contactData.bioSnippet} />
             </p>
+          </Card>
+
+          <Card className="p-6 sm:p-8 border-theme-border bg-theme-surface shadow-xl space-y-4">
+            <div>
+              <h3 className="font-serif font-bold text-xl text-theme-text">
+                Send an Direct Transmission
+              </h3>
+              <p className="text-xs text-theme-muted mt-1">
+                Reach out regarding engineering opportunities, systems research, or multidisciplinary
+                builds.
+              </p>
+            </div>
+            <ContactForm />
           </Card>
         </div>
       </div>

@@ -58,6 +58,17 @@ export function Navbar() {
               className="hidden md:flex items-center space-x-1 text-xs font-mono"
             >
               <Link
+                href="/projects"
+                className={cn(
+                  'px-3 py-1.5 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-chapter-accent',
+                  pathname.startsWith('/projects')
+                    ? 'bg-theme-surface-elevated text-theme-text font-semibold'
+                    : 'text-theme-muted hover:text-theme-text'
+                )}
+              >
+                Projects
+              </Link>
+              <Link
                 href="/design"
                 className={cn(
                   'px-3 py-1.5 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-chapter-accent',

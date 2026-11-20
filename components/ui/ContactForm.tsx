@@ -1,54 +1,59 @@
 'use client';
 
 import React, { useState } from 'react';
-import { contactData } from '@/content/contact';
 import { Button } from '@/components/ui/Button';
-import { Mail, Send, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Send, CheckCircle, AlertCircle, Mail } from 'lucide-react';
+import { contactData } from '@/content/contact';
 
-export function ContactForm({ className }: { className?: string }) {
+export interface ContactFormProps {
+  className?: string;
+  onSuccess?: () => void;
+}
+
+export function ContactForm({ className }: ContactFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
     message: '',
-    honeypot: '', // Hidden honeypot field for anti-bot protection
+    honeypot: '', // Anti-bot honeypot field
   });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-  const [serverMessage, setServerMessage] = useState<string>('');
+  const [serverMessage, setServerMessage] = useState('');
 
-  // Client-side validation
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
+  const validate = (): boolean => {
+    const errors: Record<string, string> = {};
 
     if (!formData.name.trim() || formData.name.trim().length < 2) {
-      newErrors.name = 'Please provide your name (at least 2 characters).';
+      errors.name = 'Please provide a valid name (at least 2 characters).';
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email.trim() || !emailRegex.test(formData.email.trim())) {
-      newErrors.email = 'Please provide a valid email address.';
+      errors.email = 'Please provide a valid email address.';
     }
 
     if (!formData.message.trim() || formData.message.trim().length < 10) {
-      newErrors.message = 'Please write a message of at least 10 characters.';
+      errors.message = 'Please provide a message with at least 10 characters.';
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setServerMessage('');
 
-    if (!validateForm()) {
+    if (!validate()) {
+      setStatus('error');
+      setServerMessage('Please correct the highlighted fields before submitting.');
       return;
     }
 
     setStatus('submitting');
+    setServerMessage('');
 
     try {
       const res = await fetch('/api/contact', {
@@ -60,242 +65,207 @@ export function ContactForm({ className }: { className?: string }) {
       const data = await res.json();
 
       if (!res.ok) {
-        setStatus('error');
-        setServerMessage(data.error || 'Failed to deliver message. Please use direct email.');
-      } else {
-        setStatus('success');
-        setServerMessage(data.message || 'Message sent successfully!');
-        setFormData({
-          name: '',
-          email: '',
-          subject: '',
-          message: '',
-          honeypot: '',
-        });
-        setErrors({});
+        throw new Error(data.error || 'Failed to dispatch transmission. Please use direct email.');
       }
-    } catch {
+
+      setStatus('success');
+      setServerMessage(data.message || 'Message received. I will reply to your transmission promptly.');
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: '',
+        honeypot: '',
+      });
+      setFieldErrors({});
+    } catch (err: unknown) {
       setStatus('error');
-      setServerMessage('Network error occurred. Please use direct email fallback.');
+      setServerMessage(
+        err instanceof Error
+          ? err.message
+          : 'Unable to deliver message automatically. Please reach out directly via email.'
+      );
     }
   };
 
-  const mailtoHref = `mailto:${contactData.email}?subject=${encodeURIComponent(
-    formData.subject || 'Portfolio Inquiry for Chinmoy Kalita'
+  const mailtoFallbackUrl = `mailto:${contactData.email}?subject=${encodeURIComponent(
+    formData.subject || 'Portfolio Transmission'
   )}&body=${encodeURIComponent(
-    `Hello Chinmoy,\n\n${formData.message}\n\nFrom,\n${formData.name} (${formData.email})`
+    `From: ${formData.name || 'Anonymous'} (${formData.email || 'No email provided'})\n\n${
+      formData.message || ''
+    }`
   )}`;
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      noValidate
-      aria-label="Direct Contact Form"
-      className={cn('space-y-4 text-xs font-mono', className)}
-    >
-      {/* Anti-Spam Hidden Honeypot Field */}
-      <div className="hidden" aria-hidden="true">
-        <label htmlFor="website_url">Leave this empty</label>
-        <input
-          type="text"
-          id="website_url"
-          name="website_url"
-          value={formData.honeypot}
-          onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
-          tabIndex={-1}
-          autoComplete="off"
-        />
-      </div>
+    <div className={className}>
+      <form onSubmit={handleSubmit} noValidate className="space-y-4">
+        {/* Anti-spam Honeypot (Hidden from human visitors and assistive technologies) */}
+        <div aria-hidden="true" className="opacity-0 absolute -left-[9999px] -top-[9999px] pointer-events-none select-none h-0 w-0 overflow-hidden">
+          <label htmlFor="hp_company_field">Do not fill this field</label>
+          <input
+            id="hp_company_field"
+            type="text"
+            name="honeypot"
+            tabIndex={-1}
+            autoComplete="off"
+            value={formData.honeypot}
+            onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
+          />
+        </div>
 
-      {/* Name Input */}
-      <div className="space-y-1.5">
-        <label htmlFor="contact-name" className="block text-theme-text font-semibold">
-          Your Name <span className="text-theme-ember">*</span>
-        </label>
-        <input
-          type="text"
-          id="contact-name"
-          name="name"
-          required
-          aria-required="true"
-          aria-invalid={!!errors.name}
-          aria-describedby={errors.name ? 'contact-name-error' : undefined}
-          placeholder="e.g. Maya Lin"
-          value={formData.name}
-          onChange={(e) => {
-            setFormData({ ...formData, name: e.target.value });
-            if (errors.name) setErrors({ ...errors, name: '' });
-          }}
-          className={cn(
-            'w-full px-3.5 py-2.5 rounded-xl bg-theme-surface border text-theme-text font-sans text-xs transition-all',
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold',
-            errors.name ? 'border-theme-ember bg-theme-ember/5' : 'border-theme-border'
-          )}
-        />
-        {errors.name && (
-          <p
-            id="contact-name-error"
-            className="text-[11px] text-theme-ember flex items-center gap-1"
-          >
-            <AlertCircle className="w-3 h-3 shrink-0" />
-            {errors.name}
-          </p>
-        )}
-      </div>
+        {/* Name and Email Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label htmlFor="contact_name" className="text-xs font-mono text-theme-muted block">
+              YOUR NAME <span className="text-theme-rose" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="contact_name"
+              type="text"
+              required
+              aria-required="true"
+              aria-invalid={!!fieldErrors.name}
+              aria-describedby={fieldErrors.name ? 'name_error' : undefined}
+              value={formData.name}
+              onChange={(e) => {
+                setFormData({ ...formData, name: e.target.value });
+                if (fieldErrors.name) setFieldErrors({ ...fieldErrors, name: '' });
+              }}
+              className="w-full px-3.5 py-2.5 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-text focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold transition-colors"
+              placeholder="Ada Lovelace"
+            />
+            {fieldErrors.name && (
+              <p id="name_error" className="text-[11px] font-mono text-theme-rose mt-1">
+                {fieldErrors.name}
+              </p>
+            )}
+          </div>
 
-      {/* Email Input */}
-      <div className="space-y-1.5">
-        <label htmlFor="contact-email" className="block text-theme-text font-semibold">
-          Your Email <span className="text-theme-ember">*</span>
-        </label>
-        <input
-          type="email"
-          id="contact-email"
-          name="email"
-          required
-          aria-required="true"
-          aria-invalid={!!errors.email}
-          aria-describedby={errors.email ? 'contact-email-error' : undefined}
-          placeholder="e.g. maya@domain.com"
-          value={formData.email}
-          onChange={(e) => {
-            setFormData({ ...formData, email: e.target.value });
-            if (errors.email) setErrors({ ...errors, email: '' });
-          }}
-          className={cn(
-            'w-full px-3.5 py-2.5 rounded-xl bg-theme-surface border text-theme-text font-sans text-xs transition-all',
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold',
-            errors.email ? 'border-theme-ember bg-theme-ember/5' : 'border-theme-border'
-          )}
-        />
-        {errors.email && (
-          <p
-            id="contact-email-error"
-            className="text-[11px] text-theme-ember flex items-center gap-1"
-          >
-            <AlertCircle className="w-3 h-3 shrink-0" />
-            {errors.email}
-          </p>
-        )}
-      </div>
-
-      {/* Subject Input (Optional) */}
-      <div className="space-y-1.5">
-        <label htmlFor="contact-subject" className="block text-theme-text font-semibold">
-          Subject / Context <span className="text-theme-muted font-normal">(Optional)</span>
-        </label>
-        <input
-          type="text"
-          id="contact-subject"
-          name="subject"
-          placeholder="e.g. Engineering collaboration / Research inquiry"
-          value={formData.subject}
-          onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-          className="w-full px-3.5 py-2.5 rounded-xl bg-theme-surface border border-theme-border text-theme-text font-sans text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold"
-        />
-      </div>
-
-      {/* Message Textarea */}
-      <div className="space-y-1.5">
-        <label htmlFor="contact-message" className="block text-theme-text font-semibold">
-          Message <span className="text-theme-ember">*</span>
-        </label>
-        <textarea
-          id="contact-message"
-          name="message"
-          rows={4}
-          required
-          aria-required="true"
-          aria-invalid={!!errors.message}
-          aria-describedby={errors.message ? 'contact-message-error' : undefined}
-          placeholder="Describe your project, question, or collaboration opportunity..."
-          value={formData.message}
-          onChange={(e) => {
-            setFormData({ ...formData, message: e.target.value });
-            if (errors.message) setErrors({ ...errors, message: '' });
-          }}
-          className={cn(
-            'w-full px-3.5 py-2.5 rounded-xl bg-theme-surface border text-theme-text font-sans text-xs transition-all resize-y',
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold',
-            errors.message ? 'border-theme-ember bg-theme-ember/5' : 'border-theme-border'
-          )}
-        />
-        {errors.message && (
-          <p
-            id="contact-message-error"
-            className="text-[11px] text-theme-ember flex items-center gap-1"
-          >
-            <AlertCircle className="w-3 h-3 shrink-0" />
-            {errors.message}
-          </p>
-        )}
-      </div>
-
-      {/* Success Notification */}
-      {status === 'success' && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="p-3.5 rounded-xl bg-theme-surface-elevated border border-theme-border text-xs flex items-start gap-2.5 text-theme-text animate-fade-in"
-        >
-          <CheckCircle2 className="w-4 h-4 text-theme-gold shrink-0 mt-0.5" />
-          <div>
-            <div className="font-semibold">{serverMessage}</div>
-            <p className="text-[11px] text-theme-muted mt-0.5">
-              I usually respond within 24–48 hours.
-            </p>
+          <div className="space-y-1.5">
+            <label htmlFor="contact_email" className="text-xs font-mono text-theme-muted block">
+              EMAIL ADDRESS <span className="text-theme-rose" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="contact_email"
+              type="email"
+              required
+              aria-required="true"
+              aria-invalid={!!fieldErrors.email}
+              aria-describedby={fieldErrors.email ? 'email_error' : undefined}
+              value={formData.email}
+              onChange={(e) => {
+                setFormData({ ...formData, email: e.target.value });
+                if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: '' });
+              }}
+              className="w-full px-3.5 py-2.5 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-text focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold transition-colors"
+              placeholder="ada@example.com"
+            />
+            {fieldErrors.email && (
+              <p id="email_error" className="text-[11px] font-mono text-theme-rose mt-1">
+                {fieldErrors.email}
+              </p>
+            )}
           </div>
         </div>
-      )}
 
-      {/* Error Notification */}
-      {status === 'error' && (
-        <div
-          role="alert"
-          aria-live="assertive"
-          className="p-3.5 rounded-xl bg-theme-ember/10 border border-theme-ember/30 text-xs flex items-start gap-2.5 text-theme-ember animate-fade-in"
-        >
-          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-          <div>
-            <div className="font-semibold">{serverMessage}</div>
-            <p className="text-[11px] text-theme-muted mt-0.5">
-              You can alternatively use the direct mailto button below.
-            </p>
-          </div>
+        {/* Optional Subject */}
+        <div className="space-y-1.5">
+          <label htmlFor="contact_subject" className="text-xs font-mono text-theme-muted block">
+            SUBJECT / TOPIC <span className="text-theme-muted/50 font-normal">(OPTIONAL)</span>
+          </label>
+          <input
+            id="contact_subject"
+            type="text"
+            value={formData.subject}
+            onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+            className="w-full px-3.5 py-2.5 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-text focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold transition-colors"
+            placeholder="Collaboration, engineering opportunity, or research dialogue"
+          />
         </div>
-      )}
 
-      {/* Action Buttons: Submit & Mailto Fallback */}
-      <div className="pt-2 flex flex-wrap items-center gap-3">
-        <Button
-          type="submit"
-          variant="accent"
-          size="md"
-          disabled={status === 'submitting'}
-          className="shadow-md"
-        >
-          {status === 'submitting' ? (
-            <>
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              <span>Transmitting...</span>
-            </>
-          ) : (
-            <>
-              <Send className="w-3.5 h-3.5" />
-              <span>Send Message</span>
-            </>
+        {/* Message */}
+        <div className="space-y-1.5">
+          <label htmlFor="contact_message" className="text-xs font-mono text-theme-muted block">
+            TRANSMISSION &amp; PROPOSAL <span className="text-theme-rose" aria-hidden="true">*</span>
+          </label>
+          <textarea
+            id="contact_message"
+            rows={5}
+            required
+            aria-required="true"
+            aria-invalid={!!fieldErrors.message}
+            aria-describedby={fieldErrors.message ? 'message_error' : undefined}
+            value={formData.message}
+            onChange={(e) => {
+              setFormData({ ...formData, message: e.target.value });
+              if (fieldErrors.message) setFieldErrors({ ...fieldErrors, message: '' });
+            }}
+            className="w-full px-3.5 py-2.5 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-text focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold resize-none transition-colors"
+            placeholder="Share a vision, question, project proposal, or inquiry..."
+          />
+          {fieldErrors.message && (
+            <p id="message_error" className="text-[11px] font-mono text-theme-rose mt-1">
+              {fieldErrors.message}
+            </p>
           )}
-        </Button>
+        </div>
 
-        {/* Mailto Fallback Button */}
-        <a
-          href={mailtoHref}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-mono font-medium text-theme-muted hover:text-theme-text bg-theme-surface border border-theme-border hover:bg-theme-surface-elevated transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold"
-        >
-          <Mail className="w-3.5 h-3.5 text-theme-gold" />
-          <span>Direct Mailto Fallback</span>
-        </a>
-      </div>
-    </form>
+        {/* Status Alerts */}
+        {status === 'error' && (
+          <div
+            role="alert"
+            className="p-3.5 rounded-lg bg-theme-rose/10 border border-theme-rose/30 text-theme-rose text-xs flex items-start gap-2.5"
+          >
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <span>{serverMessage}</span>
+              <div className="pt-1">
+                <a
+                  href={mailtoFallbackUrl}
+                  className="font-mono underline hover:text-theme-text inline-flex items-center gap-1.5"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>Send via direct email client instead &rarr;</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {status === 'success' && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="p-3.5 rounded-lg bg-theme-azure/10 border border-theme-azure/30 text-theme-azure text-xs flex items-center gap-2.5"
+          >
+            <CheckCircle className="w-4 h-4 shrink-0" />
+            <span>{serverMessage}</span>
+          </div>
+        )}
+
+        {/* Submit Actions */}
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <Button
+            type="submit"
+            variant="accent"
+            size="md"
+            disabled={status === 'submitting'}
+            className="w-full sm:w-auto"
+          >
+            <Send className="w-4 h-4" />
+            <span>{status === 'submitting' ? 'Transmitting...' : 'Send Message'}</span>
+          </Button>
+
+          {/* Mailto Fallback Alternative */}
+          <a
+            href={mailtoFallbackUrl}
+            className="text-xs font-mono text-theme-muted hover:text-theme-gold transition-colors inline-flex items-center gap-1.5 focus:outline-none focus-visible:underline"
+          >
+            <Mail className="w-3.5 h-3.5" />
+            <span>Mailto client fallback</span>
+          </a>
+        </div>
+      </form>
+    </div>
   );
 }

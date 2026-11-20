@@ -175,9 +175,18 @@ export default function ExplorePage() {
               Projects (10-Point Engineering Framework)
             </h2>
           </div>
-          <span className="text-xs font-mono text-theme-muted">
-            {projects.length} System Architectures
-          </span>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/projects"
+              className="text-xs font-mono text-theme-azure hover:underline inline-flex items-center gap-1"
+            >
+              <span>View Full /projects Index</span>
+              <ArrowRight className="w-3 h-3" />
+            </Link>
+            <span className="text-xs font-mono text-theme-muted">
+              ({projects.length} System Architectures)
+            </span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -188,9 +197,11 @@ export default function ExplorePage() {
                   <Tag variant="default" size="sm">
                     {project.category}
                   </Tag>
-                  <Tag variant="status" size="sm">
-                    STATUS: {project.status.toUpperCase()}
-                  </Tag>
+                  {project.status !== 'unknown' && (
+                    <Tag variant="status" size="sm">
+                      STATUS: {project.status.toUpperCase()}
+                    </Tag>
+                  )}
                 </CardHeader>
 
                 <CardTitle className="text-xl">
@@ -254,12 +265,21 @@ export default function ExplorePage() {
             <Palette className="w-5 h-5 text-theme-rose" />
             <h2 className="text-2xl font-serif font-bold text-theme-text">Design Systems &amp; Work</h2>
           </div>
-          <Link
-            href="/styleguide"
-            className="text-xs font-mono font-semibold text-theme-gold hover:underline"
-          >
-            Visit Live Styleguide &rarr;
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/design"
+              className="text-xs font-mono font-semibold text-theme-rose hover:underline"
+            >
+              View Full /design Archive &rarr;
+            </Link>
+            <span className="text-theme-border font-mono text-xs">|</span>
+            <Link
+              href="/styleguide"
+              className="text-xs font-mono font-semibold text-theme-gold hover:underline"
+            >
+              Live Styleguide &rarr;
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

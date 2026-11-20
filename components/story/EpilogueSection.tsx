@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+import Link from 'next/link';
 import { Chapter } from '@/content/chapters';
 import { contactData } from '@/content/contact';
 import { Container } from '@/components/ui/Container';
@@ -9,60 +10,43 @@ import { Tag } from '@/components/ui/Tag';
 import { Button } from '@/components/ui/Button';
 import { Content } from '@/components/content/Content';
 import { isContentRenderable } from '@/content/schema';
+import { ContactForm } from '@/components/ui/ContactForm';
 import {
   Mail,
   MapPin,
-  Send,
   Sparkles,
   Rocket,
   Code,
   Users2,
-  CheckCircle,
-  AlertCircle,
   Target,
+  RotateCcw,
+  Compass,
+  ExternalLink,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 export interface EpilogueSectionProps {
   chapter: Chapter;
 }
 
 export function EpilogueSection({ chapter }: EpilogueSectionProps) {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) {
-      setErrorMessage('Please fill out all fields.');
-      setStatus('error');
-      return;
-    }
-
-    setStatus('submitting');
-    setErrorMessage('');
-
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (!res.ok) {
-        throw new Error('Failed to send message. Please try again.');
-      }
-
-      setStatus('success');
-      setFormData({ name: '', email: '', message: '' });
-    } catch (err: unknown) {
-      setStatus('error');
-      setErrorMessage(
-        err instanceof Error ? err.message : 'Something went wrong. Please email directly.'
-      );
+  const replayStory = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.history.pushState(null, '', '#');
     }
   };
+
+  const renderableTech = contactData.technologiesToExplore.filter((t) => isContentRenderable(t));
+  const renderableCollab = contactData.collaborationOpportunities.filter((c) =>
+    isContentRenderable(c)
+  );
+
+  const hasAnyHorizons =
+    isContentRenderable(contactData.whatIWantToBecome) ||
+    isContentRenderable(contactData.whatIWantToBuild) ||
+    isContentRenderable(contactData.ambitions) ||
+    renderableTech.length > 0 ||
+    renderableCollab.length > 0;
 
   return (
     <article
@@ -72,7 +56,7 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
       aria-labelledby="epilogue-heading"
       className="relative w-full border-t border-theme-border/60 transition-colors duration-300 min-h-screen"
     >
-      {/* Ambient Wash */}
+      {/* Ambient Wash with sunrise gradient */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0 bg-chapter-wash"
@@ -93,9 +77,14 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
                 <Content value={chapter.title} />
               </span>
             </div>
+            <div className="flex items-center gap-2">
+              <Tag variant="gold" size="sm">
+                Sunrise
+              </Tag>
+            </div>
           </div>
 
-          <div className="mt-6">
+          <div className="mt-8">
             <h2
               id="epilogue-heading"
               className="text-fluid-h1 font-serif font-normal tracking-tight text-theme-text leading-[1.08]"
@@ -103,7 +92,7 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
               <Content value={chapter.title} />
             </h2>
             {chapter.subtitle && (
-              <p className="text-fluid-narration font-serif italic text-theme-muted mt-2 max-w-[32ch] leading-[1.35]">
+              <p className="text-fluid-narration font-serif italic text-theme-muted mt-3 max-w-[32ch] leading-[1.35]">
                 <Content value={chapter.subtitle} />
               </p>
             )}
@@ -111,33 +100,37 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
         </Container>
 
         {/* Central Narration Statement */}
-        <Container size="md" className="w-full text-center space-y-6 my-8">
+        <Container size="md" className="w-full text-center space-y-6 my-10">
           {chapter.narration[0] && (
             <blockquote className="text-fluid-narration sm:text-2xl font-serif italic text-theme-text leading-[1.35] max-w-2xl mx-auto">
               &ldquo;<Content value={chapter.narration[0]} />&rdquo;
             </blockquote>
           )}
 
-          {/* Unfinished Thread: stops mid-line in gold */}
+          {/* Unfinished Thread: stops mid-line in gold with softly blinking cursor */}
           <div
-            aria-label="The ThreadSpine ends unfinished: a gold line stopping mid-way"
-            className="pt-8 pb-4 flex flex-col items-center justify-center select-none"
+            aria-label="The ThreadSpine ends unfinished: a gold line stopping mid-way with a softly blinking cursor"
+            className="pt-10 pb-6 flex flex-col items-center justify-center select-none"
           >
-            <div className="w-[2px] h-16 bg-theme-gold/80 rounded-t-full" />
+            <div className="w-[2px] h-20 bg-theme-gold/80 rounded-t-full" />
             <div className="flex items-center gap-2 mt-1">
-              <span className="w-2 h-4 bg-theme-gold rounded-sm animate-pulse shadow-[0_0_12px_var(--color-gold)]" />
+              <span
+                className="w-2.5 h-4 bg-theme-gold rounded-sm animate-pulse"
+                style={{ filter: 'drop-shadow(0 0 8px var(--color-gold))' }}
+              />
             </div>
+            <span className="text-[11px] font-mono text-theme-gold/70 tracking-widest uppercase mt-3">
+              The line continues into the future
+            </span>
           </div>
         </Container>
 
-        {/* Aspirations & Horizons (Rendered only when content is verified/draft) */}
-        {(isContentRenderable(contactData.whatIWantToBecome) ||
-          isContentRenderable(contactData.whatIWantToBuild) ||
-          isContentRenderable(contactData.ambitions)) && (
+        {/* Aspirations & Horizons (Rendered only when content is confirmed/draft, hidden when empty) */}
+        {hasAnyHorizons && (
           <Container size="lg" className="w-full my-12 space-y-8">
             <div className="flex items-center justify-between border-b border-theme-border pb-3 flex-wrap gap-2">
               <h3 className="font-serif font-bold text-xl text-theme-text">
-                Horizons & Active Convictions
+                Horizons &amp; Active Convictions
               </h3>
             </div>
 
@@ -183,6 +176,41 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
                   </div>
                 </Card>
               )}
+
+              {renderableTech.length > 0 && (
+                <Card className="p-6 space-y-3 md:col-span-2">
+                  <div className="flex items-center gap-2 text-xs font-mono text-theme-iris font-semibold uppercase tracking-wider mb-2">
+                    <Code className="w-4 h-4" />
+                    <span>Technologies to Explore</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {renderableTech.map((tech, i) => (
+                      <Tag key={i} variant="default" size="sm">
+                        <Content value={tech} />
+                      </Tag>
+                    ))}
+                  </div>
+                </Card>
+              )}
+
+              {renderableCollab.length > 0 && (
+                <Card className="p-6 space-y-3">
+                  <div className="flex items-center gap-2 text-xs font-mono text-theme-ember font-semibold uppercase tracking-wider mb-2">
+                    <Users2 className="w-4 h-4" />
+                    <span>Collaboration Opportunities</span>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-theme-muted">
+                    {renderableCollab.map((collab, i) => (
+                      <li key={i} className="flex items-start gap-1.5 leading-snug">
+                        <span className="text-theme-ember select-none">&bull;</span>
+                        <span>
+                          <Content value={collab} />
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              )}
             </div>
           </Container>
         )}
@@ -209,7 +237,9 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
                 {isContentRenderable(contactData.location) && (
                   <div className="flex items-center gap-2 text-theme-muted">
                     <MapPin className="w-4 h-4 text-theme-gold shrink-0" />
-                    <span><Content value={contactData.location} /></span>
+                    <span>
+                      <Content value={contactData.location} />
+                    </span>
                   </div>
                 )}
                 <div className="flex items-center gap-2 text-theme-muted">
@@ -235,100 +265,50 @@ export function EpilogueSection({ chapter }: EpilogueSectionProps) {
                       href={s.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-3 py-1.5 rounded-lg border border-theme-border bg-theme-surface hover:bg-theme-surface-elevated text-xs font-mono text-theme-text transition-colors flex items-center gap-2"
+                      className="px-3 py-1.5 rounded-lg border border-theme-border bg-theme-surface hover:bg-theme-surface-elevated text-xs font-mono text-theme-text transition-colors flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold"
                     >
                       <span>{s.platform}</span>
+                      <ExternalLink className="w-3 h-3 text-theme-muted" />
                     </a>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Right Column (7 cols): Contact Form */}
+            {/* Right Column (7 cols): Accessible Contact Form */}
             <div className="lg:col-span-7">
               <Card className="p-6 sm:p-8 border-theme-border bg-theme-surface shadow-xl">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label htmlFor="name" className="text-xs font-mono text-theme-muted block">
-                        YOUR NAME
-                      </label>
-                      <input
-                        id="name"
-                        type="text"
-                        required
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-text focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold"
-                        placeholder="Ada Lovelace"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label htmlFor="email" className="text-xs font-mono text-theme-muted block">
-                        EMAIL ADDRESS
-                      </label>
-                      <input
-                        id="email"
-                        type="email"
-                        required
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-text focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold"
-                        placeholder="ada@example.com"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label htmlFor="message" className="text-xs font-mono text-theme-muted block">
-                      MESSAGE &amp; PROPOSAL
-                    </label>
-                    <textarea
-                      id="message"
-                      rows={5}
-                      required
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-lg bg-theme-surface-elevated border border-theme-border text-xs text-theme-text focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold resize-none"
-                      placeholder="Share a vision, question, or project inquiry..."
-                    />
-                  </div>
-
-                  {status === 'error' && (
-                    <div className="p-3 rounded-lg bg-theme-rose/10 border border-theme-rose/30 text-theme-rose text-xs flex items-center gap-2">
-                      <AlertCircle className="w-4 h-4 shrink-0" />
-                      <span>{errorMessage}</span>
-                    </div>
-                  )}
-
-                  {status === 'success' && (
-                    <div className="p-3 rounded-lg bg-theme-azure/10 border border-theme-azure/30 text-theme-azure text-xs flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 shrink-0" />
-                      <span>Message received. I will reply to your transmission promptly.</span>
-                    </div>
-                  )}
-
-                  <Button
-                    type="submit"
-                    variant="accent"
-                    size="md"
-                    disabled={status === 'submitting'}
-                    className="w-full sm:w-auto"
-                  >
-                    <Send className="w-4 h-4" />
-                    <span>{status === 'submitting' ? 'Transmitting...' : 'Send Message'}</span>
-                  </Button>
-                </form>
+                <ContactForm />
               </Card>
             </div>
           </div>
         </Container>
 
-        {/* Narrative Bridge (Closing) */}
-        <Container size="lg" className="w-full pt-16 pb-4">
+        {/* Narrative Bridge & Replay / Explore Navigation Actions */}
+        <Container size="lg" className="w-full pt-16 pb-8 space-y-8">
           <p className="text-sm sm:text-base font-serif italic text-theme-muted text-center sm:text-left">
             &ldquo;<Content value={chapter.bridge} />&rdquo;
           </p>
+
+          {/* Action Bar: Replay the Story & Back to Explore Mode */}
+          <div className="pt-6 border-t border-theme-border/60 flex flex-wrap items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={replayStory}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-theme-border bg-theme-surface hover:bg-theme-surface-elevated hover:border-theme-gold/50 text-xs font-mono text-theme-text transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold shadow-sm"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-theme-gold" />
+              <span>Replay the story</span>
+            </button>
+
+            <Link
+              href="/explore"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-theme-border bg-theme-surface hover:bg-theme-surface-elevated hover:border-theme-azure/50 text-xs font-mono text-theme-text transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-azure shadow-sm"
+            >
+              <Compass className="w-3.5 h-3.5 text-theme-azure" />
+              <span>Back to Explore Mode &rarr;</span>
+            </Link>
+          </div>
         </Container>
       </div>
     </article>
