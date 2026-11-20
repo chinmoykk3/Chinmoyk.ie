@@ -5,7 +5,7 @@ import { GrainLayer } from './layers/Grain';
 import { VignetteLayer } from './layers/Vignette';
 import { PrologueDustScene } from './scenes/PrologueDust';
 import { Ch01ConnectingDotsScene } from './scenes/Ch01ConnectingDots';
-import { Ch02FourOrbsScene } from './scenes/Ch02FourOrbs';
+import { Ch02LightInTheBeamsScene } from './scenes/ch02';
 import { Ch03BlueprintScene } from './scenes/Ch03Blueprint';
 import { Ch04InkRegistrationScene } from './scenes/Ch04InkRegistration';
 import { Ch05FlowFieldScene } from './scenes/Ch05FlowField';
@@ -30,7 +30,7 @@ export class SceneManager {
   private sceneFactories: Record<ChapterKey, () => Scene> = {
     prologue: () => new PrologueDustScene(),
     ch01: () => new Ch01ConnectingDotsScene(),
-    ch02: () => new Ch02FourOrbsScene(),
+    ch02: () => new Ch02LightInTheBeamsScene(),
     ch03: () => new Ch03BlueprintScene(),
     ch04: () => new Ch04InkRegistrationScene(),
     ch05: () => new Ch05FlowFieldScene(),

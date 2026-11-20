@@ -4,7 +4,7 @@ import { getContentText } from '@/content/schema';
 import { CinematicOpening } from '@/components/story/CinematicOpening';
 import { ChapterErrorBoundary } from '@/components/story/ChapterErrorBoundary';
 import { Chapter01 } from '@/components/chapters/chapter01/Chapter01';
-import { Chapter02Worlds } from '@/components/chapters/Chapter02Worlds';
+import { Chapter02 } from '@/components/chapters/chapter02/Chapter02';
 import { Chapter03Real } from '@/components/chapters/Chapter03Real';
 import { Chapter04Design } from '@/components/chapters/Chapter04Design';
 import { Chapter05Intelligence } from '@/components/chapters/Chapter05Intelligence';
@@ -29,7 +29,7 @@ export default function StoryModePage() {
           if (chapter.id === 'chapter-01') {
             content = <Chapter01 chapter={chapter} />;
           } else if (chapter.id === 'chapter-02') {
-            content = <Chapter02Worlds chapter={chapter} />;
+            content = <Chapter02 chapter={chapter} />;
           } else if (chapter.id === 'chapter-03') {
             content = <Chapter03Real chapter={chapter} />;
           } else if (chapter.id === 'chapter-04') {
