@@ -52,11 +52,18 @@ const config: Config = {
           border: 'var(--color-cinema-border)',
           gold: 'var(--color-cinema-gold)',
         },
+        // Editorial Poster Hero palette
+        poster: {
+          bg: 'var(--color-poster-bg)',
+          cream: 'var(--color-poster-cream)',
+          muted: 'var(--color-poster-muted)',
+        },
       },
       fontFamily: {
         serif: ['var(--font-serif)', 'Instrument Serif', 'Georgia', 'serif'],
         sans: ['var(--font-sans)', 'Geist', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'Geist Mono', 'monospace'],
+        display: ['var(--font-display)', 'Bebas Neue', 'Oswald', 'Impact', 'sans-serif'],
       },
       fontSize: {
         'fluid-display': 'clamp(2.5rem, 6vw + 1rem, 5.5rem)',

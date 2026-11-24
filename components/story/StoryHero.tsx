@@ -1,1 +1,1 @@
-export { CinematicOpening as StoryHero } from './CinematicOpening';
+export { EditorialPosterHero as StoryHero } from '@/components/hero/EditorialPosterHero';
