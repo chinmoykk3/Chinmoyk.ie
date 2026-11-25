@@ -164,8 +164,8 @@ export function computeChapter01Phases(progress: number, isReducedMotion: boolea
   const isIgnited = p >= 0.78;
   const ignitionGlow = Math.max(0, Math.min(1, (p - 0.78) / 0.10));
 
-  // Darkness veil lifts upon ignition: drops from 0.94 to ~0.35
-  const veilDarkness = 0.94 - ignitionGlow * 0.59;
+  // Darkness veil lifts upon ignition: drops from 0.85 to ~0.25
+  const veilDarkness = 0.85 - ignitionGlow * 0.60;
 
   // 6. Bridge Line: 88% to 100%
   const bridgeOpacity = Math.max(0, Math.min(1, (p - 0.88) / 0.08));

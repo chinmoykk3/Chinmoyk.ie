@@ -49,7 +49,7 @@ export function Chapter01({ chapter }: Chapter01Props) {
     }
 
     const isMobile = window.innerWidth < 768;
-    const pinScrollDistance = isMobile ? '+=380%' : '+=500%';
+    const pinScrollDistance = isMobile ? '+=260%' : '+=320%';
 
     const trigger = ScrollTrigger.create({
       trigger: triggerEl,
@@ -90,19 +90,19 @@ export function Chapter01({ chapter }: Chapter01Props) {
         data-chapter="1"
         data-accent="gold"
         aria-label="Chapter 01: It Started With Curiosity"
-        className="relative w-full py-20 px-6 sm:px-12 bg-black text-theme-text"
+        className="relative w-full py-20 px-6 sm:px-12 bg-cinema-bg text-cinema-text"
       >
         <div className="max-w-4xl mx-auto space-y-24">
           {/* Header */}
           <header className="space-y-4 text-center">
-            <span className="font-mono text-xs uppercase tracking-widest text-theme-gold font-medium">
+            <span className="font-mono text-xs uppercase tracking-widest text-cinema-gold font-medium">
               CHAPTER 01
             </span>
-            <h2 className="text-fluid-h1 font-serif font-normal tracking-tight text-theme-text">
+            <h2 className="text-fluid-h1 font-serif font-normal tracking-tight text-cinema-text">
               <Content value={chapter01Content.title} />
             </h2>
             {chapter01Content.subtitle && (
-              <p className="font-serif italic text-base sm:text-lg text-theme-muted">
+              <p className="font-serif italic text-base sm:text-lg text-cinema-muted">
                 <Content value={chapter01Content.subtitle} />
               </p>
             )}
@@ -117,12 +117,12 @@ export function Chapter01({ chapter }: Chapter01Props) {
               />
             </div>
             {line1 && (
-              <p className="font-serif text-xl sm:text-2xl text-theme-text max-w-xl mx-auto leading-relaxed">
+              <p className="font-serif text-xl sm:text-2xl text-cinema-text max-w-xl mx-auto leading-relaxed">
                 <Content value={line1} />
               </p>
             )}
             {isContentRenderable(sparkNote) && (
-              <aside className="text-xs italic text-theme-gold/80 max-w-sm mx-auto">
+              <aside className="text-xs italic text-cinema-gold/80 max-w-sm mx-auto">
                 <Content value={sparkNote} />
               </aside>
             )}
@@ -146,12 +146,12 @@ export function Chapter01({ chapter }: Chapter01Props) {
               />
             </div>
             {line2 && (
-              <p className="font-serif text-xl sm:text-2xl text-theme-text max-w-xl mx-auto leading-relaxed">
+              <p className="font-serif text-xl sm:text-2xl text-cinema-text max-w-xl mx-auto leading-relaxed">
                 <Content value={line2} />
               </p>
             )}
             {isContentRenderable(buildNote) && (
-              <aside className="text-xs italic text-theme-gold/80 max-w-sm mx-auto">
+              <aside className="text-xs italic text-cinema-gold/80 max-w-sm mx-auto">
                 <Content value={buildNote} />
               </aside>
             )}
@@ -166,18 +166,18 @@ export function Chapter01({ chapter }: Chapter01Props) {
               />
             </div>
             {line3 && (
-              <p className="font-serif text-xl sm:text-2xl text-theme-text max-w-xl mx-auto leading-relaxed">
+              <p className="font-serif text-xl sm:text-2xl text-cinema-text max-w-xl mx-auto leading-relaxed">
                 <Content value={line3} />
               </p>
             )}
             {isContentRenderable(experimentNote) && (
-              <aside className="text-xs italic text-theme-gold/80 max-w-sm mx-auto">
+              <aside className="text-xs italic text-cinema-gold/80 max-w-sm mx-auto">
                 <Content value={experimentNote} />
               </aside>
             )}
             {chapter01Content.bridge && (
               <footer className="pt-8">
-                <p className="font-serif italic text-sm sm:text-base text-theme-muted/80 max-w-lg mx-auto">
+                <p className="font-serif italic text-sm sm:text-base text-cinema-muted/80 max-w-lg mx-auto">
                   <Content value={chapter01Content.bridge} />
                 </p>
               </footer>
@@ -191,6 +191,18 @@ export function Chapter01({ chapter }: Chapter01Props) {
   // =========================================================================
   // STANDARD MOTION VIEW: The Lamp Workbench & Interactive Light
   // =========================================================================
+  const activeBeatIndex =
+    phases.progress < 0.12
+      ? 0
+      : phases.progress < 0.38
+        ? 1
+        : phases.progress < 0.60
+          ? 2
+          : phases.progress < 0.80
+            ? 3
+            : 4;
+  const beatLabels = ['Awaken', 'Observe', 'Question', 'Assemble', 'Ignite'];
+
   return (
     <article
       ref={sceneRef}
@@ -198,7 +210,7 @@ export function Chapter01({ chapter }: Chapter01Props) {
       data-chapter="1"
       data-accent="gold"
       aria-label="Chapter 01: It Started With Curiosity"
-      className="relative w-full bg-black text-theme-text select-none"
+      className="relative w-full bg-cinema-bg text-cinema-text select-none"
     >
       <div
         ref={pinContentRef}
@@ -224,6 +236,31 @@ export function Chapter01({ chapter }: Chapter01Props) {
           </span>
         </div>
 
+        {/* Minimal Beat Progress Indicator in Top-Right */}
+        <div
+          aria-hidden="true"
+          className="absolute top-6 right-6 sm:top-10 sm:right-12 z-30 pointer-events-none hidden sm:flex items-center gap-3"
+        >
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-cinema-gold/80">
+            {beatLabels[activeBeatIndex]}
+          </span>
+          <div className="flex items-center gap-1.5">
+            {beatLabels.map((label, idx) => (
+              <span
+                key={label}
+                className={cn(
+                  'h-1 rounded-full transition-all duration-300',
+                  idx === activeBeatIndex
+                    ? 'w-5 bg-cinema-gold'
+                    : idx < activeBeatIndex
+                      ? 'w-2 bg-cinema-gold/45'
+                      : 'w-1.5 bg-cinema-border'
+                )}
+              />
+            ))}
+          </div>
+        </div>
+
         {/* Layer 2: Workbench SVG Scene (Center) */}
         <div className="relative z-10 flex-1 flex items-center justify-center my-auto w-full max-h-[58vh]">
           <Workbench phases={phases} isReducedMotion={false} />
@@ -231,30 +268,30 @@ export function Chapter01({ chapter }: Chapter01Props) {
           {/* Optional Confirmed Marginal Reflections with thin gold leader lines */}
           {isContentRenderable(sparkNote) && phases.line1Opacity > 0.3 && (
             <aside
-              className="absolute left-4 sm:left-12 top-1/4 max-w-[200px] text-xs font-serif italic text-theme-gold/80 transition-opacity duration-300 pointer-events-none z-30"
+              className="absolute left-4 sm:left-12 top-1/4 max-w-[200px] text-xs font-serif italic text-cinema-gold/80 transition-opacity duration-300 pointer-events-none z-30"
               style={{ opacity: phases.line1Opacity }}
             >
-              <div className="w-12 h-px bg-theme-gold/40 mb-2" />
+              <div className="w-12 h-px bg-cinema-gold/40 mb-2" />
               <Content value={sparkNote} />
             </aside>
           )}
 
           {isContentRenderable(buildNote) && phases.line2Opacity > 0.3 && (
             <aside
-              className="absolute right-4 sm:right-12 top-1/3 max-w-[200px] text-xs font-serif italic text-theme-gold/80 transition-opacity duration-300 pointer-events-none z-30"
+              className="absolute right-4 sm:right-12 top-1/3 max-w-[200px] text-xs font-serif italic text-cinema-gold/80 transition-opacity duration-300 pointer-events-none z-30"
               style={{ opacity: phases.line2Opacity }}
             >
-              <div className="w-12 h-px bg-theme-gold/40 mb-2 ml-auto" />
+              <div className="w-12 h-px bg-cinema-gold/40 mb-2 ml-auto" />
               <Content value={buildNote} />
             </aside>
           )}
 
           {isContentRenderable(experimentNote) && phases.line3Opacity > 0.3 && (
             <aside
-              className="absolute left-6 sm:left-16 bottom-1/4 max-w-[200px] text-xs font-serif italic text-theme-gold/80 transition-opacity duration-300 pointer-events-none z-30"
+              className="absolute left-6 sm:left-16 bottom-1/4 max-w-[200px] text-xs font-serif italic text-cinema-gold/80 transition-opacity duration-300 pointer-events-none z-30"
               style={{ opacity: phases.line3Opacity }}
             >
-              <div className="w-12 h-px bg-theme-gold/40 mb-2" />
+              <div className="w-12 h-px bg-cinema-gold/40 mb-2" />
               <Content value={experimentNote} />
             </aside>
           )}
@@ -279,15 +316,15 @@ export function Chapter01({ chapter }: Chapter01Props) {
           }}
         >
           <div className="inline-flex items-center gap-2 mb-2">
-            <span className="font-mono text-[11px] sm:text-xs uppercase tracking-widest text-theme-gold font-medium">
+            <span className="font-mono text-[11px] sm:text-xs uppercase tracking-widest text-cinema-gold font-medium">
               CHAPTER 01
             </span>
           </div>
-          <h2 className="text-fluid-h2 font-serif font-normal tracking-tight text-theme-text leading-[1.1]">
+          <h2 className="text-fluid-h2 font-serif font-normal tracking-tight text-cinema-text leading-[1.1]">
             <Content value={chapter01Content.title} />
           </h2>
           {chapter01Content.subtitle && (
-            <p className="font-serif italic text-xs sm:text-sm text-theme-muted mt-1">
+            <p className="font-serif italic text-xs sm:text-sm text-cinema-muted mt-1">
               <Content value={chapter01Content.subtitle} />
             </p>
           )}
@@ -300,13 +337,22 @@ export function Chapter01({ chapter }: Chapter01Props) {
             {[line1, line2, line3].map(getContentText).filter(Boolean).join(' ')}
           </div>
 
+          {/* Initial Interactive Discovery Hint */}
+          {phases.progress < 0.09 && (
+            <div className="mb-2 transition-opacity duration-300">
+              <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.24em] text-cinema-muted/80">
+                Move cursor to cast light · Scroll to unfold
+              </span>
+            </div>
+          )}
+
           {/* Scrubbed Narration Subtitle Container */}
           <div className="relative w-full flex items-center justify-center">
             {/* Narration Line 1 */}
             {line1 && (
               <p
                 aria-hidden={phases.line1Opacity < 0.1 ? 'true' : undefined}
-                className="font-serif italic leading-[1.35] text-theme-text transition-opacity duration-200 max-w-[28ch] mx-auto text-center"
+                className="font-serif italic leading-[1.35] text-cinema-text transition-opacity duration-200 max-w-[28ch] mx-auto text-center"
                 style={{
                   fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
                   opacity: phases.line1Opacity,
@@ -322,7 +368,7 @@ export function Chapter01({ chapter }: Chapter01Props) {
             {line2 && (
               <p
                 aria-hidden={phases.line2Opacity < 0.1 ? 'true' : undefined}
-                className="font-serif italic leading-[1.35] text-theme-text transition-opacity duration-200 max-w-[28ch] mx-auto text-center"
+                className="font-serif italic leading-[1.35] text-cinema-text transition-opacity duration-200 max-w-[28ch] mx-auto text-center"
                 style={{
                   fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
                   opacity: phases.line2Opacity,
@@ -338,7 +384,7 @@ export function Chapter01({ chapter }: Chapter01Props) {
             {line3 && (
               <p
                 aria-hidden={phases.line3Opacity < 0.1 ? 'true' : undefined}
-                className="font-serif italic leading-[1.35] text-theme-text transition-opacity duration-200 max-w-[28ch] mx-auto text-center"
+                className="font-serif italic leading-[1.35] text-cinema-text transition-opacity duration-200 max-w-[28ch] mx-auto text-center"
                 style={{
                   fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
                   opacity: phases.line3Opacity,
@@ -360,7 +406,7 @@ export function Chapter01({ chapter }: Chapter01Props) {
                 display: phases.bridgeOpacity > 0 ? 'block' : 'none',
               }}
             >
-              <p className="font-serif italic text-xs sm:text-sm text-theme-muted/80 max-w-lg mx-auto">
+              <p className="font-serif italic text-xs sm:text-sm text-cinema-muted/85 max-w-lg mx-auto">
                 <Content value={chapter01Content.bridge} />
               </p>
             </div>

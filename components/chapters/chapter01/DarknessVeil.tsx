@@ -113,11 +113,11 @@ export function DarknessVeil({
       ref={veilRef}
       aria-hidden="true"
       className={cn(
-        'absolute inset-0 pointer-events-none z-15 select-none transition-opacity duration-500',
+        'absolute inset-0 pointer-events-none z-20 select-none transition-opacity duration-500',
         className
       )}
       style={{
-        background: `radial-gradient(circle var(--lr, 25vmin) at var(--lx, 50%) var(--ly, 50%), transparent 0%, transparent 35%, rgba(0, 0, 0, var(--veil-darkness, 0.94)) 100%)`,
+        background: `radial-gradient(circle var(--lr, 25vmin) at var(--lx, 50%) var(--ly, 50%), transparent 0%, transparent 35%, rgba(0, 0, 0, var(--veil-darkness, 0.85)) 100%)`,
       }}
     />
   );
