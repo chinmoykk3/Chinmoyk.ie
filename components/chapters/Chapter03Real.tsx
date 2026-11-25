@@ -1,106 +1,76 @@
 'use client';
 
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { Chapter } from '@/content/chapters';
-import { projects, Project } from '@/content/projects';
-import { useMotion } from '@/hooks/useMotion';
+import {
+  FALLBACK_GITHUB_REPOS,
+  fetchGitHubRepos,
+  GITHUB_PROFILE_URL,
+  GITHUB_USERNAME,
+  GitHubRepo,
+} from '@/lib/github';
 import { Container } from '@/components/ui/Container';
-import { Tag } from '@/components/ui/Tag';
-import { Card } from '@/components/ui/Card';
 import { ChapterTitleCard } from '@/components/motion/ChapterTitleCard';
 import { Content } from '@/components/content/Content';
-import { isContentRenderable, getContentText } from '@/content/schema';
 import { usePolish } from '@/components/polish/PolishContext';
-import { ArrowUpRight, Layers } from 'lucide-react';
+import {
+  ArrowUpRight,
+  ExternalLink,
+  FolderGit2,
+  GitFork,
+  RefreshCw,
+  Star,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 export interface Chapter03RealProps {
   chapter: Chapter;
 }
 
+const LANG_DOT_CLASS: Record<string, string> = {
+  TypeScript: 'bg-sunrise-azure',
+  JavaScript: 'bg-sunrise-gold',
+  Python: 'bg-sunrise-iris',
+  CSS: 'bg-sunrise-rose',
+  HTML: 'bg-sunrise-ember',
+};
+
 export function Chapter03Real({ chapter }: Chapter03RealProps) {
-  const { motionEnabled, prefersReducedMotion } = useMotion();
   const { triggerLowerThird } = usePolish();
-  const sceneRef = useRef<HTMLDivElement>(null);
-  const reelRef = useRef<HTMLDivElement>(null);
-  const [activeProjectIndex, setActiveProjectIndex] = useState(0);
 
-  const isReduced = prefersReducedMotion || !motionEnabled;
+  const [repos, setRepos] = useState<GitHubRepo[]>(FALLBACK_GITHUB_REPOS);
+  const [isLiveSynced, setIsLiveSynced] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [selectedLang, setSelectedLang] = useState<string>('All');
 
-  const notifyProjectChange = useCallback((index: number) => {
-    setActiveProjectIndex(index);
-    const p = projects[index];
-    if (p) {
-      const titleStr = getContentText(p.title) || '';
-      const taglineStr = getContentText(p.tagline) || '';
-      triggerLowerThird({
-        title: titleStr,
-        subtitle: taglineStr,
-        category: p.category,
-      });
-    }
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(
-        new CustomEvent('story:project-change', {
-          detail: { index },
-        })
-      );
-    }
-  }, [triggerLowerThird]);
+  const syncFromGitHub = useCallback(async () => {
+    setIsSyncing(true);
+    const { repos: fetched, live } = await fetchGitHubRepos();
+    setRepos(fetched);
+    setIsLiveSynced(live);
+    setIsSyncing(false);
+  }, []);
 
   useEffect(() => {
-    const sceneEl = sceneRef.current;
-    const reelEl = reelRef.current;
-    if (!sceneEl || !reelEl) return;
+    syncFromGitHub();
+  }, [syncFromGitHub]);
 
-    // Only apply horizontal pinning on desktop (window width >= 1024) and when motion is enabled
-    if (typeof window === 'undefined' || window.innerWidth < 1024 || isReduced) {
-      return;
-    }
+  const languages = useMemo(() => {
+    const langs = Array.from(
+      new Set(repos.map((r) => r.language).filter((l): l is string => Boolean(l)))
+    );
+    return ['All', ...langs];
+  }, [repos]);
 
-    const totalScroll = reelEl.scrollWidth - window.innerWidth + 120;
+  const filteredRepos = useMemo(() => {
+    if (selectedLang === 'All') return repos;
+    return repos.filter((r) => r.language === selectedLang);
+  }, [repos, selectedLang]);
 
-    const tween = gsap.to(reelEl, {
-      x: -totalScroll,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: sceneEl,
-        pin: true,
-        scrub: 0.6,
-        start: 'top top',
-        end: () => `+=${totalScroll}`,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          const index = Math.min(projects.length - 1, Math.floor(self.progress * projects.length));
-          notifyProjectChange(index);
-        },
-      },
-    });
-
-    return () => {
-      tween.scrollTrigger?.kill();
-    };
-  }, [isReduced, notifyProjectChange]);
-
-  // Keyboard navigation for horizontal reel
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'ArrowRight') {
-        const nextIdx = Math.min(projects.length - 1, activeProjectIndex + 1);
-        notifyProjectChange(nextIdx);
-      } else if (e.key === 'ArrowLeft') {
-        const prevIdx = Math.max(0, activeProjectIndex - 1);
-        notifyProjectChange(prevIdx);
-      }
-    },
-    [activeProjectIndex, notifyProjectChange]
+  const totalStars = useMemo(
+    () => repos.reduce((sum, r) => sum + r.stargazers_count, 0),
+    [repos]
   );
 
   return (
@@ -111,209 +81,217 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
       aria-labelledby="chapter-03-heading"
       className="relative w-full border-t border-theme-border transition-colors duration-300"
     >
-      <div ref={sceneRef} className="relative w-full overflow-hidden">
-        <div className="w-full min-h-[100dvh] py-16 sm:py-24 flex flex-col justify-between relative">
-          {/* Chapter Ambient Wash */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-0 bg-chapter-wash"
-          />
+      <div className="w-full min-h-[100dvh] py-16 sm:py-24 flex flex-col justify-between relative">
+        {/* Chapter Ambient Wash */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0 bg-chapter-wash"
+        />
 
-          {/* Chapter Header (Rule 2: One label only, Instrument Serif title) */}
-          <Container size="lg" className="relative z-10 w-full mb-10">
-            <div className="flex items-start justify-between flex-wrap gap-4">
-              <ChapterTitleCard
-                id="chapter-03-heading"
-                number={chapter.number}
-                title={chapter.title}
-                subtitle={chapter.subtitle}
-                arc={chapter.emotionalArc}
-                accentKey={chapter.accentKey}
-              />
+        {/* Chapter Header + Live GitHub Status Bar */}
+        <Container size="lg" className="relative z-10 w-full mb-10 space-y-6">
+          <div className="flex items-start justify-between flex-wrap gap-4">
+            <ChapterTitleCard
+              id="chapter-03-heading"
+              number={chapter.number}
+              title={chapter.title}
+              subtitle={chapter.subtitle}
+              arc={chapter.emotionalArc}
+              accentKey={chapter.accentKey}
+            />
 
-              <div className="text-xs font-mono text-theme-muted hidden lg:flex items-center gap-2 pt-2">
-                <span className="text-chapter-accent font-semibold">SCENE REEL</span>
-                <span className="text-theme-border-strong select-none">·</span>
-                <span>USE &larr; &rarr; TO NAVIGATE</span>
-              </div>
-            </div>
-          </Container>
-
-          {/* Horizontal Scene Reel (Desktop) / Vertical Stack (Mobile) */}
-          <div
-            tabIndex={0}
-            onKeyDown={handleKeyDown}
-            aria-label="Chapter 03 Project Reel. Use left and right arrow keys to navigate projects."
-            className="relative z-10 w-full focus:outline-none"
-          >
-            {/* Desktop Horizontal Track */}
-            <div
-              ref={reelRef}
-              className={cn(
-                'hidden lg:flex gap-8 px-12 xl:px-20 w-max items-stretch transition-transform duration-100 will-change-transform'
-              )}
-            >
-              {projects.map((proj, idx) => (
-                <ProjectSceneCard
-                  key={proj.id}
-                  project={proj}
-                  index={idx}
-                  isActive={idx === activeProjectIndex}
-                  isDesktop
+            {/* Live GitHub Source Badge + Sync Button */}
+            <div className="flex flex-wrap items-center gap-2.5 pt-2">
+              <a
+                href={GITHUB_PROFILE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-theme-border bg-theme-surface/80 font-mono text-[11px] text-theme-text hover:border-theme-azure/60 transition-colors"
+              >
+                <span
+                  className={cn(
+                    'w-2 h-2 rounded-full',
+                    isLiveSynced ? 'bg-sunrise-azure animate-pulse' : 'bg-theme-muted'
+                  )}
                 />
-              ))}
-            </div>
+                <span>github.com/{GITHUB_USERNAME}</span>
+                <ArrowUpRight className="w-3 h-3 text-theme-azure" />
+              </a>
 
-            {/* Mobile / Tablet Vertical Stack */}
-            <Container size="lg" className="flex lg:hidden flex-col gap-8">
-              {projects.map((proj, idx) => (
-                <ProjectSceneCard
-                  key={proj.id}
-                  project={proj}
-                  index={idx}
-                  isActive={idx === activeProjectIndex}
-                  isDesktop={false}
-                />
-              ))}
-            </Container>
+              <button
+                type="button"
+                onClick={syncFromGitHub}
+                disabled={isSyncing}
+                aria-label="Refresh repositories from GitHub"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-theme-border bg-theme-surface/80 font-mono text-[11px] text-theme-muted hover:text-theme-azure hover:border-theme-azure/50 transition-colors cursor-pointer disabled:opacity-50"
+              >
+                <RefreshCw className={cn('w-3 h-3', isSyncing && 'animate-spin')} />
+                <span>{isSyncing ? 'Syncing' : 'Sync'}</span>
+              </button>
+            </div>
           </div>
 
-          {/* Narrative Bridge to Chapter 04 (Rule 5: Quiet first-person line, unlabeled) */}
-          <Container size="lg" className="relative z-10 w-full pt-16 pb-4">
-            <p className="text-sm sm:text-base font-serif italic text-theme-muted text-center sm:text-left max-w-2xl leading-relaxed">
-              &ldquo;<Content value={chapter.bridge} />&rdquo;
-            </p>
-          </Container>
-        </div>
+          {/* Language Filter Pills + Repo Telemetry */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-theme-border/60">
+            <div
+              className="flex flex-wrap items-center gap-1.5"
+              role="group"
+              aria-label="Filter GitHub repositories by language"
+            >
+              {languages.map((lang) => {
+                const active = selectedLang === lang;
+                return (
+                  <button
+                    key={lang}
+                    type="button"
+                    onClick={() => setSelectedLang(lang)}
+                    className={cn(
+                      'px-3 py-1 rounded-full border font-mono text-[11px] transition-all cursor-pointer',
+                      active
+                        ? 'border-theme-azure bg-theme-azure/15 text-theme-azure font-medium'
+                        : 'border-theme-border bg-theme-surface/60 text-theme-muted hover:text-theme-text hover:border-theme-azure/40'
+                    )}
+                  >
+                    {lang}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center gap-4 font-mono text-[11px] text-theme-muted">
+              <span>
+                REPOS: <strong className="text-theme-text">{filteredRepos.length}</strong>
+              </span>
+              <span>
+                STARS: <strong className="text-theme-azure">{totalStars}</strong>
+              </span>
+            </div>
+          </div>
+        </Container>
+
+        {/* GitHub Projects Grid */}
+        <Container size="lg" className="relative z-10 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+            {filteredRepos.map((repo, idx) => {
+              const langDot =
+                (repo.language && LANG_DOT_CLASS[repo.language]) || 'bg-theme-azure';
+
+              return (
+                <div
+                  key={repo.id}
+                  onMouseEnter={() =>
+                    triggerLowerThird({
+                      title: repo.name,
+                      subtitle: repo.description || `GitHub · ${repo.language || 'Repository'}`,
+                      category: repo.language || 'GitHub',
+                    })
+                  }
+                  className="group relative rounded-2xl border border-theme-border bg-theme-surface/85 backdrop-blur-sm p-6 flex flex-col justify-between transition-all duration-300 hover:border-theme-azure/60 hover:-translate-y-0.5 hover:shadow-lg"
+                >
+                  <div className="space-y-4">
+                    {/* Top Row: Index + Language + Stars/Forks */}
+                    <div className="flex items-center justify-between gap-2 pb-3 border-b border-theme-border/70">
+                      <div className="flex items-center gap-2 font-mono text-[11px]">
+                        <span className="text-theme-azure font-bold">
+                          0{idx + 1}
+                        </span>
+                        <span className="text-theme-border-strong">/</span>
+                        {repo.language && (
+                          <span className="inline-flex items-center gap-1.5 text-theme-muted">
+                            <span className={cn('w-2 h-2 rounded-full', langDot)} />
+                            <span>{repo.language}</span>
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-3 font-mono text-[11px] text-theme-muted">
+                        <span className="inline-flex items-center gap-1">
+                          <Star className="w-3.5 h-3.5 text-theme-azure" />
+                          <span>{repo.stargazers_count}</span>
+                        </span>
+                        {repo.forks_count > 0 && (
+                          <span className="inline-flex items-center gap-1">
+                            <GitFork className="w-3.5 h-3.5" />
+                            <span>{repo.forks_count}</span>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Repo Name */}
+                    <div className="flex items-center gap-2.5">
+                      <FolderGit2 className="w-5 h-5 text-theme-azure shrink-0" />
+                      <h3 className="text-xl sm:text-2xl font-serif font-normal text-theme-text tracking-tight group-hover:text-theme-azure transition-colors truncate">
+                        <a
+                          href={repo.html_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="focus:outline-none focus-visible:underline"
+                        >
+                          {repo.name}
+                        </a>
+                      </h3>
+                    </div>
+
+                    {/* Repo Description */}
+                    <p className="text-sm text-theme-muted leading-relaxed line-clamp-2 min-h-[2.5rem]">
+                      {repo.description ||
+                        `${repo.language || 'Software'} project hosted on GitHub under @${GITHUB_USERNAME}.`}
+                    </p>
+                  </div>
+
+                  {/* Footer Actions: Source Code + Live Demo */}
+                  <div className="mt-6 pt-3.5 border-t border-theme-border/60 flex items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-wider">
+                    <a
+                      href={repo.html_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-theme-azure hover:text-theme-text transition-colors font-semibold"
+                    >
+                      <span>Source Code</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </a>
+
+                    {repo.homepage ? (
+                      <a
+                        href={repo.homepage}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-theme-text hover:text-theme-azure transition-colors"
+                      >
+                        <span>Live Demo</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    ) : (
+                      <span className="text-theme-muted/60 text-[10px]">
+                        @{GITHUB_USERNAME}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Link to full 10-point Case Studies Hub */}
+          <div className="mt-8 flex justify-end">
+            <Link
+              href="/projects"
+              className="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.18em] text-theme-azure hover:text-theme-text transition-colors"
+            >
+              <span>Deep-Dive Architecture Case Studies</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </Container>
+
+        {/* Narrative Bridge to Chapter 04 */}
+        <Container size="lg" className="relative z-10 w-full pt-12 pb-4">
+          <p className="text-sm sm:text-base font-serif italic text-theme-muted text-center sm:text-left max-w-2xl leading-relaxed">
+            &ldquo;<Content value={chapter.bridge} />&rdquo;
+          </p>
+        </Container>
       </div>
     </article>
-  );
-}
-
-// Subcomponent: Individual Project Scene Card
-function ProjectSceneCard({
-  project,
-  index,
-  isActive,
-  isDesktop,
-}: {
-  project: Project;
-  index: number;
-  isActive: boolean;
-  isDesktop: boolean;
-}) {
-  // Status badge mapping: strictly hide when status is "unknown" or empty
-  const statusLabel =
-    project.status === 'completed'
-      ? 'Completed'
-      : project.status === 'in-progress'
-      ? 'In progress'
-      : project.status === 'prototype'
-      ? 'Prototype'
-      : null;
-
-  // Filter confirmed/draft stack tags only (empty/placeholders render nothing in production)
-  const renderableStack = project.framework.stack.filter(isContentRenderable);
-
-  return (
-    <Card
-      withWash
-      hoverEffect
-      data-cursor="view"
-      data-cursor-label="SPEC"
-      className={cn(
-        'p-6 sm:p-8 flex flex-col justify-between border-theme-border/80 bg-theme-surface/90 shadow-md transition-all duration-300 focus-within:ring-2 focus-within:ring-theme-azure',
-        isDesktop ? 'w-[480px] xl:w-[540px] shrink-0' : 'w-full',
-        isActive ? 'border-theme-azure/40' : 'border-theme-border'
-      )}
-    >
-      <div className="space-y-5">
-        {/* Card Header: Scene Code + Category + Optional Status Badge */}
-        <div className="flex items-center justify-between border-b border-theme-border pb-3 flex-wrap gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono text-theme-azure font-bold">
-              SCENE 0{index + 1}
-            </span>
-            <span className="text-theme-border-strong select-none">/</span>
-            <Tag variant="default" size="sm">
-              {project.category}
-            </Tag>
-          </div>
-
-          {/* Status Badge: strictly hidden when status is "unknown" */}
-          {statusLabel && (
-            <Tag variant="status" size="sm">
-              {statusLabel}
-            </Tag>
-          )}
-        </div>
-
-        {/* Title */}
-        <div>
-          <h3 className="text-2xl sm:text-3xl font-serif font-normal text-theme-text tracking-tight hover:text-theme-azure transition-colors">
-            <Link
-              href={`/projects/${project.slug}`}
-              className="focus:outline-none focus-visible:underline"
-            >
-              <Content value={project.title} />
-            </Link>
-          </h3>
-        </div>
-
-        {/* One-Line Premise from content */}
-        <div className="p-4 rounded-xl bg-theme-surface-elevated/70 border border-theme-border text-xs leading-relaxed space-y-1">
-          <span className="font-semibold text-theme-azure font-mono text-[10px] uppercase tracking-wider block">
-            Core Premise
-          </span>
-          <p className="text-theme-text font-serif italic text-sm leading-relaxed">
-            &ldquo;<Content value={project.tagline} />&rdquo;
-          </p>
-        </div>
-
-        {/* 10-Point Framework: Problem Statement (only rendered if non-empty / renderable) */}
-        {isContentRenderable(project.framework.problem) && (
-          <div className="space-y-1">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-theme-muted">
-              The Problem Tackled
-            </span>
-            <p className="text-xs text-theme-text line-clamp-2 leading-relaxed">
-              <Content value={project.framework.problem} />
-            </p>
-          </div>
-        )}
-
-        {/* Tech Stack Preview (only rendered if confirmed / renderable tags exist) */}
-        {renderableStack.length > 0 && (
-          <div className="space-y-1.5 pt-1">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-theme-muted">
-              Core Stack
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              {renderableStack.slice(0, 4).map((tech, i) => (
-                <Tag key={i} variant="default" size="sm">
-                  <Content value={tech} />
-                </Tag>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Card Action Footer */}
-      <div className="mt-8 pt-4 border-t border-theme-border flex items-center justify-between flex-wrap gap-3">
-        <span className="text-[11px] font-mono text-theme-muted flex items-center gap-1.5">
-          <Layers className="w-3.5 h-3.5 text-theme-azure" />
-          <span>{project.architectureNodes.length} TOPOLOGY NODES</span>
-        </span>
-
-        <Link
-          href={`/projects/${project.slug}`}
-          className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider font-semibold text-theme-azure hover:text-theme-text transition-colors group focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-azure rounded px-2 py-1"
-        >
-          <span>Examine Architecture</span>
-          <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-        </Link>
-      </div>
-    </Card>
   );
 }
