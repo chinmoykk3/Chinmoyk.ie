@@ -19,11 +19,11 @@ export interface Chapter01Props {
 }
 
 const BEAT_STOPS = [
-  { label: 'Awaken', progress: 0.04 },
-  { label: 'Observe', progress: 0.24 },
-  { label: 'Question', progress: 0.48 },
-  { label: 'Assemble', progress: 0.72 },
-  { label: 'Ignite', progress: 0.92 },
+  { label: 'Init', progress: 0.04, cmd: '$ curiosity.init({ mode: "observe" })' },
+  { label: 'Inspect', progress: 0.24, cmd: '$ inspect --modules=kernel,network,ast,neural' },
+  { label: 'Debug', progress: 0.48, cmd: "// understanding wasn't enough — time to build." },
+  { label: 'Compile', progress: 0.72, cmd: '$ build --core [linking 4/4 modules...]' },
+  { label: 'Deploy', progress: 0.92, cmd: '✓ build succeeded · system online' },
 ];
 
 export function Chapter01({ chapter }: Chapter01Props) {
@@ -110,6 +110,27 @@ export function Chapter01({ chapter }: Chapter01Props) {
   );
 
   const activeObject = WORKBENCH_OBJECTS.find((obj) => obj.id === activeObjectId) || null;
+
+  // Keyboard shortcuts (1-4 to inspect modules, Esc to close)
+  useEffect(() => {
+    if (isReduced) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+
+      if (e.key === 'Escape') {
+        setActiveObjectId(null);
+      } else if (e.key >= '1' && e.key <= '4') {
+        const idx = Number(e.key) - 1;
+        const obj = WORKBENCH_OBJECTS[idx];
+        if (obj) {
+          setActiveObjectId((prev) => (prev === obj.id ? null : obj.id));
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isReduced]);
 
   // =========================================================================
   // REDUCED MOTION VIEW: Three Static Sequential Stills (No Pinning, Simple Fades)
@@ -233,11 +254,10 @@ export function Chapter01({ chapter }: Chapter01Props) {
             ? 3
             : 4;
 
-  const lumensPercent = Math.round(15 + (1 - phases.veilDarkness) * 85 + phases.ignitionGlow * 25);
-  const clampedLumens = Math.min(100, lumensPercent);
-  const partsAssembled = phases.isIgnited
-    ? 5
-    : Math.min(5, Math.floor(phases.assemblyFlightProgress * 5));
+  const buildPercent = Math.min(100, Math.round(phases.progress * 108));
+  const modulesLinked = phases.isIgnited
+    ? 4
+    : Math.min(4, Math.floor(phases.assemblyFlightProgress * 4));
 
   return (
     <article
@@ -252,6 +272,13 @@ export function Chapter01({ chapter }: Chapter01Props) {
         ref={pinContentRef}
         className="w-full h-[100svh] min-h-[100dvh] flex flex-col justify-between py-6 sm:py-10 px-6 sm:px-12 relative overflow-hidden"
       >
+        {/* Top 1px Gold Build Progress Hairline */}
+        <div
+          aria-hidden="true"
+          className="absolute top-0 left-0 h-[1.5px] bg-cinema-gold/70 z-30 transition-all duration-150"
+          style={{ width: `${Math.round(phases.progress * 100)}%` }}
+        />
+
         {/* Subtle Architectural Blueprint Corner Crosshairs */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-4 sm:inset-6 z-10 opacity-25">
           <span className="absolute top-0 left-0 font-mono text-xs text-cinema-gold">+</span>
@@ -285,6 +312,9 @@ export function Chapter01({ chapter }: Chapter01Props) {
           aria-label="Chapter 01 story beats"
           className="absolute top-6 right-6 sm:top-10 sm:right-12 z-30 hidden sm:flex items-center gap-3"
         >
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-cinema-muted/70">
+            0{activeBeatIndex + 1}/05
+          </span>
           <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-cinema-gold/90">
             {BEAT_STOPS[activeBeatIndex].label}
           </span>
@@ -347,7 +377,7 @@ export function Chapter01({ chapter }: Chapter01Props) {
                 &ldquo;{activeObject.insight}&rdquo;
               </p>
               <div className="flex items-center justify-between pt-2 border-t border-cinema-border text-[10px] font-mono uppercase tracking-[0.16em]">
-                <span className="text-cinema-muted">Lamp Part:</span>
+                <span className="text-cinema-muted">Core Output:</span>
                 <span className="text-cinema-gold">{activeObject.contributes}</span>
               </div>
             </aside>
@@ -425,14 +455,13 @@ export function Chapter01({ chapter }: Chapter01Props) {
             {[line1, line2, line3].map(getContentText).filter(Boolean).join(' ')}
           </div>
 
-          {/* Initial Interactive Discovery Hint */}
-          {phases.progress < 0.09 && (
-            <div className="mb-2 transition-opacity duration-300">
-              <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.24em] text-cinema-muted/80">
-                Move cursor to cast light · Scroll to unfold
-              </span>
-            </div>
-          )}
+          {/* Live Terminal Command Readout */}
+          <div className="mb-2.5 flex justify-center">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cinema-border/70 bg-cinema-surface/75 font-mono text-[10px] sm:text-[11px] tracking-[0.06em] text-cinema-gold/90 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-cinema-gold animate-pulse" />
+              {BEAT_STOPS[activeBeatIndex].cmd}
+            </span>
+          </div>
 
           {/* Scrubbed Narration Subtitle Container */}
           <div className="relative w-full flex items-center justify-center">
@@ -499,6 +528,48 @@ export function Chapter01({ chapter }: Chapter01Props) {
               </p>
             </div>
           )}
+
+          {/* Bottom Interactive Specimen Bar + Live Maker Telemetry */}
+          <div className="mt-4 pt-3 border-t border-cinema-border/40 flex flex-wrap items-center justify-between gap-3 pointer-events-auto text-[10px] font-mono uppercase tracking-[0.18em]">
+            {/* Specimen Inspector Pills */}
+            <div className="flex flex-wrap items-center justify-center gap-1.5 mx-auto sm:mx-0" role="group" aria-label="Inspect workbench specimens">
+              <span className="hidden lg:inline-block text-cinema-muted/50 mr-1 text-[9px]">
+                [1–4]
+              </span>
+              {WORKBENCH_OBJECTS.map((obj) => {
+                const isSelected = activeObjectId === obj.id;
+                return (
+                  <button
+                    key={`pill-${obj.id}`}
+                    type="button"
+                    onClick={() => setActiveObjectId(isSelected ? null : obj.id)}
+                    className={cn(
+                      'px-2.5 py-1 rounded-md border transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-cinema-gold',
+                      isSelected
+                        ? 'border-cinema-gold bg-cinema-gold/15 text-cinema-gold'
+                        : 'border-cinema-border/70 bg-cinema-surface/50 text-cinema-muted hover:text-cinema-text hover:border-cinema-gold/40'
+                    )}
+                  >
+                    {obj.index} {obj.shortLabel}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Live Developer Telemetry Readout */}
+            <div className="hidden sm:flex items-center gap-4 text-cinema-muted/80">
+              <span>
+                MODULES:{' '}
+                <strong className="text-cinema-gold font-medium">{modulesLinked}/4</strong>
+              </span>
+              <span>
+                BUILD:{' '}
+                <strong className="text-cinema-gold font-medium">
+                  {phases.isIgnited ? 'ONLINE' : `${buildPercent}%`}
+                </strong>
+              </span>
+            </div>
+          </div>
         </footer>
       </div>
     </article>

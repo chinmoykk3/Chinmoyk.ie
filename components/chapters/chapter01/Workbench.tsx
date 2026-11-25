@@ -2,11 +2,13 @@
 
 import React from 'react';
 import { WORKBENCH_OBJECTS, ASSEMBLY_PATHS, ObjectConfig } from './chapter01.config';
-import { PocketWatch } from './objects/PocketWatch';
-import { Radio } from './objects/Radio';
-import { CameraLens } from './objects/CameraLens';
-import { CircuitBoard } from './objects/CircuitBoard';
-import { Lamp } from './Lamp';
+import {
+  KernelModule,
+  NetworkModule,
+  TerminalModule,
+  NeuralModule,
+} from './objects/DevModules';
+import { SystemCore } from './SystemCore';
 import { Chapter01Phases } from './chapter01.timeline';
 import { cn } from '@/lib/utils';
 
@@ -115,6 +117,43 @@ export function Workbench({
               opacity={tx % 100 === 0 ? '0.65' : '0.35'}
             />
           ))}
+
+          {/* Desk Coordinate & Revision Micro-Stamps */}
+          <g fill="var(--color-text-muted)" stroke="none" fontFamily="var(--font-mono)" fontSize="8" opacity="0.4">
+            <text x="8" y="584">X:000</text>
+            <text x="500" y="584" textAnchor="middle">X:500 // CORE_BUS</text>
+            <text x="992" y="584" textAnchor="end">REV 1.0 · X:1000</text>
+          </g>
+
+          {/* Etched PCB Bus Traces on Desk Surface (Modules -> Core Base) */}
+          <g
+            id="workbench-pcb-traces"
+            fill="none"
+            stroke={isPartsFlying || isIgnited ? 'var(--color-accent-gold)' : 'var(--color-border-strong)'}
+            strokeWidth="1.2"
+            opacity={isIgnited ? 0.8 : isPartsFlying ? 0.6 : 0.35}
+          >
+            {/* 01 Kernel -> Core */}
+            <path d="M 180,435 L 180,475 L 220,515 L 448,515 L 470,493 L 470,435" />
+            <circle cx="180" cy="435" r="2.5" fill="var(--color-cinema-bg)" />
+            {/* 02 Network -> Core */}
+            <path d="M 340,435 L 340,462 L 368,490 L 485,490 L 485,435" />
+            <circle cx="340" cy="435" r="2.5" fill="var(--color-cinema-bg)" />
+            {/* 03 Terminal -> Core */}
+            <path d="M 660,435 L 660,462 L 632,490 L 515,490 L 515,435" />
+            <circle cx="660" cy="435" r="2.5" fill="var(--color-cinema-bg)" />
+            {/* 04 Neural -> Core */}
+            <path d="M 820,435 L 820,475 L 780,515 L 552,515 L 530,493 L 530,435" />
+            <circle cx="820" cy="435" r="2.5" fill="var(--color-cinema-bg)" />
+          </g>
+
+          {/* Module Memory Address Labels on Desk Plane */}
+          <g fill="var(--color-accent-gold)" stroke="none" fontFamily="var(--font-mono)" fontSize="8.5" opacity="0.45">
+            <text x="180" y="452" textAnchor="middle">0x01 · KERNEL</text>
+            <text x="340" y="452" textAnchor="middle">0x02 · NET_BUS</text>
+            <text x="660" y="452" textAnchor="middle">0x03 · AST_CLI</text>
+            <text x="820" y="452" textAnchor="middle">0x04 · NEURAL</text>
+          </g>
         </g>
 
         {/* Ambient Golden Sparks / Dust Motes */}
@@ -127,9 +166,9 @@ export function Workbench({
           <circle cx="870" cy="230" r="1.1" opacity={isIgnited ? 0.55 : 0.15} />
         </g>
 
-        {/* 2. The Four Workbench Objects */}
-        {/* Object 1: Pocket Watch (left) */}
-        <PocketWatch
+        {/* 2. The Four Engineering Modules */}
+        {/* Module 1: Kernel & Clock (left) */}
+        <KernelModule
           x={WORKBENCH_OBJECTS[0].x}
           y={WORKBENCH_OBJECTS[0].y}
           openProgress={watchOpenProgress}
@@ -138,8 +177,8 @@ export function Workbench({
           isEmptied={isEmptied}
         />
 
-        {/* Object 2: Vintage Radio (mid-left) */}
-        <Radio
+        {/* Module 2: Network & Signal (mid-left) */}
+        <NetworkModule
           x={WORKBENCH_OBJECTS[1].x}
           y={WORKBENCH_OBJECTS[1].y}
           openProgress={radioOpenProgress}
@@ -148,8 +187,8 @@ export function Workbench({
           isEmptied={isEmptied}
         />
 
-        {/* Object 3: Camera Lens (mid-right) */}
-        <CameraLens
+        {/* Module 3: Terminal & AST (mid-right) */}
+        <TerminalModule
           x={WORKBENCH_OBJECTS[2].x}
           y={WORKBENCH_OBJECTS[2].y}
           openProgress={lensOpenProgress}
@@ -158,8 +197,8 @@ export function Workbench({
           isEmptied={isEmptied}
         />
 
-        {/* Object 4: Circuit Board (right) */}
-        <CircuitBoard
+        {/* Module 4: Neural Logic Gate (right) */}
+        <NeuralModule
           x={WORKBENCH_OBJECTS[3].x}
           y={WORKBENCH_OBJECTS[3].y}
           openProgress={circuitOpenProgress}
@@ -168,35 +207,31 @@ export function Workbench({
           isEmptied={isEmptied}
         />
 
-        {/* 3. Question Words beside objects (fading in and morphing into small gold dots) */}
+        {/* 3. Developer Inquiry Prompts beside modules */}
         {questionWordsOpacity > 0 && !isEmptied && (
           <g id="workbench-question-words" style={{ opacity: questionWordsOpacity }}>
             {WORKBENCH_OBJECTS.map((obj) => (
               <g key={`qw-${obj.id}`} transform={`translate(${obj.x + obj.questionOffset.x}, ${obj.y + obj.questionOffset.y})`}>
-                {/* Question word text */}
                 <text
                   x="0"
                   y="0"
                   fill="var(--color-accent-gold)"
                   stroke="none"
-                  fontFamily="var(--font-serif)"
-                  fontStyle="italic"
-                  fontSize="13"
-                  opacity={watchOpenProgress > 0.8 ? 0.3 : 0.85}
+                  fontFamily="var(--font-mono)"
+                  fontSize="11"
+                  opacity={watchOpenProgress > 0.8 ? 0.35 : 0.85}
                 >
                   {obj.questionWord}
                 </text>
-                {/* Morphed gold dot */}
-                <circle cx="-6" cy="-3" r="1.5" fill="var(--color-accent-gold)" stroke="none" />
+                <circle cx="-7" cy="-3.5" r="1.5" fill="var(--color-accent-gold)" stroke="none" />
               </g>
             ))}
           </g>
         )}
 
-        {/* 4. Flight Paths & Flying Detachable Parts during Assembly (60% to 88%) */}
+        {/* 4. Data Bus Assembly Trails during Compile (60% to 88%) */}
         {isPartsFlying && (
           <g id="assembly-flight-trails" strokeWidth="1.25" strokeDasharray="3 5" opacity="0.65">
-            {/* Assembly bezier flight paths */}
             <path d={ASSEMBLY_PATHS.watchGear} />
             <path d={ASSEMBLY_PATHS.radioCoil} />
             <path d={ASSEMBLY_PATHS.lensShade} />
@@ -205,8 +240,8 @@ export function Workbench({
           </g>
         )}
 
-        {/* 5. Center Lamp Component (Gap -> Assembled -> Ignited -> Ray Exit) */}
-        <Lamp
+        {/* 5. Center System Core (Slot -> Assembled -> Online -> Data Ray Exit) */}
+        <SystemCore
           assemblyProgress={assemblyFlightProgress}
           isIgnited={isIgnited}
           ignitionGlow={ignitionGlow}

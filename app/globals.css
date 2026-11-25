@@ -69,6 +69,10 @@
   --color-cinema-border: #262626;
   --color-cinema-gold: #FFC857;
   --color-accent-gold: #FFC857;
+  --color-accent-azure: #4C8DFF;
+  --color-accent-iris: #9B7BFF;
+  --color-accent-rose: #FF5C8A;
+  --color-accent-ember: #FF8A4C;
 }
 
 .dark {
@@ -125,6 +129,10 @@
   --color-cinema-border: #262626;
   --color-cinema-gold: #FFC857;
   --color-accent-gold: #FFC857;
+  --color-accent-azure: #4C8DFF;
+  --color-accent-iris: #9B7BFF;
+  --color-accent-rose: #FF5C8A;
+  --color-accent-ember: #FF8A4C;
 }
 
 /* ==========================================================================
