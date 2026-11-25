@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
@@ -10,347 +10,352 @@ interface StageProps {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 01 · FULL-STACK DEVELOPER: Live Animated Architecture & Packet Pipeline    */
+/* 01 · FULL-STACK DEVELOPER: Interactive Command Runner & Live Log Stream    */
 /* -------------------------------------------------------------------------- */
-export function BuilderStage({ isReduced, isHighlighted }: StageProps) {
-  const [buildBurst, setBuildBurst] = useState(0);
+const BUILD_COMMANDS = [
+  {
+    cmd: 'npm run build',
+    logs: [
+      '▲ Next.js 15 · Compiling app router...',
+      '✓ 19 static & dynamic routes optimized',
+      '✓ Bundle gzipped: 48.2 kB · 0 errors',
+    ],
+  },
+  {
+    cmd: 'git push origin main',
+    logs: [
+      '→ Compressing objects: 100% (24/24)',
+      '→ Triggering edge deployment pipeline...',
+      '✓ Live at https://chinmoyk.ie (11ms TTFB)',
+    ],
+  },
+  {
+    cmd: 'curl -s /api/health',
+    logs: [
+      '→ Connecting to edge-node-01...',
+      '← HTTP/2 200 OK · db: connected (4ms)',
+      '✓ All microservices nominal',
+    ],
+  },
+] as const;
+
+export function BuilderStage({ isReduced }: StageProps) {
+  const [cmdIdx, setCmdIdx] = useState(0);
+  const [visibleLines, setVisibleLines] = useState(3);
+
+  const active = BUILD_COMMANDS[cmdIdx];
+
+  useEffect(() => {
+    if (isReduced) {
+      setVisibleLines(3);
+      return;
+    }
+    setVisibleLines(1);
+    const t1 = setTimeout(() => setVisibleLines(2), 260);
+    const t2 = setTimeout(() => setVisibleLines(3), 560);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [cmdIdx, isReduced]);
 
   return (
     <div
-      className="rounded-xl border border-sunrise-azure/25 bg-cinema-bg/90 p-3.5 space-y-2.5"
+      className="w-full space-y-3 py-1"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex items-center justify-between font-mono text-[10px]">
-        <span className="flex items-center gap-1.5 text-sunrise-azure">
-          <span className={cn('w-1.5 h-1.5 rounded-full bg-sunrise-azure', !isReduced && 'animate-pulse')} />
-          <span>STACK // PIPELINE</span>
-        </span>
-        <button
-          type="button"
-          onClick={() => setBuildBurst((b) => b + 1)}
-          className="px-2 py-0.5 rounded border border-sunrise-azure/40 bg-sunrise-azure/10 text-sunrise-azure hover:bg-sunrise-azure/20 transition-colors cursor-pointer"
-        >
-          Deploy {buildBurst > 0 ? `#${buildBurst}` : '⚡'}
-        </button>
-      </div>
-
-      {/* Animated Topology SVG: Client -> Edge -> API -> DB */}
-      <svg viewBox="0 0 320 72" fill="none" className="w-full h-16 overflow-visible" aria-hidden="true">
-        {/* Static connection rails */}
-        <path
-          d="M 38,36 L 112,36 M 136,36 L 208,36 M 232,36 L 284,36"
-          stroke="var(--color-border-strong)"
-          strokeWidth="1.5"
-        />
-        {/* Flowing data packets */}
-        <path
-          d="M 38,36 L 112,36 M 136,36 L 208,36 M 232,36 L 284,36"
-          stroke="var(--color-accent-azure)"
-          strokeWidth="2"
-          strokeDasharray="6 10"
-          className={!isReduced ? 'animate-ch02-packet' : undefined}
-          opacity={isHighlighted ? 1 : 0.75}
-        />
-
-        {/* Nodes */}
-        {[
-          { x: 26, label: 'UI' },
-          { x: 124, label: 'EDGE' },
-          { x: 220, label: 'API' },
-          { x: 294, label: 'DB' },
-        ].map((node, i) => (
-          <g key={node.label} transform={`translate(${node.x}, 36)`}>
-            <rect
-              x="-16"
-              y="-14"
-              width="32"
-              height="28"
-              rx="6"
-              fill="var(--color-cinema-surface)"
-              stroke="var(--color-accent-azure)"
-              strokeWidth={i === buildBurst % 4 ? '1.8' : '1.1'}
-            />
-            <text
-              x="0"
-              y="3"
-              textAnchor="middle"
-              fill="var(--color-cinema-text)"
-              fontFamily="var(--font-mono)"
-              fontSize="7.5"
-            >
-              {node.label}
-            </text>
-          </g>
-        ))}
-      </svg>
-
-      <div className="flex items-center justify-between font-mono text-[10px] text-cinema-muted">
-        <span className="text-sunrise-azure">200 OK · {11 + (buildBurst % 4)}ms</span>
-        <span>Next.js · TS · Node · Postgres</span>
-      </div>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* 02 · AI ENGINEER: Living Neural Network & Animated Synapses                */
-/* -------------------------------------------------------------------------- */
-export function IntelligenceStage({ isReduced, isHighlighted }: StageProps) {
-  const [activeLayer, setActiveLayer] = useState(true);
-
-  const inputNodes = [18, 38, 58];
-  const hiddenNodes = [14, 38, 62];
-  const outputNodes = [26, 50];
-
-  return (
-    <div
-      className="rounded-xl border border-sunrise-iris/25 bg-cinema-bg/90 p-3.5 space-y-2.5"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <div className="flex items-center justify-between font-mono text-[10px]">
-        <span className="flex items-center gap-1.5 text-sunrise-iris">
-          <span className={cn('w-1.5 h-1.5 rounded-full bg-sunrise-iris', !isReduced && activeLayer && 'animate-ping')} />
-          <span>NEURAL // INFERENCE</span>
-        </span>
-        <button
-          type="button"
-          onClick={() => setActiveLayer((v) => !v)}
-          className="px-2 py-0.5 rounded border border-sunrise-iris/40 bg-sunrise-iris/10 text-sunrise-iris hover:bg-sunrise-iris/20 transition-colors cursor-pointer"
-        >
-          {activeLayer ? 'Streaming' : 'Paused'}
-        </button>
-      </div>
-
-      {/* Animated Multi-Layer Neural Mesh */}
-      <svg viewBox="0 0 320 76" fill="none" className="w-full h-16 overflow-visible" aria-hidden="true">
-        {/* Input -> Hidden edges */}
-        {inputNodes.map((iy, i) =>
-          hiddenNodes.map((hy, h) => (
-            <line
-              key={`ih-${i}-${h}`}
-              x1="44"
-              y1={iy}
-              x2="160"
-              y2={hy}
-              stroke="var(--color-accent-iris)"
-              strokeWidth="1"
-              strokeDasharray={activeLayer && !isReduced ? '4 6' : undefined}
-              className={activeLayer && !isReduced ? 'animate-ch02-packet' : undefined}
-              opacity={isHighlighted ? 0.65 : 0.35}
-            />
-          ))
-        )}
-
-        {/* Hidden -> Output edges */}
-        {hiddenNodes.map((hy, h) =>
-          outputNodes.map((oy, o) => (
-            <line
-              key={`ho-${h}-${o}`}
-              x1="160"
-              y1={hy}
-              x2="276"
-              y2={oy}
-              stroke="var(--color-accent-iris)"
-              strokeWidth="1.2"
-              strokeDasharray={activeLayer && !isReduced ? '4 6' : undefined}
-              className={activeLayer && !isReduced ? 'animate-ch02-packet' : undefined}
-              opacity={isHighlighted ? 0.8 : 0.45}
-            />
-          ))
-        )}
-
-        {/* Nodes */}
-        {inputNodes.map((y, idx) => (
-          <circle key={`in-${idx}`} cx="44" cy={y} r="4.5" fill="var(--color-cinema-bg)" stroke="var(--color-accent-iris)" strokeWidth="1.5" />
-        ))}
-        {hiddenNodes.map((y, idx) => (
-          <motion.circle
-            key={`hid-${idx}`}
-            cx="160"
-            cy={y}
-            r="5.5"
-            fill="var(--color-accent-iris)"
-            animate={
-              activeLayer && !isReduced
-                ? { scale: [1, 1.28, 1], opacity: [0.55, 1, 0.55] }
-                : { scale: 1, opacity: 0.75 }
-            }
-            transition={{ duration: 1.8, repeat: Infinity, delay: idx * 0.35 }}
-          />
-        ))}
-        {outputNodes.map((y, idx) => (
-          <circle key={`out-${idx}`} cx="276" cy={y} r="5" fill="var(--color-cinema-bg)" stroke="var(--color-accent-iris)" strokeWidth="1.8" />
-        ))}
-      </svg>
-
-      <div className="flex items-center justify-between font-mono text-[10px] text-cinema-muted">
-        <span className="text-sunrise-iris">{activeLayer ? '0.96 attn · 128k ctx' : 'idle'}</span>
-        <span>Agents · RAG · Fine-Tuning</span>
-      </div>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* 03 · GRAPHIC DESIGNER: Kinetic Typography & Orbiting Golden Ratio Canvas   */
-/* -------------------------------------------------------------------------- */
-const DESIGN_MODES = ['Editorial', 'Swiss Grid', 'Minimal'] as const;
-
-export function VisualStage({ isReduced }: StageProps) {
-  const [modeIdx, setModeIdx] = useState(0);
-  const mode = DESIGN_MODES[modeIdx];
-
-  return (
-    <div
-      className="rounded-xl border border-sunrise-rose/25 bg-cinema-bg/90 p-3.5 space-y-2.5"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <div className="flex items-center justify-between font-mono text-[10px]">
-        <span className="flex items-center gap-1.5 text-sunrise-rose">
-          <span className="w-1.5 h-1.5 rounded-full bg-sunrise-rose" />
-          <span>CANVAS // {mode.toUpperCase()}</span>
-        </span>
-        <button
-          type="button"
-          onClick={() => setModeIdx((i) => (i + 1) % DESIGN_MODES.length)}
-          className="px-2 py-0.5 rounded border border-sunrise-rose/40 bg-sunrise-rose/10 text-sunrise-rose hover:bg-sunrise-rose/20 transition-colors cursor-pointer"
-        >
-          Switch Mode
-        </button>
-      </div>
-
-      {/* Kinetic Typography + Orbiting Geometry Stage */}
-      <div className="relative h-16 rounded-lg border border-cinema-border/60 overflow-hidden flex items-center justify-between px-4 bg-cinema-surface/40">
-        {/* Optional Swiss Grid lines */}
-        {mode !== 'Minimal' && (
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 opacity-20"
-            style={{
-              backgroundImage:
-                mode === 'Swiss Grid'
-                  ? 'linear-gradient(to right, var(--color-accent-rose) 1px, transparent 1px), linear-gradient(to bottom, var(--color-accent-rose) 1px, transparent 1px)'
-                  : 'linear-gradient(to right, var(--color-accent-rose) 1px, transparent 1px)',
-              backgroundSize: '20px 20px',
-            }}
-          />
-        )}
-
-        {/* Kinetic Specimen */}
-        <motion.div
-          key={mode}
-          initial={!isReduced ? { opacity: 0, y: 6 } : false}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="relative z-10 flex items-baseline gap-2.5"
-        >
-          <span
+      {/* Interactive Command Selector Tabs */}
+      <div className="flex flex-wrap items-center gap-2 font-mono text-[10px]">
+        {BUILD_COMMANDS.map((item, idx) => (
+          <button
+            key={item.cmd}
+            type="button"
+            onClick={() => setCmdIdx(idx)}
             className={cn(
-              'text-2xl text-cinema-text leading-none',
-              mode === 'Editorial' && 'font-serif italic',
-              mode === 'Swiss Grid' && 'font-sans font-black tracking-tighter uppercase',
-              mode === 'Minimal' && 'font-mono font-light tracking-widest'
+              'px-3 py-1 rounded-full border transition-all cursor-pointer',
+              idx === cmdIdx
+                ? 'border-sunrise-azure bg-sunrise-azure/20 text-sunrise-azure'
+                : 'border-cinema-border/80 text-cinema-muted hover:text-cinema-text hover:border-sunrise-azure/40'
             )}
           >
-            Aa
-          </span>
-          <span className="font-mono text-[10px] text-sunrise-rose">
-            {mode === 'Editorial' ? 'Instrument Serif' : mode === 'Swiss Grid' ? 'Geist Heavy' : 'Geist Mono'}
-          </span>
-        </motion.div>
-
-        {/* Orbiting Golden Ratio Ring */}
-        <svg viewBox="0 0 60 60" fill="none" className="relative z-10 w-12 h-12" aria-hidden="true">
-          <g className={!isReduced ? 'animate-ch02-orbit' : undefined}>
-            <circle cx="30" cy="30" r="22" stroke="var(--color-accent-rose)" strokeWidth="1" strokeDasharray="4 4" opacity="0.7" />
-            <circle cx="30" cy="8" r="2.5" fill="var(--color-accent-rose)" />
-            <rect x="18" y="18" width="24" height="24" stroke="var(--color-accent-rose)" strokeWidth="0.9" opacity="0.55" />
-          </g>
-          <circle cx="30" cy="30" r="3" fill="var(--color-cinema-text)" />
-        </svg>
+            $ {item.cmd}
+          </button>
+        ))}
       </div>
 
-      <div className="flex items-center justify-between font-mono text-[10px] text-cinema-muted">
-        <span className="text-sunrise-rose">1.618 · Golden Ratio</span>
-        <span>Branding · Type · Composition</span>
+      {/* Live Streaming Log Output */}
+      <div className="pl-4 border-l-2 border-sunrise-azure/50 font-mono text-xs space-y-1.5 min-h-[74px]">
+        {active.logs.slice(0, visibleLines).map((line, i) => (
+          <motion.div
+            key={`${cmdIdx}-${i}`}
+            initial={!isReduced ? { opacity: 0, x: -8 } : false}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.22 }}
+            className={cn(
+              'leading-relaxed',
+              i === active.logs.length - 1 ? 'text-sunrise-azure font-medium' : 'text-cinema-muted'
+            )}
+          >
+            {line}
+          </motion.div>
+        ))}
       </div>
     </div>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/* 04 · AI ENTHUSIAST: Live Rotating Frontier Radar & Signal Blips            */
+/* 02 · AI ENGINEER: Interactive Prompt-to-Thought Token Synthesizer          */
 /* -------------------------------------------------------------------------- */
-const FRONTIER_TOPICS = ['WebGPU', 'Local LLM', 'Spatial UI', 'Agentic OS'] as const;
+const AI_PROMPTS = [
+  {
+    label: 'Design Agent',
+    tokens: ['[intent]', '→', 'decompose(goal)', '→', 'tool_call(memory)', '→', 'verify()', '✓ 0.97'],
+  },
+  {
+    label: 'Optimize RAG',
+    tokens: ['[query]', '→', 'embed(1536d)', '→', 'hybrid_rerank()', '→', 'ground(ctx)', '✓ 14ms'],
+  },
+  {
+    label: 'Align Model',
+    tokens: ['[pair]', '→', 'dpo_loss()', '→', 'reward_delta(+0.42)', '→', 'converged', '✓ 99.1%'],
+  },
+] as const;
 
-export function ExplorerStage({ isReduced }: StageProps) {
-  const [focusedTopic, setFocusedTopic] = useState<string>(FRONTIER_TOPICS[0]);
+export function IntelligenceStage({ isReduced }: StageProps) {
+  const [promptIdx, setPromptIdx] = useState(0);
+  const [tokenCount, setTokenCount] = useState(8);
+
+  const active = AI_PROMPTS[promptIdx];
+
+  useEffect(() => {
+    if (isReduced) {
+      setTokenCount(active.tokens.length);
+      return;
+    }
+    setTokenCount(1);
+    const interval = setInterval(() => {
+      setTokenCount((c) => {
+        if (c >= active.tokens.length) {
+          clearInterval(interval);
+          return c;
+        }
+        return c + 1;
+      });
+    }, 150);
+    return () => clearInterval(interval);
+  }, [promptIdx, active.tokens.length, isReduced]);
 
   return (
     <div
-      className="rounded-xl border border-sunrise-ember/25 bg-cinema-bg/90 p-3.5 space-y-2.5"
+      className="w-full flex flex-col items-center space-y-4 py-1"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex items-center justify-between font-mono text-[10px]">
-        <span className="flex items-center gap-1.5 text-sunrise-ember">
-          <span className={cn('w-1.5 h-1.5 rounded-full bg-sunrise-ember', !isReduced && 'animate-ping')} />
-          <span>FRONTIER // RADAR</span>
-        </span>
-        <span className="text-sunrise-ember">{focusedTopic}</span>
+      {/* Prompt Triggers */}
+      <div className="flex flex-wrap items-center justify-center gap-2 font-mono text-[10px]">
+        {AI_PROMPTS.map((p, idx) => (
+          <button
+            key={p.label}
+            type="button"
+            onClick={() => setPromptIdx(idx)}
+            className={cn(
+              'px-3 py-1 rounded-full border transition-all cursor-pointer',
+              idx === promptIdx
+                ? 'border-sunrise-iris bg-sunrise-iris/20 text-sunrise-iris'
+                : 'border-cinema-border/80 text-cinema-muted hover:text-cinema-text hover:border-sunrise-iris/40'
+            )}
+          >
+            &gt; {p.label}
+          </button>
+        ))}
       </div>
 
-      <div className="flex items-center gap-4">
-        {/* Rotating Radar Sweep */}
-        <svg viewBox="0 0 80 80" fill="none" className="w-16 h-16 shrink-0" aria-hidden="true">
-          <circle cx="40" cy="40" r="34" stroke="var(--color-accent-ember)" strokeWidth="1" opacity="0.25" />
-          <circle cx="40" cy="40" r="22" stroke="var(--color-accent-ember)" strokeWidth="1" strokeDasharray="3 3" opacity="0.35" />
-          <circle cx="40" cy="40" r="10" stroke="var(--color-accent-ember)" strokeWidth="1" opacity="0.45" />
-          <line x1="6" y1="40" x2="74" y2="40" stroke="var(--color-accent-ember)" strokeWidth="0.7" opacity="0.2" />
-          <line x1="40" y1="6" x2="40" y2="74" stroke="var(--color-accent-ember)" strokeWidth="0.7" opacity="0.2" />
+      {/* Live Token Stream Chain */}
+      <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 font-mono text-xs min-h-[44px]">
+        {active.tokens.slice(0, tokenCount).map((tok, i) => {
+          const isArrow = tok === '→';
+          const isLast = i === active.tokens.length - 1;
+          return (
+            <motion.span
+              key={`${promptIdx}-${i}`}
+              initial={!isReduced ? { opacity: 0, scale: 0.8 } : false}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.18 }}
+              className={cn(
+                isArrow
+                  ? 'text-sunrise-iris/60'
+                  : isLast
+                    ? 'px-2.5 py-1 rounded-md bg-sunrise-iris/20 border border-sunrise-iris/50 text-sunrise-iris font-semibold'
+                    : 'px-2.5 py-1 rounded-md bg-cinema-bg/70 border border-cinema-border/80 text-cinema-text'
+              )}
+            >
+              {tok}
+            </motion.span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
-          {/* Sweeping Beam Wedge */}
-          <g className={!isReduced ? 'animate-ch02-radar' : undefined}>
-            <path
-              d="M 40,40 L 40,6 A 34 34 0 0 1 69,23 Z"
-              fill="var(--color-accent-ember)"
-              opacity="0.22"
-            />
-            <line x1="40" y1="40" x2="40" y2="6" stroke="var(--color-accent-ember)" strokeWidth="1.4" opacity="0.85" />
-          </g>
+/* -------------------------------------------------------------------------- */
+/* 03 · GRAPHIC DESIGNER: Interactive Kinetic Type & Contrast Sculpture       */
+/* -------------------------------------------------------------------------- */
+const TYPE_PRESETS = [
+  { name: 'Editorial', word: 'CLARITY', tracking: '0.02em', font: 'font-serif italic' },
+  { name: 'Swiss', word: 'STRUCTURE', tracking: '-0.04em', font: 'font-sans font-black uppercase' },
+  { name: 'Mono', word: 'SYSTEM_03', tracking: '0.18em', font: 'font-mono font-bold uppercase' },
+] as const;
 
-          {/* Pulsing Signal Blips */}
-          <circle cx="24" cy="24" r="2.5" fill="var(--color-accent-ember)" opacity="0.9" />
-          <circle cx="58" cy="28" r="2.2" fill="var(--color-accent-ember)" opacity="0.7" />
-          <circle cx="52" cy="58" r="2.5" fill="var(--color-accent-ember)" opacity="0.85" />
-          <circle cx="40" cy="40" r="2.5" fill="var(--color-cinema-text)" />
-        </svg>
+export function VisualStage({ isReduced }: StageProps) {
+  const [presetIdx, setPresetIdx] = useState(0);
+  const [inverted, setInverted] = useState(false);
 
-        {/* Interactive Signal Tags */}
-        <div className="flex flex-wrap gap-1.5 font-mono text-[10px]">
-          {FRONTIER_TOPICS.map((tag) => {
-            const active = focusedTopic === tag;
+  const preset = TYPE_PRESETS[presetIdx];
+
+  return (
+    <div
+      className="w-full space-y-3 py-1"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Controls */}
+      <div className="flex flex-wrap items-center justify-end gap-2 font-mono text-[10px]">
+        {TYPE_PRESETS.map((p, idx) => (
+          <button
+            key={p.name}
+            type="button"
+            onClick={() => setPresetIdx(idx)}
+            className={cn(
+              'px-3 py-1 rounded-full border transition-all cursor-pointer',
+              idx === presetIdx
+                ? 'border-sunrise-rose bg-sunrise-rose/20 text-sunrise-rose'
+                : 'border-cinema-border/80 text-cinema-muted hover:text-cinema-text hover:border-sunrise-rose/40'
+            )}
+          >
+            {p.name}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={() => setInverted((v) => !v)}
+          className="px-3 py-1 rounded-full border border-sunrise-rose/40 text-sunrise-rose hover:bg-sunrise-rose/15 transition-colors cursor-pointer"
+        >
+          {inverted ? 'Noir' : 'Flash'}
+        </button>
+      </div>
+
+      {/* Live Kinetic Specimen Strip */}
+      <motion.div
+        key={`${preset.name}-${inverted}`}
+        initial={!isReduced ? { opacity: 0.4, scale: 0.97 } : false}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.25 }}
+        className={cn(
+          'w-full py-4 px-5 rounded-xl flex items-center justify-between transition-colors duration-300',
+          inverted
+            ? 'bg-sunrise-rose text-cinema-bg'
+            : 'bg-sunrise-rose/[0.06] border-r-2 border-sunrise-rose text-cinema-text'
+        )}
+      >
+        <span
+          className={cn('text-2xl sm:text-4xl leading-none', preset.font)}
+          style={{ letterSpacing: preset.tracking }}
+        >
+          {preset.word}
+        </span>
+        <span
+          className={cn(
+            'font-mono text-[10px] uppercase tracking-[0.2em]',
+            inverted ? 'text-cinema-bg/80' : 'text-sunrise-rose'
+          )}
+        >
+          1.618 · TYPE
+        </span>
+      </motion.div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* 04 · AI ENTHUSIAST: Interactive Horizon Constellation & Hypothesis Node    */
+/* -------------------------------------------------------------------------- */
+const CONSTELLATION_NODES = [
+  { id: 'webgpu', label: 'WebGPU', x: 18, y: 28, note: 'Running local neural shaders directly in the browser.' },
+  { id: 'agents', label: 'Agentic OS', x: 42, y: 68, note: 'Autonomous tool-using workflows that plan and verify.' },
+  { id: 'localllm', label: 'Local LLM', x: 66, y: 26, note: 'Private, zero-latency intelligence on personal silicon.' },
+  { id: 'spatial', label: 'Spatial UI', x: 85, y: 64, note: 'Interfaces that respond to depth, physics, and intent.' },
+] as const;
+
+export function ExplorerStage({ isReduced }: StageProps) {
+  const [activeNodeIdx, setActiveNodeIdx] = useState(0);
+  const current = CONSTELLATION_NODES[activeNodeIdx];
+
+  return (
+    <div
+      className="w-full space-y-3 py-1"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Interactive Constellation Map */}
+      <div className="relative w-full h-24 rounded-xl bg-cinema-bg/60 border border-sunrise-ember/25 overflow-hidden">
+        {/* Vector Connections */}
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full" aria-hidden="true">
+          {CONSTELLATION_NODES.slice(0, -1).map((n, i) => {
+            const next = CONSTELLATION_NODES[i + 1];
             return (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => setFocusedTopic(tag)}
-                className={cn(
-                  'px-2 py-1 rounded border transition-all cursor-pointer',
-                  active
-                    ? 'border-sunrise-ember bg-sunrise-ember/20 text-sunrise-ember'
-                    : 'border-cinema-border bg-cinema-surface/60 text-cinema-muted hover:text-cinema-text hover:border-sunrise-ember/40'
-                )}
-              >
-                {tag}
-              </button>
+              <line
+                key={`edge-${n.id}`}
+                x1={n.x}
+                y1={n.y}
+                x2={next.x}
+                y2={next.y}
+                stroke="var(--color-accent-ember)"
+                strokeWidth="0.6"
+                strokeDasharray="2 2"
+                opacity="0.45"
+              />
             );
           })}
-        </div>
+        </svg>
+
+        {/* Clickable Orbiting Horizon Nodes */}
+        {CONSTELLATION_NODES.map((node, idx) => {
+          const isActive = idx === activeNodeIdx;
+          return (
+            <button
+              key={node.id}
+              type="button"
+              onClick={() => setActiveNodeIdx(idx)}
+              style={{ left: `${node.x}%`, top: `${node.y}%` }}
+              className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 group cursor-pointer focus:outline-none"
+            >
+              <span
+                className={cn(
+                  'w-2.5 h-2.5 rounded-full transition-all',
+                  isActive
+                    ? 'bg-sunrise-ember scale-125 shadow-[0_0_12px_var(--color-accent-ember)]'
+                    : 'bg-cinema-muted/50 group-hover:bg-sunrise-ember/80',
+                  isActive && !isReduced && 'animate-pulse'
+                )}
+              />
+              <span
+                className={cn(
+                  'font-mono text-[10px] uppercase tracking-[0.14em] px-1.5 py-0.5 rounded transition-colors',
+                  isActive
+                    ? 'text-sunrise-ember bg-sunrise-ember/15'
+                    : 'text-cinema-muted group-hover:text-cinema-text'
+                )}
+              >
+                {node.label}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
-      <div className="flex items-center justify-between font-mono text-[10px] text-cinema-muted">
-        <span className="text-sunrise-ember">Signal locked</span>
-        <span>Always asking what&apos;s next</span>
+      {/* Live Hypothesis Readout */}
+      <div className="flex items-center justify-between gap-3 font-mono text-[11px] pl-3 border-l-2 border-sunrise-ember/60">
+        <span className="text-cinema-text">{current.note}</span>
+        <span className="text-sunrise-ember shrink-0 text-[10px] uppercase">0{activeNodeIdx + 1}/04</span>
       </div>
     </div>
   );
