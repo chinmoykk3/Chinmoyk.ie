@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { WORKBENCH_OBJECTS, ASSEMBLY_PATHS } from './chapter01.config';
+import { WORKBENCH_OBJECTS, ASSEMBLY_PATHS, ObjectConfig } from './chapter01.config';
 import { PocketWatch } from './objects/PocketWatch';
 import { Radio } from './objects/Radio';
 import { CameraLens } from './objects/CameraLens';
@@ -13,12 +13,18 @@ import { cn } from '@/lib/utils';
 export interface WorkbenchProps {
   phases: Chapter01Phases;
   isReducedMotion?: boolean;
+  activeObjectId?: ObjectConfig['id'] | null;
+  onSelectObject?: (id: ObjectConfig['id'] | null) => void;
   className?: string;
 }
+
+const RULER_TICKS = Array.from({ length: 21 }, (_, i) => i * 50);
 
 export function Workbench({
   phases,
   isReducedMotion = false,
+  activeObjectId = null,
+  onSelectObject,
   className,
 }: WorkbenchProps) {
   const {
@@ -95,6 +101,30 @@ export function Workbench({
           <line x1="420" y1="430" x2="400" y2="560" stroke="var(--color-border)" strokeWidth="0.5" strokeDasharray="3 6" opacity="0.4" />
           <line x1="620" y1="430" x2="640" y2="560" stroke="var(--color-border)" strokeWidth="0.5" strokeDasharray="3 6" opacity="0.4" />
           <line x1="820" y1="430" x2="880" y2="560" stroke="var(--color-border)" strokeWidth="0.5" strokeDasharray="3 6" opacity="0.4" />
+
+          {/* Blueprint Ruler Ticks along front edge */}
+          {RULER_TICKS.map((tx) => (
+            <line
+              key={`tick-${tx}`}
+              x1={tx}
+              y1="560"
+              x2={tx}
+              y2={tx % 100 === 0 ? '572' : '566'}
+              stroke="var(--color-border-strong)"
+              strokeWidth={tx % 100 === 0 ? '1.2' : '0.7'}
+              opacity={tx % 100 === 0 ? '0.65' : '0.35'}
+            />
+          ))}
+        </g>
+
+        {/* Ambient Golden Sparks / Dust Motes */}
+        <g id="workbench-sparks" fill="var(--color-accent-gold)" stroke="none" pointerEvents="none">
+          <circle cx="140" cy="210" r="1.4" opacity={isIgnited ? 0.65 : 0.2} />
+          <circle cx="290" cy="170" r="1" opacity={isIgnited ? 0.55 : 0.15} />
+          <circle cx="440" cy="135" r="1.6" opacity={isIgnited ? 0.75 : 0.25} />
+          <circle cx="570" cy="145" r="1.2" opacity={isIgnited ? 0.65 : 0.2} />
+          <circle cx="725" cy="185" r="1.5" opacity={isIgnited ? 0.6 : 0.18} />
+          <circle cx="870" cy="230" r="1.1" opacity={isIgnited ? 0.55 : 0.15} />
         </g>
 
         {/* 2. The Four Workbench Objects */}
@@ -183,6 +213,46 @@ export function Workbench({
           exitRayProgress={exitRayProgress}
           gapGlowOpacity={gapGlowOpacity}
         />
+
+        {/* 6. Interactive Object Inspection Reticles & Hit Targets */}
+        {onSelectObject && (
+          <g id="workbench-hit-targets">
+            {WORKBENCH_OBJECTS.map((obj) => {
+              const isSelected = activeObjectId === obj.id;
+              return (
+                <g
+                  key={`hit-${obj.id}`}
+                  transform={`translate(${obj.x}, ${obj.y})`}
+                  className="cursor-pointer"
+                  onMouseEnter={() => onSelectObject(obj.id)}
+                  onClick={() => onSelectObject(isSelected ? null : obj.id)}
+                >
+                  {/* Transparent hit area */}
+                  <circle cx="0" cy="0" r="64" fill="transparent" stroke="none" />
+
+                  {/* Inspection reticle when active/hovered */}
+                  {isSelected && (
+                    <g stroke="var(--color-accent-gold)" fill="none" pointerEvents="none">
+                      <circle
+                        cx="0"
+                        cy="0"
+                        r="56"
+                        strokeWidth="1"
+                        strokeDasharray="4 4"
+                        opacity="0.7"
+                      />
+                      {/* Corner targeting brackets */}
+                      <path d="M -52,-38 L -52,-52 L -38,-52" strokeWidth="1.5" opacity="0.9" />
+                      <path d="M 38,-52 L 52,-52 L 52,-38" strokeWidth="1.5" opacity="0.9" />
+                      <path d="M -52,38 L -52,52 L -38,52" strokeWidth="1.5" opacity="0.9" />
+                      <path d="M 38,52 L 52,52 L 52,38" strokeWidth="1.5" opacity="0.9" />
+                    </g>
+                  )}
+                </g>
+              );
+            })}
+          </g>
+        )}
       </svg>
     </figure>
   );

@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Chapter } from '@/content/chapters';
 import { chapter01Content } from '@/content/chapter01';
 import { useMotion } from '@/hooks/useMotion';
 import { Content } from '@/components/content/Content';
 import { isContentRenderable, getContentText } from '@/content/schema';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { X } from 'lucide-react';
 import { Workbench } from './Workbench';
 import { DarknessVeil } from './DarknessVeil';
+import { WORKBENCH_OBJECTS, ObjectConfig } from './chapter01.config';
 import { computeChapter01Phases } from './chapter01.timeline';
 import { cn } from '@/lib/utils';
 
@@ -16,11 +18,21 @@ export interface Chapter01Props {
   chapter: Chapter;
 }
 
+const BEAT_STOPS = [
+  { label: 'Awaken', progress: 0.04 },
+  { label: 'Observe', progress: 0.24 },
+  { label: 'Question', progress: 0.48 },
+  { label: 'Assemble', progress: 0.72 },
+  { label: 'Ignite', progress: 0.92 },
+];
+
 export function Chapter01({ chapter }: Chapter01Props) {
-  const { motionEnabled, prefersReducedMotion } = useMotion();
+  const { motionEnabled, prefersReducedMotion, lenis } = useMotion();
   const sceneRef = useRef<HTMLElement>(null);
   const pinContentRef = useRef<HTMLDivElement>(null);
+  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeObjectId, setActiveObjectId] = useState<ObjectConfig['id'] | null>(null);
 
   const isReduced = prefersReducedMotion || !motionEnabled;
 
@@ -73,12 +85,31 @@ export function Chapter01({ chapter }: Chapter01Props) {
       },
     });
 
+    scrollTriggerRef.current = trigger;
+
     return () => {
       trigger.kill();
+      scrollTriggerRef.current = null;
       document.documentElement.style.removeProperty('--ch01-progress');
       document.documentElement.style.removeProperty('--exposure-lift');
     };
   }, [isReduced]);
+
+  const handleJumpToBeat = useCallback(
+    (targetProgress: number) => {
+      const st = scrollTriggerRef.current;
+      if (!st) return;
+      const targetY = st.start + (st.end - st.start) * targetProgress;
+      if (lenis && motionEnabled) {
+        lenis.scrollTo(targetY, { duration: 0.9 });
+      } else {
+        window.scrollTo({ top: targetY, behavior: motionEnabled ? 'smooth' : 'auto' });
+      }
+    },
+    [lenis, motionEnabled]
+  );
+
+  const activeObject = WORKBENCH_OBJECTS.find((obj) => obj.id === activeObjectId) || null;
 
   // =========================================================================
   // REDUCED MOTION VIEW: Three Static Sequential Stills (No Pinning, Simple Fades)
@@ -201,7 +232,12 @@ export function Chapter01({ chapter }: Chapter01Props) {
           : phases.progress < 0.80
             ? 3
             : 4;
-  const beatLabels = ['Awaken', 'Observe', 'Question', 'Assemble', 'Ignite'];
+
+  const lumensPercent = Math.round(15 + (1 - phases.veilDarkness) * 85 + phases.ignitionGlow * 25);
+  const clampedLumens = Math.min(100, lumensPercent);
+  const partsAssembled = phases.isIgnited
+    ? 5
+    : Math.min(5, Math.floor(phases.assemblyFlightProgress * 5));
 
   return (
     <article
@@ -216,6 +252,14 @@ export function Chapter01({ chapter }: Chapter01Props) {
         ref={pinContentRef}
         className="w-full h-[100svh] min-h-[100dvh] flex flex-col justify-between py-6 sm:py-10 px-6 sm:px-12 relative overflow-hidden"
       >
+        {/* Subtle Architectural Blueprint Corner Crosshairs */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-4 sm:inset-6 z-10 opacity-25">
+          <span className="absolute top-0 left-0 font-mono text-xs text-cinema-gold">+</span>
+          <span className="absolute top-0 right-0 font-mono text-xs text-cinema-gold">+</span>
+          <span className="absolute bottom-0 left-0 font-mono text-xs text-cinema-gold">+</span>
+          <span className="absolute bottom-0 right-0 font-mono text-xs text-cinema-gold">+</span>
+        </div>
+
         {/* Layer 1: Outlined "01" Numeral in Top-Left (≤ 20% opacity) */}
         <div
           aria-hidden="true"
@@ -236,34 +280,78 @@ export function Chapter01({ chapter }: Chapter01Props) {
           </span>
         </div>
 
-        {/* Minimal Beat Progress Indicator in Top-Right */}
-        <div
-          aria-hidden="true"
-          className="absolute top-6 right-6 sm:top-10 sm:right-12 z-30 pointer-events-none hidden sm:flex items-center gap-3"
+        {/* Interactive Clickable Beat Progress Indicator in Top-Right */}
+        <nav
+          aria-label="Chapter 01 story beats"
+          className="absolute top-6 right-6 sm:top-10 sm:right-12 z-30 hidden sm:flex items-center gap-3"
         >
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-cinema-gold/80">
-            {beatLabels[activeBeatIndex]}
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-cinema-gold/90">
+            {BEAT_STOPS[activeBeatIndex].label}
           </span>
           <div className="flex items-center gap-1.5">
-            {beatLabels.map((label, idx) => (
-              <span
-                key={label}
+            {BEAT_STOPS.map((beat, idx) => (
+              <button
+                key={beat.label}
+                type="button"
+                onClick={() => handleJumpToBeat(beat.progress)}
+                aria-label={`Jump to ${beat.label}`}
+                title={`Jump to ${beat.label}`}
                 className={cn(
-                  'h-1 rounded-full transition-all duration-300',
+                  'h-1.5 rounded-full transition-all duration-300 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-cinema-gold',
                   idx === activeBeatIndex
-                    ? 'w-5 bg-cinema-gold'
+                    ? 'w-6 bg-cinema-gold'
                     : idx < activeBeatIndex
-                      ? 'w-2 bg-cinema-gold/45'
-                      : 'w-1.5 bg-cinema-border'
+                      ? 'w-2.5 bg-cinema-gold/45 hover:bg-cinema-gold/80'
+                      : 'w-2 bg-cinema-border hover:bg-cinema-muted/60'
                 )}
               />
             ))}
           </div>
-        </div>
+        </nav>
 
         {/* Layer 2: Workbench SVG Scene (Center) */}
         <div className="relative z-10 flex-1 flex items-center justify-center my-auto w-full max-h-[58vh]">
-          <Workbench phases={phases} isReducedMotion={false} />
+          <Workbench
+            phases={phases}
+            isReducedMotion={false}
+            activeObjectId={activeObjectId}
+            onSelectObject={setActiveObjectId}
+          />
+
+          {/* Interactive Curiosity Field Note Overlay when inspecting an object */}
+          {activeObject && (
+            <aside
+              role="dialog"
+              aria-label={`${activeObject.name} details`}
+              className="absolute bottom-2 sm:bottom-4 right-2 sm:right-8 z-30 max-w-xs w-[calc(100%-1rem)] sm:w-80 rounded-xl border border-cinema-gold/30 bg-cinema-surface/90 backdrop-blur-md p-4 shadow-2xl transition-all duration-300"
+            >
+              <div className="flex items-start justify-between gap-2 mb-1.5">
+                <div>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-cinema-gold">
+                    {activeObject.index} · {activeObject.discipline}
+                  </span>
+                  <h3 className="font-serif text-lg text-cinema-text leading-snug">
+                    {activeObject.name}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveObjectId(null)}
+                  aria-label="Close specimen note"
+                  className="text-cinema-muted hover:text-cinema-text p-1 rounded-md transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              <p className="font-serif italic text-xs sm:text-sm text-cinema-muted leading-relaxed mb-2.5">
+                &ldquo;{activeObject.insight}&rdquo;
+              </p>
+              <div className="flex items-center justify-between pt-2 border-t border-cinema-border text-[10px] font-mono uppercase tracking-[0.16em]">
+                <span className="text-cinema-muted">Lamp Part:</span>
+                <span className="text-cinema-gold">{activeObject.contributes}</span>
+              </div>
+            </aside>
+          )}
 
           {/* Optional Confirmed Marginal Reflections with thin gold leader lines */}
           {isContentRenderable(sparkNote) && phases.line1Opacity > 0.3 && (

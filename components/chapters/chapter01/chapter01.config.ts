@@ -23,7 +23,11 @@
 
 export interface ObjectConfig {
   id: 'pocketWatch' | 'radio' | 'cameraLens' | 'circuitBoard';
+  index: string;
   name: string;
+  discipline: string;
+  contributes: string;
+  insight: string;
   x: number;
   y: number;
   questionWord: string;
@@ -33,7 +37,11 @@ export interface ObjectConfig {
 export const WORKBENCH_OBJECTS: ObjectConfig[] = [
   {
     id: 'pocketWatch',
+    index: '01',
     name: 'Pocket Watch',
+    discipline: 'Mechanics & Precision',
+    contributes: 'Escapement Base Gear',
+    insight: 'Every complex system is just simple parts keeping rhythm together.',
     x: 180,
     y: 360,
     questionWord: 'how?',
@@ -41,7 +49,11 @@ export const WORKBENCH_OBJECTS: ObjectConfig[] = [
   },
   {
     id: 'radio',
+    index: '02',
     name: 'Vacuum Tube Radio',
+    discipline: 'Signal & Resonance',
+    contributes: 'Induction Stem Coil',
+    insight: 'Invisible waves become clear when you tune the right circuit.',
     x: 340,
     y: 310,
     questionWord: 'why?',
@@ -49,7 +61,11 @@ export const WORKBENCH_OBJECTS: ObjectConfig[] = [
   },
   {
     id: 'cameraLens',
+    index: '03',
     name: 'Camera Lens',
+    discipline: 'Optics & Perspective',
+    contributes: 'Glass Shade & Aperture',
+    insight: 'Framing and focus decide what story the light tells.',
     x: 660,
     y: 330,
     questionWord: "what's inside?",
@@ -57,7 +73,11 @@ export const WORKBENCH_OBJECTS: ObjectConfig[] = [
   },
   {
     id: 'circuitBoard',
+    index: '04',
     name: 'Circuit Board',
+    discipline: 'Logic & Computation',
+    contributes: 'Copper Trace Switch',
+    insight: 'Small conditional paths scale into living software.',
     x: 820,
     y: 370,
     questionWord: 'what if…?',
