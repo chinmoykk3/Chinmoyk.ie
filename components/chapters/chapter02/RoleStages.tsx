@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
@@ -10,352 +10,403 @@ interface StageProps {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 01 · FULL-STACK DEVELOPER: Interactive Command Runner & Live Log Stream    */
+/* 01 · THE BUILDER: Interactive Live Node-Patcher (Click nodes to rewire)    */
 /* -------------------------------------------------------------------------- */
-const BUILD_COMMANDS = [
-  {
-    cmd: 'npm run build',
-    logs: [
-      '▲ Next.js 15 · Compiling app router...',
-      '✓ 19 static & dynamic routes optimized',
-      '✓ Bundle gzipped: 48.2 kB · 0 errors',
-    ],
-  },
-  {
-    cmd: 'git push origin main',
-    logs: [
-      '→ Compressing objects: 100% (24/24)',
-      '→ Triggering edge deployment pipeline...',
-      '✓ Live at https://chinmoyk.ie (11ms TTFB)',
-    ],
-  },
-  {
-    cmd: 'curl -s /api/health',
-    logs: [
-      '→ Connecting to edge-node-01...',
-      '← HTTP/2 200 OK · db: connected (4ms)',
-      '✓ All microservices nominal',
-    ],
-  },
+const PATCH_INPUTS = [
+  { id: 'auth', label: 'AUTH_JWT', y: 20, throughput: 42 },
+  { id: 'cache', label: 'EDGE_KV', y: 60, throughput: 128 },
+  { id: 'stream', label: 'WS_STREAM', y: 100, throughput: 84 },
 ] as const;
 
 export function BuilderStage({ isReduced }: StageProps) {
-  const [cmdIdx, setCmdIdx] = useState(0);
-  const [visibleLines, setVisibleLines] = useState(3);
+  const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({
+    auth: true,
+    cache: true,
+    stream: false,
+  });
 
-  const active = BUILD_COMMANDS[cmdIdx];
+  const toggleNode = (id: string) => {
+    setActiveInputs((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
-  useEffect(() => {
-    if (isReduced) {
-      setVisibleLines(3);
-      return;
-    }
-    setVisibleLines(1);
-    const t1 = setTimeout(() => setVisibleLines(2), 260);
-    const t2 = setTimeout(() => setVisibleLines(3), 560);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
-  }, [cmdIdx, isReduced]);
+  const totalThroughput = PATCH_INPUTS.reduce(
+    (sum, item) => sum + (activeInputs[item.id] ? item.throughput : 0),
+    0
+  );
+  const activeCount = Object.values(activeInputs).filter(Boolean).length;
 
   return (
-    <div
-      className="w-full space-y-3 py-1"
-      onClick={(e) => e.stopPropagation()}
-    >
-      {/* Interactive Command Selector Tabs */}
-      <div className="flex flex-wrap items-center gap-2 font-mono text-[10px]">
-        {BUILD_COMMANDS.map((item, idx) => (
-          <button
-            key={item.cmd}
-            type="button"
-            onClick={() => setCmdIdx(idx)}
-            className={cn(
-              'px-3 py-1 rounded-full border transition-all cursor-pointer',
-              idx === cmdIdx
-                ? 'border-sunrise-azure bg-sunrise-azure/20 text-sunrise-azure'
-                : 'border-cinema-border/80 text-cinema-muted hover:text-cinema-text hover:border-sunrise-azure/40'
-            )}
-          >
-            $ {item.cmd}
-          </button>
-        ))}
+    <div className="w-full space-y-2 py-1" onClick={(e) => e.stopPropagation()}>
+      <div className="flex items-center justify-between font-mono text-[10px] text-cinema-muted">
+        <span className="text-sunrise-azure">CLICK NODES TO PATCH CIRCUIT</span>
+        <span>
+          THROUGHPUT: <strong className="text-sunrise-azure">{totalThroughput}k req/s</strong>
+        </span>
       </div>
 
-      {/* Live Streaming Log Output */}
-      <div className="pl-4 border-l-2 border-sunrise-azure/50 font-mono text-xs space-y-1.5 min-h-[74px]">
-        {active.logs.slice(0, visibleLines).map((line, i) => (
-          <motion.div
-            key={`${cmdIdx}-${i}`}
-            initial={!isReduced ? { opacity: 0, x: -8 } : false}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.22 }}
-            className={cn(
-              'leading-relaxed',
-              i === active.logs.length - 1 ? 'text-sunrise-azure font-medium' : 'text-cinema-muted'
-            )}
+      <svg viewBox="0 0 420 120" fill="none" className="w-full h-28 overflow-visible" aria-hidden="true">
+        {/* Patch Cables: Inputs -> Core */}
+        {PATCH_INPUTS.map((node) => {
+          const on = activeInputs[node.id];
+          return (
+            <g key={`cable-${node.id}`}>
+              <path
+                d={`M 96,${node.y} C 155,${node.y} 165,60 215,60`}
+                stroke={on ? 'var(--color-accent-azure)' : 'var(--color-border-strong)'}
+                strokeWidth={on ? '2' : '1'}
+                strokeDasharray={on && !isReduced ? '6 8' : undefined}
+                className={on && !isReduced ? 'animate-ch02-packet' : undefined}
+                opacity={on ? 0.95 : 0.35}
+              />
+            </g>
+          );
+        })}
+
+        {/* Output Cables: Core -> Edge UI & DB */}
+        {[32, 88].map((outY, idx) => {
+          const on = activeCount > 0;
+          return (
+            <path
+              key={`out-cable-${idx}`}
+              d={`M 255,60 C 295,60 300,${outY} 340,${outY}`}
+              stroke={on ? 'var(--color-accent-azure)' : 'var(--color-border-strong)'}
+              strokeWidth={on ? '2' : '1'}
+              strokeDasharray={on && !isReduced ? '6 8' : undefined}
+              className={on && !isReduced ? 'animate-ch02-packet' : undefined}
+              opacity={on ? 0.9 : 0.3}
+            />
+          );
+        })}
+
+        {/* Clickable Input Nodes */}
+        {PATCH_INPUTS.map((node) => {
+          const on = activeInputs[node.id];
+          return (
+            <g
+              key={node.id}
+              transform={`translate(52, ${node.y})`}
+              onClick={() => toggleNode(node.id)}
+              className="cursor-pointer"
+            >
+              <rect
+                x="-44"
+                y="-12"
+                width="88"
+                height="24"
+                rx="12"
+                fill={on ? 'var(--color-cinema-surface)' : 'var(--color-cinema-bg)'}
+                stroke={on ? 'var(--color-accent-azure)' : 'var(--color-border-strong)'}
+                strokeWidth={on ? '1.6' : '1'}
+              />
+              <circle
+                cx="-30"
+                cy="0"
+                r="3"
+                fill={on ? 'var(--color-accent-azure)' : 'var(--color-border-strong)'}
+              />
+              <text
+                x="6"
+                y="3.5"
+                textAnchor="middle"
+                fill={on ? 'var(--color-cinema-text)' : 'var(--color-cinema-muted)'}
+                fontFamily="var(--font-mono)"
+                fontSize="8"
+              >
+                {node.label}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Central Core Router */}
+        <g transform="translate(235, 60)">
+          <polygon
+            points="0,-24 22,0 0,24 -22,0"
+            fill="var(--color-cinema-bg)"
+            stroke="var(--color-accent-azure)"
+            strokeWidth={activeCount > 0 ? '2' : '1'}
+          />
+          <text
+            x="0"
+            y="3"
+            textAnchor="middle"
+            fill="var(--color-accent-azure)"
+            fontFamily="var(--font-mono)"
+            fontSize="7.5"
           >
-            {line}
-          </motion.div>
+            {activeCount}/3
+          </text>
+        </g>
+
+        {/* Output Targets */}
+        {[
+          { y: 32, label: 'EDGE_UI' },
+          { y: 88, label: 'DB_SYNC' },
+        ].map((out) => (
+          <g key={out.label} transform={`translate(376, ${out.y})`}>
+            <rect
+              x="-36"
+              y="-12"
+              width="72"
+              height="24"
+              rx="6"
+              fill="var(--color-cinema-bg)"
+              stroke={activeCount > 0 ? 'var(--color-accent-azure)' : 'var(--color-border-strong)'}
+              strokeWidth="1.2"
+              opacity={activeCount > 0 ? 1 : 0.45}
+            />
+            <text
+              x="0"
+              y="3.5"
+              textAnchor="middle"
+              fill="var(--color-cinema-text)"
+              fontFamily="var(--font-mono)"
+              fontSize="8"
+            >
+              {out.label}
+            </text>
+          </g>
         ))}
-      </div>
+      </svg>
     </div>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/* 02 · AI ENGINEER: Interactive Prompt-to-Thought Token Synthesizer          */
+/* 02 · AI ENGINEER: Interactive 5x5 Attention Matrix & Next-Token Predictor  */
 /* -------------------------------------------------------------------------- */
-const AI_PROMPTS = [
-  {
-    label: 'Design Agent',
-    tokens: ['[intent]', '→', 'decompose(goal)', '→', 'tool_call(memory)', '→', 'verify()', '✓ 0.97'],
-  },
-  {
-    label: 'Optimize RAG',
-    tokens: ['[query]', '→', 'embed(1536d)', '→', 'hybrid_rerank()', '→', 'ground(ctx)', '✓ 14ms'],
-  },
-  {
-    label: 'Align Model',
-    tokens: ['[pair]', '→', 'dpo_loss()', '→', 'reward_delta(+0.42)', '→', 'converged', '✓ 99.1%'],
-  },
+const MATRIX_LABELS = ['CURIOSITY', 'SYSTEMS', 'CONTEXT', 'REASON', 'CREATE'] as const;
+const PREDICTIONS = [
+  { token: 'architect()', score: 94 },
+  { token: 'synthesize()', score: 87 },
+  { token: 'adapt()', score: 79 },
+  { token: 'ship()', score: 91 },
+  { token: 'evolve()', score: 98 },
 ] as const;
 
 export function IntelligenceStage({ isReduced }: StageProps) {
-  const [promptIdx, setPromptIdx] = useState(0);
-  const [tokenCount, setTokenCount] = useState(8);
+  const [focusCell, setFocusCell] = useState<{ r: number; c: number }>({ r: 2, c: 4 });
 
-  const active = AI_PROMPTS[promptIdx];
-
-  useEffect(() => {
-    if (isReduced) {
-      setTokenCount(active.tokens.length);
-      return;
-    }
-    setTokenCount(1);
-    const interval = setInterval(() => {
-      setTokenCount((c) => {
-        if (c >= active.tokens.length) {
-          clearInterval(interval);
-          return c;
-        }
-        return c + 1;
-      });
-    }, 150);
-    return () => clearInterval(interval);
-  }, [promptIdx, active.tokens.length, isReduced]);
+  const activePred = PREDICTIONS[(focusCell.r + focusCell.c) % PREDICTIONS.length];
 
   return (
     <div
-      className="w-full flex flex-col items-center space-y-4 py-1"
+      className="w-full flex flex-col sm:flex-row items-center justify-center gap-6 py-1"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Prompt Triggers */}
-      <div className="flex flex-wrap items-center justify-center gap-2 font-mono text-[10px]">
-        {AI_PROMPTS.map((p, idx) => (
-          <button
-            key={p.label}
-            type="button"
-            onClick={() => setPromptIdx(idx)}
-            className={cn(
-              'px-3 py-1 rounded-full border transition-all cursor-pointer',
-              idx === promptIdx
-                ? 'border-sunrise-iris bg-sunrise-iris/20 text-sunrise-iris'
-                : 'border-cinema-border/80 text-cinema-muted hover:text-cinema-text hover:border-sunrise-iris/40'
-            )}
-          >
-            &gt; {p.label}
-          </button>
-        ))}
+      {/* Left: Interactive 5x5 Attention Heatmap */}
+      <div className="space-y-1.5">
+        <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-sunrise-iris text-center">
+          TOUCH ATTENTION MATRIX
+        </div>
+        <div className="grid grid-cols-5 gap-1.5">
+          {Array.from({ length: 5 }).map((_, r) =>
+            Array.from({ length: 5 }).map((__, c) => {
+              const isExact = focusCell.r === r && focusCell.c === c;
+              const isCross = focusCell.r === r || focusCell.c === c;
+              return (
+                <button
+                  key={`cell-${r}-${c}`}
+                  type="button"
+                  onMouseEnter={() => setFocusCell({ r, c })}
+                  onClick={() => setFocusCell({ r, c })}
+                  aria-label={`Attention cell ${r + 1},${c + 1}`}
+                  className={cn(
+                    'w-6 h-6 sm:w-7 sm:h-7 rounded-md border transition-all duration-200 cursor-pointer focus:outline-none',
+                    isExact
+                      ? 'bg-sunrise-iris border-sunrise-iris scale-110 shadow-[0_0_16px_var(--color-accent-iris)]'
+                      : isCross
+                        ? 'bg-sunrise-iris/30 border-sunrise-iris/60'
+                        : 'bg-cinema-bg/70 border-cinema-border/70 hover:border-sunrise-iris/50'
+                  )}
+                />
+              );
+            })
+          )}
+        </div>
       </div>
 
-      {/* Live Token Stream Chain */}
-      <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 font-mono text-xs min-h-[44px]">
-        {active.tokens.slice(0, tokenCount).map((tok, i) => {
-          const isArrow = tok === '→';
-          const isLast = i === active.tokens.length - 1;
-          return (
-            <motion.span
-              key={`${promptIdx}-${i}`}
-              initial={!isReduced ? { opacity: 0, scale: 0.8 } : false}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.18 }}
-              className={cn(
-                isArrow
-                  ? 'text-sunrise-iris/60'
-                  : isLast
-                    ? 'px-2.5 py-1 rounded-md bg-sunrise-iris/20 border border-sunrise-iris/50 text-sunrise-iris font-semibold'
-                    : 'px-2.5 py-1 rounded-md bg-cinema-bg/70 border border-cinema-border/80 text-cinema-text'
-              )}
-            >
-              {tok}
-            </motion.span>
-          );
-        })}
+      {/* Right: Live Attention Readout & Predicted Token */}
+      <div className="w-full sm:w-56 space-y-2.5 font-mono text-xs">
+        <div className="flex items-center justify-between text-[10px] text-cinema-muted">
+          <span>HEAD [{MATRIX_LABELS[focusCell.r]}]</span>
+          <span className="text-sunrise-iris">× {MATRIX_LABELS[focusCell.c]}</span>
+        </div>
+
+        <div className="space-y-1">
+          <div className="flex justify-between text-[11px]">
+            <span className="text-cinema-text">next_token:</span>
+            <span className="text-sunrise-iris font-semibold">{activePred.token}</span>
+          </div>
+          <div className="h-1.5 w-full rounded-full bg-cinema-bg overflow-hidden">
+            <motion.div
+              className="h-full bg-sunrise-iris rounded-full"
+              animate={{ width: `${activePred.score}%` }}
+              transition={{ duration: isReduced ? 0 : 0.3 }}
+            />
+          </div>
+          <div className="text-right text-[10px] text-sunrise-iris/85">
+            {activePred.score}% confidence
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/* 03 · GRAPHIC DESIGNER: Interactive Kinetic Type & Contrast Sculpture       */
+/* 03 · VISUAL THINKER: Cursor-Warped Kinetic Type & Geometric Stamp Canvas   */
 /* -------------------------------------------------------------------------- */
-const TYPE_PRESETS = [
-  { name: 'Editorial', word: 'CLARITY', tracking: '0.02em', font: 'font-serif italic' },
-  { name: 'Swiss', word: 'STRUCTURE', tracking: '-0.04em', font: 'font-sans font-black uppercase' },
-  { name: 'Mono', word: 'SYSTEM_03', tracking: '0.18em', font: 'font-mono font-bold uppercase' },
-] as const;
+const GEOMETRY_SHAPES = ['circle', 'diamond', 'crosshair'] as const;
 
 export function VisualStage({ isReduced }: StageProps) {
-  const [presetIdx, setPresetIdx] = useState(0);
-  const [inverted, setInverted] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [cursorX, setCursorX] = useState(0.5);
+  const [shapeIdx, setShapeIdx] = useState(0);
 
-  const preset = TYPE_PRESETS[presetIdx];
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isReduced || !stageRef.current) return;
+    const rect = stageRef.current.getBoundingClientRect();
+    setCursorX(Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)));
+  };
+
+  const trackingEm = (-0.04 + cursorX * 0.24).toFixed(3);
+  const skewDeg = ((cursorX - 0.5) * -14).toFixed(1);
+  const shape = GEOMETRY_SHAPES[shapeIdx];
 
   return (
     <div
-      className="w-full space-y-3 py-1"
-      onClick={(e) => e.stopPropagation()}
+      ref={stageRef}
+      onMouseMove={handleMove}
+      onClick={(e) => {
+        e.stopPropagation();
+        setShapeIdx((s) => (s + 1) % GEOMETRY_SHAPES.length);
+      }}
+      className="relative w-full py-5 px-4 overflow-hidden cursor-crosshair select-none border-y border-sunrise-rose/25"
     >
-      {/* Controls */}
-      <div className="flex flex-wrap items-center justify-end gap-2 font-mono text-[10px]">
-        {TYPE_PRESETS.map((p, idx) => (
-          <button
-            key={p.name}
-            type="button"
-            onClick={() => setPresetIdx(idx)}
-            className={cn(
-              'px-3 py-1 rounded-full border transition-all cursor-pointer',
-              idx === presetIdx
-                ? 'border-sunrise-rose bg-sunrise-rose/20 text-sunrise-rose'
-                : 'border-cinema-border/80 text-cinema-muted hover:text-cinema-text hover:border-sunrise-rose/40'
-            )}
-          >
-            {p.name}
-          </button>
-        ))}
-        <button
-          type="button"
-          onClick={() => setInverted((v) => !v)}
-          className="px-3 py-1 rounded-full border border-sunrise-rose/40 text-sunrise-rose hover:bg-sunrise-rose/15 transition-colors cursor-pointer"
+      {/* Interactive Rose Spotlight following cursor */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-35 transition-opacity"
+        style={{
+          background: `radial-gradient(circle 140px at ${Math.round(cursorX * 100)}% 50%, var(--color-accent-rose), transparent 75%)`,
+        }}
+      />
+
+      <div className="relative z-10 flex items-center justify-between gap-4">
+        <div
+          className="font-serif italic text-3xl sm:text-5xl text-cinema-text leading-none transition-transform duration-150"
+          style={{
+            letterSpacing: `${trackingEm}em`,
+            transform: isReduced ? 'none' : `skewX(${skewDeg}deg)`,
+          }}
         >
-          {inverted ? 'Noir' : 'Flash'}
-        </button>
+          FORM × FLOW
+        </div>
+
+        {/* Click-to-Morph Bauhaus Geometry */}
+        <svg viewBox="0 0 48 48" fill="none" className="w-11 h-11 shrink-0" aria-hidden="true">
+          {shape === 'circle' && (
+            <circle cx="24" cy="24" r="16" stroke="var(--color-accent-rose)" strokeWidth="1.8" />
+          )}
+          {shape === 'diamond' && (
+            <polygon points="24,6 42,24 24,42 6,24" stroke="var(--color-accent-rose)" strokeWidth="1.8" />
+          )}
+          {shape === 'crosshair' && (
+            <g stroke="var(--color-accent-rose)" strokeWidth="1.6">
+              <circle cx="24" cy="24" r="14" strokeDasharray="3 3" />
+              <line x1="4" y1="24" x2="44" y2="24" />
+              <line x1="24" y1="4" x2="24" y2="44" />
+            </g>
+          )}
+        </svg>
       </div>
 
-      {/* Live Kinetic Specimen Strip */}
-      <motion.div
-        key={`${preset.name}-${inverted}`}
-        initial={!isReduced ? { opacity: 0.4, scale: 0.97 } : false}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.25 }}
-        className={cn(
-          'w-full py-4 px-5 rounded-xl flex items-center justify-between transition-colors duration-300',
-          inverted
-            ? 'bg-sunrise-rose text-cinema-bg'
-            : 'bg-sunrise-rose/[0.06] border-r-2 border-sunrise-rose text-cinema-text'
-        )}
-      >
-        <span
-          className={cn('text-2xl sm:text-4xl leading-none', preset.font)}
-          style={{ letterSpacing: preset.tracking }}
-        >
-          {preset.word}
-        </span>
-        <span
-          className={cn(
-            'font-mono text-[10px] uppercase tracking-[0.2em]',
-            inverted ? 'text-cinema-bg/80' : 'text-sunrise-rose'
-          )}
-        >
-          1.618 · TYPE
-        </span>
-      </motion.div>
+      <div className="relative z-10 flex justify-between font-mono text-[9px] uppercase tracking-[0.2em] text-sunrise-rose/85 mt-3">
+        <span>SWIPE TO WARP TYPE · CLICK TO MORPH</span>
+        <span>TRACKING: {trackingEm}EM</span>
+      </div>
     </div>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/* 04 · AI ENTHUSIAST: Interactive Horizon Constellation & Hypothesis Node    */
+/* 04 · THE EXPLORER: Interactive Magnetic Gravity Field                      */
 /* -------------------------------------------------------------------------- */
-const CONSTELLATION_NODES = [
-  { id: 'webgpu', label: 'WebGPU', x: 18, y: 28, note: 'Running local neural shaders directly in the browser.' },
-  { id: 'agents', label: 'Agentic OS', x: 42, y: 68, note: 'Autonomous tool-using workflows that plan and verify.' },
-  { id: 'localllm', label: 'Local LLM', x: 66, y: 26, note: 'Private, zero-latency intelligence on personal silicon.' },
-  { id: 'spatial', label: 'Spatial UI', x: 85, y: 64, note: 'Interfaces that respond to depth, physics, and intent.' },
+const SATELLITES = [
+  { id: 'webgpu', label: 'WebGPU', bx: 20, by: 30 },
+  { id: 'agents', label: 'Agents', bx: 45, by: 72 },
+  { id: 'localllm', label: 'Local AI', bx: 70, by: 28 },
+  { id: 'spatial', label: 'Spatial', bx: 84, by: 68 },
 ] as const;
 
 export function ExplorerStage({ isReduced }: StageProps) {
-  const [activeNodeIdx, setActiveNodeIdx] = useState(0);
-  const current = CONSTELLATION_NODES[activeNodeIdx];
+  const fieldRef = useRef<HTMLDivElement>(null);
+  const [pointer, setPointer] = useState<{ x: number; y: number; active: boolean }>({
+    x: 50,
+    y: 50,
+    active: false,
+  });
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isReduced || !fieldRef.current) return;
+    const rect = fieldRef.current.getBoundingClientRect();
+    setPointer({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+      active: true,
+    });
+  };
 
   return (
     <div
-      className="w-full space-y-3 py-1"
+      ref={fieldRef}
+      onMouseMove={handleMove}
+      onMouseLeave={() => setPointer((p) => ({ ...p, active: false }))}
       onClick={(e) => e.stopPropagation()}
+      className="relative w-full h-28 border-y border-sunrise-ember/25 overflow-hidden cursor-crosshair"
     >
-      {/* Interactive Constellation Map */}
-      <div className="relative w-full h-24 rounded-xl bg-cinema-bg/60 border border-sunrise-ember/25 overflow-hidden">
-        {/* Vector Connections */}
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full" aria-hidden="true">
-          {CONSTELLATION_NODES.slice(0, -1).map((n, i) => {
-            const next = CONSTELLATION_NODES[i + 1];
-            return (
-              <line
-                key={`edge-${n.id}`}
-                x1={n.x}
-                y1={n.y}
-                x2={next.x}
-                y2={next.y}
-                stroke="var(--color-accent-ember)"
-                strokeWidth="0.6"
-                strokeDasharray="2 2"
-                opacity="0.45"
-              />
-            );
-          })}
-        </svg>
+      {/* Dynamic Tether Lines from Cursor Gravity Well to Satellites */}
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full" aria-hidden="true">
+        {pointer.active &&
+          SATELLITES.map((sat) => (
+            <line
+              key={`tether-${sat.id}`}
+              x1={pointer.x}
+              y1={pointer.y}
+              x2={sat.bx}
+              y2={sat.by}
+              stroke="var(--color-accent-ember)"
+              strokeWidth="0.5"
+              strokeDasharray="2 2"
+              opacity="0.65"
+            />
+          ))}
+      </svg>
 
-        {/* Clickable Orbiting Horizon Nodes */}
-        {CONSTELLATION_NODES.map((node, idx) => {
-          const isActive = idx === activeNodeIdx;
-          return (
-            <button
-              key={node.id}
-              type="button"
-              onClick={() => setActiveNodeIdx(idx)}
-              style={{ left: `${node.x}%`, top: `${node.y}%` }}
-              className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 group cursor-pointer focus:outline-none"
-            >
-              <span
-                className={cn(
-                  'w-2.5 h-2.5 rounded-full transition-all',
-                  isActive
-                    ? 'bg-sunrise-ember scale-125 shadow-[0_0_12px_var(--color-accent-ember)]'
-                    : 'bg-cinema-muted/50 group-hover:bg-sunrise-ember/80',
-                  isActive && !isReduced && 'animate-pulse'
-                )}
-              />
-              <span
-                className={cn(
-                  'font-mono text-[10px] uppercase tracking-[0.14em] px-1.5 py-0.5 rounded transition-colors',
-                  isActive
-                    ? 'text-sunrise-ember bg-sunrise-ember/15'
-                    : 'text-cinema-muted group-hover:text-cinema-text'
-                )}
-              >
-                {node.label}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+      {/* Satellites that bend toward pointer */}
+      {SATELLITES.map((sat) => {
+        const dx = pointer.active && !isReduced ? (pointer.x - sat.bx) * 0.16 : 0;
+        const dy = pointer.active && !isReduced ? (pointer.y - sat.by) * 0.16 : 0;
+        return (
+          <div
+            key={sat.id}
+            style={{
+              left: `${sat.bx + dx}%`,
+              top: `${sat.by + dy}%`,
+            }}
+            className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 transition-all duration-200 ease-out pointer-events-none"
+          >
+            <span className="w-2 h-2 rounded-full bg-sunrise-ember shadow-[0_0_10px_var(--color-accent-ember)]" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-cinema-text">
+              {sat.label}
+            </span>
+          </div>
+        );
+      })}
 
-      {/* Live Hypothesis Readout */}
-      <div className="flex items-center justify-between gap-3 font-mono text-[11px] pl-3 border-l-2 border-sunrise-ember/60">
-        <span className="text-cinema-text">{current.note}</span>
-        <span className="text-sunrise-ember shrink-0 text-[10px] uppercase">0{activeNodeIdx + 1}/04</span>
+      <div className="absolute bottom-1.5 left-0 right-0 text-center font-mono text-[9px] uppercase tracking-[0.22em] text-sunrise-ember/80 pointer-events-none">
+        {pointer.active ? 'GRAVITY WELL ENGAGED' : 'MOVE CURSOR TO BEND HORIZON'}
       </div>
     </div>
   );
