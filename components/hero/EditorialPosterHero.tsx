@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowDown, MoveRight } from 'lucide-react';
 import { useMotion } from '@/hooks/useMotion';
 import { cn } from '@/lib/utils';
+import { FloatingHeroIcons } from './FloatingHeroIcons';
 
 interface EditorialPosterHeroProps {
   firstName?: string;
@@ -106,6 +107,11 @@ export function EditorialPosterHero({
           backgroundSize: '24px 24px',
         }}
       />
+
+      {/* ---------------------------------------------------------------------- */}
+      {/* LAYER 0.5: Floating Background Icons (Languages, Social, Motivation)   */}
+      {/* ---------------------------------------------------------------------- */}
+      <FloatingHeroIcons mouseOffset={mouseOffset} isReduced={isReduced} />
 
       {/* ---------------------------------------------------------------------- */}
       {/* LAYER 1: Background Solid Typography ("CHINMOY")                        */}
