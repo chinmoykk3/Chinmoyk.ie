@@ -1,142 +1,114 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import Image from 'next/image';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Chapter } from '@/content/chapters';
-import { designWork, DesignWorkItem, DesignCategory } from '@/content/designWork';
 import { useMotion } from '@/hooks/useMotion';
-import { Container } from '@/components/ui/Container';
-import { Card } from '@/components/ui/Card';
-import { ChapterTitleCard } from '@/components/motion/ChapterTitleCard';
 import { Content } from '@/components/content/Content';
-import { getContentText } from '@/content/schema';
 import { usePolish } from '@/components/polish/PolishContext';
-import { Palette, Eye, Sliders, ArrowUpRight } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  Compass,
+  Eye,
+  Layers,
+  Palette,
+  PenTool,
+  Sliders,
+  Sparkles,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { DesignLightbox } from './DesignLightbox';
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 export interface Chapter04DesignProps {
   chapter: Chapter;
 }
 
+const STUDIO_SPECIMENS = [
+  {
+    id: 'kinetic-type',
+    index: '01',
+    category: 'Typography',
+    title: 'Typography as Architecture',
+    subtitle: 'Where code organizes logic, typography organizes perception.',
+    backdropWord: 'TYPEFACE',
+  },
+  {
+    id: 'color-system',
+    index: '02',
+    category: 'Color Systems',
+    title: 'The Sunrise-Ramp Spectrum',
+    subtitle: 'Pure neutral blacks paired with calibrated WCAG AA accent radiance.',
+    backdropWord: 'SPECTRUM',
+  },
+  {
+    id: 'golden-grid',
+    index: '03',
+    category: 'Composition',
+    title: 'Modular Grid & 1.618',
+    subtitle: 'Mathematical proportion turned into calm visual hierarchy.',
+    backdropWord: 'GEOMETRY',
+  },
+  {
+    id: 'motion-feel',
+    index: '04',
+    category: 'Motion Craft',
+    title: 'Physics of Micro-Interaction',
+    subtitle: 'Every transition is paced to feel tactile, deliberate, and weightless.',
+    backdropWord: 'KINETICS',
+  },
+] as const;
+
+const FLOATING_DESIGN_GLYPHS = [
+  { id: 'd-1', pos: 'top-[13%] left-[5%]', anim: 'animate-ch02-vibe-1', delay: '0s', tag: 'BEZIER', icon: <PenTool className="w-4 h-4" /> },
+  { id: 'd-2', pos: 'top-[16%] right-[6%]', anim: 'animate-ch02-vibe-2', delay: '-1.5s', tag: 'COLOR', icon: <Palette className="w-4 h-4" /> },
+  { id: 'd-3', pos: 'top-[48%] left-[3%]', anim: 'animate-ch02-vibe-3', delay: '-2.7s', tag: 'GRID', icon: <Layers className="w-4 h-4" /> },
+  { id: 'd-4', pos: 'top-[50%] right-[4%]', anim: 'animate-ch02-vibe-1', delay: '-1.1s', tag: 'FOCUS', icon: <Eye className="w-4 h-4" /> },
+  { id: 'd-5', pos: 'bottom-[15%] left-[7%]', anim: 'animate-ch02-vibe-2', delay: '-3.3s', tag: '1.618', icon: <Compass className="w-4 h-4" /> },
+  { id: 'd-6', pos: 'bottom-[14%] right-[8%]', anim: 'animate-ch02-vibe-3', delay: '-2.0s', tag: 'CRAFT', icon: <Sparkles className="w-4 h-4" /> },
+];
+
+const SUNRISE_SWATCHES = [
+  { name: 'Azure', token: 'Systems', bgClass: 'bg-sunrise-azure', textClass: 'text-sunrise-azure', borderClass: 'border-sunrise-azure', ratio: '6.34:1 AA' },
+  { name: 'Iris', token: 'Intelligence', bgClass: 'bg-sunrise-iris', textClass: 'text-sunrise-iris', borderClass: 'border-sunrise-iris', ratio: '6.75:1 AA' },
+  { name: 'Rose', token: 'Expression', bgClass: 'bg-sunrise-rose', textClass: 'text-sunrise-rose', borderClass: 'border-sunrise-rose', ratio: '5.54:1 AA' },
+  { name: 'Ember', token: 'Frontiers', bgClass: 'bg-sunrise-ember', textClass: 'text-sunrise-ember', borderClass: 'border-sunrise-ember', ratio: '5.18:1 AA' },
+  { name: 'Gold', token: 'Curiosity', bgClass: 'bg-cinema-gold', textClass: 'text-cinema-gold', borderClass: 'border-cinema-gold', ratio: '13.6:1 AAA' },
+] as const;
+
 export function Chapter04Design({ chapter }: Chapter04DesignProps) {
   const { motionEnabled, prefersReducedMotion } = useMotion();
   const { triggerLowerThird } = usePolish();
-  const [activeCategory, setActiveCategory] = useState<string>('All');
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
-
-  // Floating cursor lens state (Desktop only)
-  const [lensPos, setLensPos] = useState<{ x: number; y: number } | null>(null);
-  const [lensText, setLensText] = useState('');
-
-  const typoMomentRef = useRef<HTMLDivElement>(null);
-  const lettersRef = useRef<(HTMLSpanElement | null)[]>([]);
-
   const isReduced = prefersReducedMotion || !motionEnabled;
-  const showDebug =
-    process.env.NODE_ENV !== 'production' &&
-    process.env.NEXT_PUBLIC_DEBUG_CONTENT === '1';
 
-  const categories = ['All', 'Posters', 'Branding', 'Typography', 'Visual experiments'];
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  // Production policy: placeholder tiles are visible ONLY in development
-  const baseItems: DesignWorkItem[] = designWork.filter((item) => {
-    if (!item.isPlaceholder) return true;
-    return showDebug;
-  });
+  // Specimen 01 state: Typography Playground
+  const [typeFace, setTypeFace] = useState<'serif' | 'display' | 'mono'>('serif');
+  const [typeTracking, setTypeTracking] = useState<'tight' | 'wide'>('tight');
 
-  const filteredItems =
-    activeCategory === 'All'
-      ? baseItems
-      : baseItems.filter((item) => item.category === activeCategory);
+  // Specimen 02 state: Color System Explorer
+  const [swatchIdx, setSwatchIdx] = useState(2); // Rose default
 
-  // 1. Kinetic Typographic Moment: Letter composition rearranges on scroll
-  useEffect(() => {
-    if (isReduced) return;
+  // Specimen 03 state: Modular Geometry Layers
+  const [layers, setLayers] = useState({ grid: true, circle: true, golden: true });
 
-    const typoEl = typoMomentRef.current;
-    if (!typoEl) return;
+  // Specimen 04 state: Motion Easing Playground
+  const [motionPreset, setMotionPreset] = useState<'cinema' | 'snappy' | 'spring'>('cinema');
+  const [motionPulse, setMotionPulse] = useState(0);
 
-    const letters = lettersRef.current.filter(Boolean) as HTMLSpanElement[];
-    if (letters.length === 0) return;
+  const activeSpecimen = STUDIO_SPECIMENS[activeIndex];
 
-    const ctx = gsap.context(() => {
-      // Letters assemble from randomized spatial offsets and slight rotations into sharp grid alignment
-      gsap.fromTo(
-        letters,
-        {
-          x: () => (Math.random() - 0.5) * 60,
-          y: () => (Math.random() - 0.5) * 50,
-          rotation: () => (Math.random() - 0.5) * 24,
-          opacity: 0.25,
-          scale: 0.9,
-        },
-        {
-          x: 0,
-          y: 0,
-          rotation: 0,
-          opacity: 1,
-          scale: 1,
-          ease: 'power2.out',
-          stagger: {
-            each: 0.02,
-            from: 'random',
-          },
-          scrollTrigger: {
-            trigger: typoEl,
-            start: 'top 80%',
-            end: 'center 45%',
-            scrub: 0.4,
-          },
-        }
-      );
-    }, typoEl);
-
-    return () => ctx.revert();
-  }, [isReduced]);
-
-  // 2. Cursor hover lens handlers
-  const handleMouseEnter = useCallback(
-    (title: string, e: React.MouseEvent) => {
-      if (isReduced) return;
-      setLensText(title);
-      setLensPos({ x: e.clientX, y: e.clientY });
-    },
-    [isReduced]
-  );
-
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      if (isReduced) return;
-      setLensPos({ x: e.clientX, y: e.clientY });
-    },
-    [isReduced]
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    setLensPos(null);
-  }, []);
-
-  const openLightbox = (index: number) => {
-    setLightboxIndex(index);
-    setLightboxOpen(true);
-    setLensPos(null);
-
-    const piece = filteredItems[index];
-    if (piece) {
-      triggerLowerThird({
-        title: getContentText(piece.title) || '',
-        subtitle: getContentText(piece.description) || '',
-        category: piece.category,
-      });
-    }
+  const selectSpecimen = (idx: number) => {
+    const clamped = (idx + STUDIO_SPECIMENS.length) % STUDIO_SPECIMENS.length;
+    setActiveIndex(clamped);
+    const s = STUDIO_SPECIMENS[clamped];
+    triggerLowerThird({
+      title: s.title,
+      subtitle: s.subtitle,
+      category: s.category,
+    });
   };
 
   return (
@@ -145,242 +117,411 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
       data-chapter="4"
       data-accent="rose"
       aria-labelledby="chapter-04-heading"
-      className="relative w-full border-t border-theme-border transition-colors duration-300"
+      className="relative w-full min-h-[100dvh] bg-cinema-bg text-cinema-text py-20 sm:py-28 px-5 sm:px-10 lg:px-16 overflow-hidden border-t border-cinema-border/40 select-none"
     >
-      <div className="w-full py-16 sm:py-24 relative overflow-hidden">
-        {/* Chapter Ambient Wash */}
-        <div
+      {/* Rose Spotlight Wash */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 65% 55% at 55% 50%, rgba(255, 92, 138, 0.16) 0%, transparent 75%)',
+        }}
+      />
+
+      {/* Diagonal Editorial Rule Lines */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(-35deg, var(--color-accent-rose) 0px, var(--color-accent-rose) 1px, transparent 1px, transparent 84px)',
+        }}
+      />
+
+      {/* Giant Kinetic Outlined Backdrop Word */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`ch04-bg-${activeSpecimen.backdropWord}`}
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 bg-chapter-wash"
-        />
-
-        {/* Chapter Header (Rule 2: One label only, Instrument Serif title) */}
-        <Container size="lg" className="relative z-10 w-full mb-12">
-          <ChapterTitleCard
-            id="chapter-04-heading"
-            number={chapter.number}
-            title={chapter.title}
-            subtitle={chapter.subtitle}
-            arc={chapter.emotionalArc}
-            accentKey={chapter.accentKey}
-          />
-        </Container>
-
-        {/* OPENING TYPOGRAPHIC MOMENT */}
-        <Container size="lg" className="relative z-10 w-full mb-16">
-          <div
-            ref={typoMomentRef}
-            className="p-8 sm:p-12 rounded-3xl bg-theme-surface border border-theme-border shadow-lg relative overflow-hidden"
+          initial={!isReduced ? { opacity: 0, scale: 1.06 } : false}
+          animate={{ opacity: 0.12, scale: 1 }}
+          exit={!isReduced ? { opacity: 0 } : undefined}
+          transition={{ duration: 0.45 }}
+          className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
+        >
+          <span
+            className="font-display font-bold uppercase tracking-tight leading-none whitespace-nowrap"
+            style={{
+              fontFamily: "'Bebas Neue', 'Oswald', 'Impact', sans-serif",
+              fontSize: 'clamp(5.5rem, 22vw, 22rem)',
+              WebkitTextStroke: '1.5px var(--color-accent-rose)',
+              color: 'transparent',
+            }}
           >
-            <div className="flex items-center justify-between text-xs font-mono text-theme-muted mb-8 border-b border-theme-border pb-3">
-              <span>EXHIBITION SPECIMEN · CH-04</span>
-              <span className="text-theme-rose uppercase tracking-widest font-semibold">
-                Typography as Architecture
+            {activeSpecimen.backdropWord}
+          </span>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Outlined "04" Watermark */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute top-6 left-6 sm:top-10 sm:left-12 z-0 opacity-20"
+      >
+        <span
+          className="font-serif font-normal block"
+          style={{
+            fontSize: 'clamp(4.5rem, 11vw, 9.5rem)',
+            lineHeight: 0.9,
+            fontVariantNumeric: 'lining-nums',
+            WebkitTextStroke: '1px var(--color-accent-rose)',
+            color: 'transparent',
+          }}
+        >
+          04
+        </span>
+      </div>
+
+      {/* Floating Design Glyphs */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-10 overflow-hidden hidden lg:block">
+        {FLOATING_DESIGN_GLYPHS.map((g) => (
+          <div key={g.id} className={cn('absolute', g.pos)}>
+            <div
+              className={cn(
+                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-sunrise-rose/25 bg-sunrise-rose/10 text-sunrise-rose/80 backdrop-blur-sm opacity-65',
+                !isReduced && g.anim
+              )}
+              style={!isReduced ? { animationDelay: g.delay } : undefined}
+            >
+              {g.icon}
+              <span className="font-mono text-[9px] font-semibold tracking-[0.18em]">
+                {g.tag}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* MAIN STUDIO CONTAINER */}
+      <div className="relative z-20 max-w-6xl mx-auto flex flex-col justify-between space-y-12">
+        {/* TOP HEADER */}
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2.5">
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-sunrise-rose">
+                CHAPTER 04
+              </span>
+              <span className="h-px w-8 bg-cinema-border" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-cinema-muted">
+                INTERACTIVE DESIGN STUDIO
               </span>
             </div>
 
-            <div
-              aria-label="DESIGN IS ANOTHER LANGUAGE"
-              className="text-center py-6 select-none overflow-hidden"
+            <h2
+              id="chapter-04-heading"
+              className="text-fluid-h1 font-serif font-normal tracking-tight text-cinema-text leading-[1.06]"
             >
-              <div className="text-fluid-display font-serif font-normal tracking-tight text-theme-text uppercase flex flex-wrap justify-center gap-x-3 sm:gap-x-5 leading-none">
-                {'DESIGN IS A LANGUAGE'.split('').map((char, i) => (
-                  <span
-                    key={i}
-                    ref={(el) => {
-                      lettersRef.current[i] = el;
-                    }}
-                    className={cn(
-                      'inline-block transition-transform duration-75',
-                      char === ' ' ? 'w-4 sm:w-8' : ''
-                    )}
-                  >
-                    {char}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-6 pt-4 border-t border-theme-border max-w-xl mx-auto text-center">
-              <p className="text-xs sm:text-sm font-serif italic text-theme-muted leading-relaxed">
-                &ldquo;Where code organizes logic, design organizes perception.&rdquo;
-              </p>
-            </div>
+              <Content value={chapter.title} />
+            </h2>
           </div>
-        </Container>
 
-        {/* CATEGORY FILTER CONTROLS */}
-        <Container size="lg" className="relative z-10 w-full mb-8">
-          <div className="flex items-center justify-between flex-wrap gap-4 border-b border-theme-border pb-4">
-            <div className="flex items-center gap-2">
-              <Palette className="w-5 h-5 text-theme-rose" />
-              <h3 className="font-serif font-normal text-xl text-theme-text">Curated Specimen Gallery</h3>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 font-mono text-[11px] text-cinema-muted">
+              <button
+                type="button"
+                onClick={() => selectSpecimen(activeIndex - 1)}
+                aria-label="Previous design specimen"
+                className="p-1.5 rounded-full border border-cinema-border hover:border-sunrise-rose/60 hover:text-sunrise-rose transition-colors cursor-pointer"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+              </button>
+              <span className="px-2 text-cinema-text">
+                0{activeIndex + 1} / 0{STUDIO_SPECIMENS.length}
+              </span>
+              <button
+                type="button"
+                onClick={() => selectSpecimen(activeIndex + 1)}
+                aria-label="Next design specimen"
+                className="p-1.5 rounded-full border border-cinema-border hover:border-sunrise-rose/60 hover:text-sunrise-rose transition-colors cursor-pointer"
+              >
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
 
-            {/* Filter Pills */}
-            <nav
-              aria-label="Design Work Categories"
-              className="flex flex-wrap gap-1.5 p-1 rounded-full bg-theme-surface border border-theme-border text-xs font-mono"
+            <Link
+              href="/design"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-sunrise-rose/40 bg-sunrise-rose/10 font-mono text-[11px] text-sunrise-rose hover:bg-sunrise-rose/20 transition-colors"
             >
-              {categories.map((cat) => (
+              <span>Design Lab</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </header>
+
+        {/* ASYMMETRIC SPLIT STUDIO: Left Specimen Selector + Right Live Sandbox */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          {/* LEFT RAIL: 4 Playable Design Specimens */}
+          <nav
+            aria-label="Design Studio Specimens"
+            className="lg:col-span-4 flex lg:flex-col gap-2.5 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0"
+          >
+            {STUDIO_SPECIMENS.map((spec, idx) => {
+              const isSelected = idx === activeIndex;
+              return (
                 <button
-                  key={cat}
+                  key={spec.id}
                   type="button"
-                  onClick={() => setActiveCategory(cat)}
+                  onClick={() => selectSpecimen(idx)}
                   className={cn(
-                    'px-3.5 py-1 rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-rose',
-                    activeCategory === cat
-                      ? 'bg-theme-rose text-white font-semibold shadow-sm'
-                      : 'text-theme-muted hover:text-theme-text hover:bg-theme-surface-elevated'
+                    'shrink-0 lg:w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 flex items-center justify-between gap-3 cursor-pointer',
+                    isSelected
+                      ? 'border-sunrise-rose/70 bg-sunrise-rose/10 text-cinema-text shadow-[0_0_24px_rgba(255,92,138,0.14)]'
+                      : 'border-cinema-border/50 bg-cinema-surface/30 text-cinema-muted hover:text-cinema-text hover:border-cinema-border'
                   )}
                 >
-                  {cat}
+                  <div className="space-y-0.5 min-w-0">
+                    <div className={cn('font-mono text-[10px] uppercase tracking-[0.18em]', isSelected ? 'text-sunrise-rose' : 'text-cinema-muted/70')}>
+                      {spec.index} · {spec.category}
+                    </div>
+                    <div className="font-serif text-base sm:text-lg truncate">
+                      {spec.title}
+                    </div>
+                  </div>
+                  <Sliders className={cn('w-4 h-4 shrink-0', isSelected ? 'text-sunrise-rose' : 'opacity-40')} />
                 </button>
-              ))}
-            </nav>
-          </div>
-        </Container>
+              );
+            })}
+          </nav>
 
-        {/* GALLERY */}
-        <Container size="lg" className="relative z-10 w-full">
-          {filteredItems.length === 0 ? (
-            /* Graceful short note when gallery is empty in production */
-            <div className="p-12 rounded-2xl border border-dashed border-theme-border bg-theme-surface text-center space-y-3 max-w-2xl mx-auto">
-              <Palette className="w-8 h-8 text-theme-rose/50 mx-auto" />
-              <h4 className="font-serif font-normal text-lg text-theme-text">Curated Archive in Progress</h4>
-              <p className="text-xs text-theme-muted font-sans leading-relaxed">
-                Visual design specimens, brand identities, and typography explorations are currently being cataloged and prepared for exhibition.
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-6 items-start">
-              {filteredItems.map((item, index) => {
-                // Asymmetric editorial rhythm: alternating 7-col, 5-col, and 12-col spans
-                const spanClasses =
-                  index % 3 === 0
-                    ? 'lg:col-span-7'
-                    : index % 3 === 1
-                    ? 'lg:col-span-5'
-                    : 'lg:col-span-12';
+          {/* RIGHT STAGE: Open Interactive Design Sandbox */}
+          <div className="lg:col-span-8 min-h-[340px] flex flex-col justify-center">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeSpecimen.id}
+                initial={!isReduced ? { opacity: 0, y: 18, filter: 'brightness(1.35)' } : false}
+                animate={{ opacity: 1, y: 0, filter: 'brightness(1)' }}
+                exit={!isReduced ? { opacity: 0, y: -14 } : undefined}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className="space-y-6"
+              >
+                {/* Open Editorial Header */}
+                <div className="border-l-2 border-sunrise-rose pl-5 sm:pl-7 space-y-2">
+                  <div className="font-mono text-xs uppercase tracking-[0.22em] text-sunrise-rose">
+                    SPECIMEN {activeSpecimen.index} · {activeSpecimen.category}
+                  </div>
+                  <h3
+                    className="font-serif text-cinema-text tracking-tight leading-[1.04]"
+                    style={{ fontSize: 'clamp(2.1rem, 4.5vw, 3.5rem)' }}
+                  >
+                    {activeSpecimen.title}
+                  </h3>
+                  <p className="font-serif italic text-sm sm:text-base text-cinema-muted">
+                    &ldquo;{activeSpecimen.subtitle}&rdquo;
+                  </p>
+                </div>
 
-                const titleText = getContentText(item.title) || '';
-
-                return (
-                  <div key={item.id} className={spanClasses}>
-                    <Card
-                      withWash
-                      hoverEffect
-                      data-cursor="view"
-                      data-cursor-label="VIEW"
-                      className="group cursor-pointer overflow-hidden p-5 sm:p-6 border-theme-border/80 bg-theme-surface flex flex-col justify-between h-full transition-all duration-300 focus-within:ring-2 focus-within:ring-theme-rose"
-                      onClick={() => openLightbox(index)}
-                      onMouseEnter={(e) => handleMouseEnter(titleText, e)}
-                      onMouseMove={handleMouseMove}
-                      onMouseLeave={handleMouseLeave}
-                    >
-                      <div className="flex items-center justify-between text-xs font-mono text-theme-muted mb-3 border-b border-theme-border pb-2.5">
-                        <span className="text-theme-rose font-semibold">{item.category}</span>
-                        <div className="flex items-center gap-2">
-                          {item.year && <span>{item.year}</span>}
-                          {showDebug && item.isPlaceholder && (
-                            <span className="px-1.5 py-0.5 rounded bg-theme-surface-elevated text-[9px] text-theme-rose border border-theme-border">
-                              DEV
-                            </span>
+                {/* ---------------------------------------------------------- */}
+                {/* SPECIMEN 01: LIVE TYPOGRAPHY PLAYGROUND                    */}
+                {/* ---------------------------------------------------------- */}
+                {activeIndex === 0 && (
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap items-center gap-2 font-mono text-[10px]">
+                      {(['serif', 'display', 'mono'] as const).map((f) => (
+                        <button
+                          key={f}
+                          type="button"
+                          onClick={() => setTypeFace(f)}
+                          className={cn(
+                            'px-3 py-1 rounded-full border uppercase tracking-wider cursor-pointer transition-all',
+                            typeFace === f
+                              ? 'border-sunrise-rose bg-sunrise-rose/20 text-sunrise-rose'
+                              : 'border-cinema-border text-cinema-muted hover:text-cinema-text'
                           )}
-                        </div>
-                      </div>
+                        >
+                          {f}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => setTypeTracking((t) => (t === 'tight' ? 'wide' : 'tight'))}
+                        className="px-3 py-1 rounded-full border border-sunrise-rose/40 text-sunrise-rose hover:bg-sunrise-rose/15 cursor-pointer ml-auto"
+                      >
+                        Tracking: {typeTracking.toUpperCase()}
+                      </button>
+                    </div>
 
-                      {/* Image container with clip-path reveal and next/image */}
+                    <div className="py-6 px-5 rounded-xl border border-sunrise-rose/25 bg-cinema-surface/50 backdrop-blur-md text-center overflow-hidden">
                       <div
                         className={cn(
-                          'relative w-full rounded-xl overflow-hidden bg-theme-surface-elevated border border-theme-border/60 transition-transform duration-500 ease-out group-hover:scale-[1.01]',
-                          item.aspectRatio === 'landscape'
-                            ? 'aspect-[16/10]'
-                            : item.aspectRatio === 'square'
-                            ? 'aspect-square'
-                            : 'aspect-[4/5]'
+                          'text-3xl sm:text-5xl text-cinema-text leading-tight transition-all duration-300',
+                          typeFace === 'serif' && 'font-serif italic',
+                          typeFace === 'display' && 'font-display uppercase font-bold',
+                          typeFace === 'mono' && 'font-mono uppercase',
+                          typeTracking === 'tight' ? 'tracking-tight' : 'tracking-[0.2em]'
                         )}
-                        style={
-                          isReduced
-                            ? undefined
-                            : {
-                                clipPath: 'inset(0% 0% 0% 0% round 0.75rem)',
-                              }
-                        }
                       >
-                        <Image
-                          src={item.image}
-                          alt={getContentText(item.alt) || 'Design piece'}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 45vw"
-                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                          placeholder="blur"
-                          blurDataURL={item.blurDataUrl}
-                          loading="lazy"
-                        />
+                        DESIGN IS A LANGUAGE
                       </div>
+                    </div>
+                  </div>
+                )}
 
-                      <div className="mt-4 space-y-1.5">
-                        <h4 className="font-serif font-normal text-xl sm:text-2xl text-theme-text group-hover:text-theme-rose transition-colors">
-                          <Content value={item.title} />
-                        </h4>
-                        <p className="text-xs text-theme-muted line-clamp-2 leading-relaxed">
-                          <Content value={item.description} />
-                        </p>
-                      </div>
-
-                      <div className="mt-5 pt-3 border-t border-theme-border flex items-center justify-between text-[11px] font-mono text-theme-muted">
-                        <div className="flex items-center gap-1.5">
-                          {item.processStages && (
-                            <span className="inline-flex items-center gap-1 text-theme-rose">
-                              <Sliders className="w-3 h-3" />
-                              <span>Process View</span>
-                            </span>
+                {/* ---------------------------------------------------------- */}
+                {/* SPECIMEN 02: LIVE SUNRISE-RAMP COLOR & CONTRAST LAB        */}
+                {/* ---------------------------------------------------------- */}
+                {activeIndex === 1 && (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-5 gap-2">
+                      {SUNRISE_SWATCHES.map((sw, idx) => (
+                        <button
+                          key={sw.name}
+                          type="button"
+                          onClick={() => setSwatchIdx(idx)}
+                          className={cn(
+                            'p-3 rounded-xl border transition-all text-left space-y-2 cursor-pointer',
+                            idx === swatchIdx
+                              ? `${sw.borderClass} bg-cinema-surface`
+                              : 'border-cinema-border/60 bg-cinema-surface/30 hover:border-cinema-border'
                           )}
-                        </div>
-                        <span className="text-theme-rose font-medium group-hover:underline flex items-center gap-1">
-                          <span>Inspect Specimen</span>
-                          <ArrowUpRight className="w-3 h-3" />
+                        >
+                          <div className={cn('w-full h-6 rounded-md', sw.bgClass)} />
+                          <div className="font-mono text-[10px] text-cinema-text">{sw.name}</div>
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="px-5 py-4 rounded-xl border border-cinema-border bg-cinema-surface/60 flex items-center justify-between font-mono text-xs">
+                      <div className="flex items-center gap-3">
+                        <span className={cn('w-3 h-3 rounded-full', SUNRISE_SWATCHES[swatchIdx].bgClass)} />
+                        <span className="text-cinema-text">
+                          {SUNRISE_SWATCHES[swatchIdx].name} · {SUNRISE_SWATCHES[swatchIdx].token}
                         </span>
                       </div>
-                    </Card>
+                      <span className={SUNRISE_SWATCHES[swatchIdx].textClass}>
+                        WCAG {SUNRISE_SWATCHES[swatchIdx].ratio}
+                      </span>
+                    </div>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </Container>
+                )}
 
-        {/* Narrative Bridge to Chapter 05 (Rule 5: Quiet first-person line) */}
-        <Container size="lg" className="relative z-10 w-full pt-16 pb-4">
-          <p className="text-sm sm:text-base font-serif italic text-theme-muted text-center sm:text-left max-w-2xl leading-relaxed">
+                {/* ---------------------------------------------------------- */}
+                {/* SPECIMEN 03: INTERACTIVE GOLDEN-RATIO GEOMETRY COMPOSER    */}
+                {/* ---------------------------------------------------------- */}
+                {activeIndex === 2 && (
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap gap-2 font-mono text-[10px]">
+                      {(['grid', 'circle', 'golden'] as const).map((layerKey) => (
+                        <button
+                          key={layerKey}
+                          type="button"
+                          onClick={() =>
+                            setLayers((prev) => ({ ...prev, [layerKey]: !prev[layerKey] }))
+                          }
+                          className={cn(
+                            'px-3 py-1 rounded-full border uppercase tracking-wider cursor-pointer transition-all',
+                            layers[layerKey]
+                              ? 'border-sunrise-rose bg-sunrise-rose/20 text-sunrise-rose'
+                              : 'border-cinema-border text-cinema-muted hover:text-cinema-text'
+                          )}
+                        >
+                          {layerKey}: {layers[layerKey] ? 'ON' : 'OFF'}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="h-44 rounded-xl border border-sunrise-rose/25 bg-cinema-surface/40 flex items-center justify-center relative overflow-hidden">
+                      <svg viewBox="0 0 320 160" fill="none" className="w-full h-full" aria-hidden="true">
+                        {layers.grid && (
+                          <g stroke="var(--color-border-strong)" strokeWidth="0.7" opacity="0.55">
+                            <line x1="0" y1="80" x2="320" y2="80" strokeDasharray="3 3" />
+                            <line x1="160" y1="0" x2="160" y2="160" strokeDasharray="3 3" />
+                            <rect x="60" y="20" width="200" height="120" />
+                          </g>
+                        )}
+                        {layers.circle && (
+                          <g stroke="var(--color-accent-rose)" fill="none">
+                            <circle cx="160" cy="80" r="56" strokeWidth="1.5" />
+                            <circle cx="160" cy="80" r="34" strokeWidth="1" strokeDasharray="4 4" />
+                          </g>
+                        )}
+                        {layers.golden && (
+                          <g stroke="var(--color-accent-gold)" fill="none">
+                            <path d="M 160,80 A 21 21 0 0 1 181,59 A 34 34 0 0 1 215,93 A 55 55 0 0 1 160,148" strokeWidth="1.6" />
+                            <circle cx="160" cy="80" r="3.5" fill="var(--color-accent-rose)" stroke="none" />
+                          </g>
+                        )}
+                      </svg>
+                    </div>
+                  </div>
+                )}
+
+                {/* ---------------------------------------------------------- */}
+                {/* SPECIMEN 04: MOTION EASING & SPRING PLAYGROUND             */}
+                {/* ---------------------------------------------------------- */}
+                {activeIndex === 3 && (
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-[10px]">
+                      <div className="flex gap-2">
+                        {(['cinema', 'snappy', 'spring'] as const).map((preset) => (
+                          <button
+                            key={preset}
+                            type="button"
+                            onClick={() => {
+                              setMotionPreset(preset);
+                              setMotionPulse((p) => p + 1);
+                            }}
+                            className={cn(
+                              'px-3 py-1 rounded-full border uppercase tracking-wider cursor-pointer transition-all',
+                              motionPreset === preset
+                                ? 'border-sunrise-rose bg-sunrise-rose/20 text-sunrise-rose'
+                                : 'border-cinema-border text-cinema-muted hover:text-cinema-text'
+                            )}
+                          >
+                            {preset}
+                          </button>
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setMotionPulse((p) => p + 1)}
+                        className="px-3 py-1 rounded-full border border-sunrise-rose/50 bg-sunrise-rose/15 text-sunrise-rose cursor-pointer"
+                      >
+                        Replay ⚡
+                      </button>
+                    </div>
+
+                    <div className="h-24 px-6 rounded-xl border border-sunrise-rose/25 bg-cinema-surface/40 flex items-center relative overflow-hidden">
+                      <div className="w-full h-px bg-cinema-border relative flex items-center">
+                        <motion.div
+                          key={`${motionPreset}-${motionPulse}`}
+                          initial={!isReduced ? { x: 0 } : false}
+                          animate={{ x: 'calc(100% - 28px)' }}
+                          transition={
+                            motionPreset === 'spring'
+                              ? { type: 'spring', stiffness: 260, damping: 16 }
+                              : motionPreset === 'snappy'
+                                ? { duration: 0.35, ease: [0.16, 1, 0.3, 1] }
+                                : { duration: 0.9, ease: [0.22, 1, 0.36, 1] }
+                          }
+                          className="w-7 h-7 rounded-full bg-sunrise-rose shadow-[0_0_20px_var(--color-accent-rose)]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Narrative Bridge to Chapter 05 */}
+        <footer className="pt-8 border-t border-cinema-border/40">
+          <p className="text-sm sm:text-base font-serif italic text-cinema-muted max-w-2xl leading-relaxed">
             &ldquo;<Content value={chapter.bridge} />&rdquo;
           </p>
-        </Container>
+        </footer>
       </div>
-
-      {/* Floating cursor lens (desktop only) */}
-      {lensPos && !isReduced && (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none fixed z-40 hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-theme-surface border border-theme-rose/50 text-theme-rose text-[11px] font-mono shadow-2xl backdrop-blur-md transform -translate-x-1/2 -translate-y-12 transition-transform duration-75"
-          style={{
-            left: `${lensPos.x}px`,
-            top: `${lensPos.y}px`,
-          }}
-        >
-          <Eye className="w-3.5 h-3.5" />
-          <span className="font-medium truncate max-w-[160px]">{lensText}</span>
-        </div>
-      )}
-
-      {/* Lightbox with Focus Trap, Keyboard & Swipe Navigation */}
-      <DesignLightbox
-        isOpen={lightboxOpen}
-        onClose={() => setLightboxOpen(false)}
-        items={filteredItems}
-        initialIndex={lightboxIndex}
-      />
     </article>
   );
 }
