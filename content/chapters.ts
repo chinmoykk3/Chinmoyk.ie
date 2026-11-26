@@ -208,14 +208,18 @@ export interface ChapterList extends Array<Chapter> {
 
 const list = [...validatedChapters] as ChapterList;
 
+const HIDDEN_CHAPTER_IDS = new Set(['chapter-05', 'chapter-06']);
+
 /**
  * Requirement 9: Chapter 07 auto-hides if beyond.ts is empty
+ * Chapters 05 and 06 are hidden for now.
  */
 list.visible = function (): Chapter[] {
-  if (!hasBeyondContent()) {
-    return list.filter((ch) => ch.id !== 'chapter-07');
-  }
-  return list;
+  return list.filter((ch) => {
+    if (HIDDEN_CHAPTER_IDS.has(ch.id)) return false;
+    if (ch.id === 'chapter-07' && !hasBeyondContent()) return false;
+    return true;
+  });
 };
 
 export const chapters: ChapterList = list;
