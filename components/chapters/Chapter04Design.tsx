@@ -1,22 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Chapter } from '@/content/chapters';
 import { useMotion } from '@/hooks/useMotion';
 import { Content } from '@/components/content/Content';
-import { usePolish } from '@/components/polish/PolishContext';
 import {
-  ArrowLeft,
-  ArrowRight,
   ArrowUpRight,
   Compass,
   Eye,
+  Grid,
   Layers,
   Palette,
   PenTool,
-  Sliders,
+  Shuffle,
   Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -25,90 +23,66 @@ export interface Chapter04DesignProps {
   chapter: Chapter;
 }
 
-const STUDIO_SPECIMENS = [
-  {
-    id: 'kinetic-type',
-    index: '01',
-    category: 'Typography',
-    title: 'Typography as Architecture',
-    subtitle: 'Where code organizes logic, typography organizes perception.',
-    backdropWord: 'TYPEFACE',
-  },
-  {
-    id: 'color-system',
-    index: '02',
-    category: 'Color Systems',
-    title: 'The Sunrise-Ramp Spectrum',
-    subtitle: 'Pure neutral blacks paired with calibrated WCAG AA accent radiance.',
-    backdropWord: 'SPECTRUM',
-  },
-  {
-    id: 'golden-grid',
-    index: '03',
-    category: 'Composition',
-    title: 'Modular Grid & 1.618',
-    subtitle: 'Mathematical proportion turned into calm visual hierarchy.',
-    backdropWord: 'GEOMETRY',
-  },
-  {
-    id: 'motion-feel',
-    index: '04',
-    category: 'Motion Craft',
-    title: 'Physics of Micro-Interaction',
-    subtitle: 'Every transition is paced to feel tactile, deliberate, and weightless.',
-    backdropWord: 'KINETICS',
-  },
+type PosterMood = 'Swiss' | 'Editorial' | 'Brutalist' | 'Orbital';
+type ProcessStage = 'sketch' | 'wireframe' | 'final';
+
+const MOODS: PosterMood[] = ['Swiss', 'Editorial', 'Brutalist', 'Orbital'];
+const STAGES: { id: ProcessStage; label: string }[] = [
+  { id: 'sketch', label: '01 · Sketch' },
+  { id: 'wireframe', label: '02 · Wireframe' },
+  { id: 'final', label: '03 · Final' },
+];
+
+const INK_PALETTE = [
+  { name: 'Rose', varColor: 'var(--color-accent-rose)', textClass: 'text-sunrise-rose', bgClass: 'bg-sunrise-rose', borderClass: 'border-sunrise-rose' },
+  { name: 'Iris', varColor: 'var(--color-accent-iris)', textClass: 'text-sunrise-iris', bgClass: 'bg-sunrise-iris', borderClass: 'border-sunrise-iris' },
+  { name: 'Azure', varColor: 'var(--color-accent-azure)', textClass: 'text-sunrise-azure', bgClass: 'bg-sunrise-azure', borderClass: 'border-sunrise-azure' },
+  { name: 'Ember', varColor: 'var(--color-accent-ember)', textClass: 'text-sunrise-ember', bgClass: 'bg-sunrise-ember', borderClass: 'border-sunrise-ember' },
+  { name: 'Gold', varColor: 'var(--color-accent-gold)', textClass: 'text-cinema-gold', bgClass: 'bg-cinema-gold', borderClass: 'border-cinema-gold' },
 ] as const;
 
 const FLOATING_DESIGN_GLYPHS = [
   { id: 'd-1', pos: 'top-[13%] left-[5%]', anim: 'animate-ch02-vibe-1', delay: '0s', tag: 'BEZIER', icon: <PenTool className="w-4 h-4" /> },
   { id: 'd-2', pos: 'top-[16%] right-[6%]', anim: 'animate-ch02-vibe-2', delay: '-1.5s', tag: 'COLOR', icon: <Palette className="w-4 h-4" /> },
-  { id: 'd-3', pos: 'top-[48%] left-[3%]', anim: 'animate-ch02-vibe-3', delay: '-2.7s', tag: 'GRID', icon: <Layers className="w-4 h-4" /> },
-  { id: 'd-4', pos: 'top-[50%] right-[4%]', anim: 'animate-ch02-vibe-1', delay: '-1.1s', tag: 'FOCUS', icon: <Eye className="w-4 h-4" /> },
-  { id: 'd-5', pos: 'bottom-[15%] left-[7%]', anim: 'animate-ch02-vibe-2', delay: '-3.3s', tag: '1.618', icon: <Compass className="w-4 h-4" /> },
-  { id: 'd-6', pos: 'bottom-[14%] right-[8%]', anim: 'animate-ch02-vibe-3', delay: '-2.0s', tag: 'CRAFT', icon: <Sparkles className="w-4 h-4" /> },
+  { id: 'd-3', pos: 'top-[50%] left-[3%]', anim: 'animate-ch02-vibe-3', delay: '-2.7s', tag: 'GRID', icon: <Layers className="w-4 h-4" /> },
+  { id: 'd-4', pos: 'top-[52%] right-[4%]', anim: 'animate-ch02-vibe-1', delay: '-1.1s', tag: 'FOCUS', icon: <Eye className="w-4 h-4" /> },
+  { id: 'd-5', pos: 'bottom-[15%] left-[6%]', anim: 'animate-ch02-vibe-2', delay: '-3.3s', tag: '1.618', icon: <Compass className="w-4 h-4" /> },
+  { id: 'd-6', pos: 'bottom-[14%] right-[7%]', anim: 'animate-ch02-vibe-3', delay: '-2.0s', tag: 'CRAFT', icon: <Sparkles className="w-4 h-4" /> },
 ];
-
-const SUNRISE_SWATCHES = [
-  { name: 'Azure', token: 'Systems', bgClass: 'bg-sunrise-azure', textClass: 'text-sunrise-azure', borderClass: 'border-sunrise-azure', ratio: '6.34:1 AA' },
-  { name: 'Iris', token: 'Intelligence', bgClass: 'bg-sunrise-iris', textClass: 'text-sunrise-iris', borderClass: 'border-sunrise-iris', ratio: '6.75:1 AA' },
-  { name: 'Rose', token: 'Expression', bgClass: 'bg-sunrise-rose', textClass: 'text-sunrise-rose', borderClass: 'border-sunrise-rose', ratio: '5.54:1 AA' },
-  { name: 'Ember', token: 'Frontiers', bgClass: 'bg-sunrise-ember', textClass: 'text-sunrise-ember', borderClass: 'border-sunrise-ember', ratio: '5.18:1 AA' },
-  { name: 'Gold', token: 'Curiosity', bgClass: 'bg-cinema-gold', textClass: 'text-cinema-gold', borderClass: 'border-cinema-gold', ratio: '13.6:1 AAA' },
-] as const;
 
 export function Chapter04Design({ chapter }: Chapter04DesignProps) {
   const { motionEnabled, prefersReducedMotion } = useMotion();
-  const { triggerLowerThird } = usePolish();
   const isReduced = prefersReducedMotion || !motionEnabled;
 
-  const [activeIndex, setActiveIndex] = useState(0);
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const [mood, setMood] = useState<PosterMood>('Editorial');
+  const [stage, setStage] = useState<ProcessStage>('final');
+  const [inkIdx, setInkIdx] = useState(0);
+  const [showGrid, setShowGrid] = useState(true);
+  const [focal, setFocal] = useState<{ x: number; y: number }>({ x: 52, y: 48 });
+  const [seed, setSeed] = useState('A4F9');
 
-  // Specimen 01 state: Typography Playground
-  const [typeFace, setTypeFace] = useState<'serif' | 'display' | 'mono'>('serif');
-  const [typeTracking, setTypeTracking] = useState<'tight' | 'wide'>('tight');
+  const ink = INK_PALETTE[inkIdx];
 
-  // Specimen 02 state: Color System Explorer
-  const [swatchIdx, setSwatchIdx] = useState(2); // Rose default
-
-  // Specimen 03 state: Modular Geometry Layers
-  const [layers, setLayers] = useState({ grid: true, circle: true, golden: true });
-
-  // Specimen 04 state: Motion Easing Playground
-  const [motionPreset, setMotionPreset] = useState<'cinema' | 'snappy' | 'spring'>('cinema');
-  const [motionPulse, setMotionPulse] = useState(0);
-
-  const activeSpecimen = STUDIO_SPECIMENS[activeIndex];
-
-  const selectSpecimen = (idx: number) => {
-    const clamped = (idx + STUDIO_SPECIMENS.length) % STUDIO_SPECIMENS.length;
-    setActiveIndex(clamped);
-    const s = STUDIO_SPECIMENS[clamped];
-    triggerLowerThird({
-      title: s.title,
-      subtitle: s.subtitle,
-      category: s.category,
+  const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+    const y = Math.round(((e.clientY - rect.top) / rect.height) * 100);
+    setFocal({
+      x: Math.max(15, Math.min(85, x)),
+      y: Math.max(18, Math.min(82, y)),
     });
+  };
+
+  const handleRandomize = () => {
+    setMood(MOODS[Math.floor(Math.random() * MOODS.length)]);
+    setInkIdx(Math.floor(Math.random() * INK_PALETTE.length));
+    setFocal({
+      x: 25 + Math.floor(Math.random() * 50),
+      y: 25 + Math.floor(Math.random() * 50),
+    });
+    setSeed(Math.random().toString(16).substring(2, 6).toUpperCase());
   };
 
   return (
@@ -119,50 +93,32 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
       aria-labelledby="chapter-04-heading"
       className="relative w-full min-h-[100dvh] bg-cinema-bg text-cinema-text py-20 sm:py-28 px-5 sm:px-10 lg:px-16 overflow-hidden border-t border-cinema-border/40 select-none"
     >
-      {/* Rose Spotlight Wash */}
+      {/* Dynamic Ink Ambient Wash */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0"
+        className="pointer-events-none absolute inset-0 z-0 transition-all duration-500"
         style={{
-          background:
-            'radial-gradient(ellipse 65% 55% at 55% 50%, rgba(255, 92, 138, 0.16) 0%, transparent 75%)',
-        }}
-      />
-
-      {/* Diagonal Editorial Rule Lines */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 opacity-[0.06]"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(-35deg, var(--color-accent-rose) 0px, var(--color-accent-rose) 1px, transparent 1px, transparent 84px)',
+          background: `radial-gradient(ellipse 65% 55% at 50% 50%, color-mix(in srgb, ${ink.varColor} 14%, transparent) 0%, transparent 75%)`,
         }}
       />
 
       {/* Giant Kinetic Outlined Backdrop Word */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={`ch04-bg-${activeSpecimen.backdropWord}`}
-          aria-hidden="true"
-          initial={!isReduced ? { opacity: 0, scale: 1.06 } : false}
-          animate={{ opacity: 0.12, scale: 1 }}
-          exit={!isReduced ? { opacity: 0 } : undefined}
-          transition={{ duration: 0.45 }}
-          className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden opacity-[0.11]"
+      >
+        <span
+          className="font-display font-bold uppercase tracking-tight leading-none whitespace-nowrap transition-all duration-500"
+          style={{
+            fontFamily: "'Bebas Neue', 'Oswald', 'Impact', sans-serif",
+            fontSize: 'clamp(5.5rem, 22vw, 22rem)',
+            WebkitTextStroke: `1.5px ${ink.varColor}`,
+            color: 'transparent',
+          }}
         >
-          <span
-            className="font-display font-bold uppercase tracking-tight leading-none whitespace-nowrap"
-            style={{
-              fontFamily: "'Bebas Neue', 'Oswald', 'Impact', sans-serif",
-              fontSize: 'clamp(5.5rem, 22vw, 22rem)',
-              WebkitTextStroke: '1.5px var(--color-accent-rose)',
-              color: 'transparent',
-            }}
-          >
-            {activeSpecimen.backdropWord}
-          </span>
-        </motion.div>
-      </AnimatePresence>
+          {mood}
+        </span>
+      </div>
 
       {/* Outlined "04" Watermark */}
       <div
@@ -175,7 +131,7 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
             fontSize: 'clamp(4.5rem, 11vw, 9.5rem)',
             lineHeight: 0.9,
             fontVariantNumeric: 'lining-nums',
-            WebkitTextStroke: '1px var(--color-accent-rose)',
+            WebkitTextStroke: `1px ${ink.varColor}`,
             color: 'transparent',
           }}
         >
@@ -189,7 +145,8 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
           <div key={g.id} className={cn('absolute', g.pos)}>
             <div
               className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-sunrise-rose/25 bg-sunrise-rose/10 text-sunrise-rose/80 backdrop-blur-sm opacity-65',
+                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-cinema-border/70 bg-cinema-surface/60 backdrop-blur-sm opacity-65',
+                ink.textClass,
                 !isReduced && g.anim
               )}
               style={!isReduced ? { animationDelay: g.delay } : undefined}
@@ -203,18 +160,18 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
         ))}
       </div>
 
-      {/* MAIN STUDIO CONTAINER */}
-      <div className="relative z-20 max-w-6xl mx-auto flex flex-col justify-between space-y-12">
-        {/* TOP HEADER */}
+      {/* MAIN CREATIVE STUDIO */}
+      <div className="relative z-20 max-w-6xl mx-auto space-y-10">
+        {/* Header */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2.5">
-              <span className="font-mono text-xs uppercase tracking-[0.25em] text-sunrise-rose">
+              <span className={cn('font-mono text-xs uppercase tracking-[0.25em]', ink.textClass)}>
                 CHAPTER 04
               </span>
               <span className="h-px w-8 bg-cinema-border" />
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-cinema-muted">
-                INTERACTIVE DESIGN STUDIO
+                GENERATIVE POSTER CANVAS
               </span>
             </div>
 
@@ -224,34 +181,28 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
             >
               <Content value={chapter.title} />
             </h2>
+            <p className="font-serif italic text-sm sm:text-base text-cinema-muted">
+              &ldquo;Where code organizes logic, design organizes perception.&rdquo;
+            </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 font-mono text-[11px] text-cinema-muted">
-              <button
-                type="button"
-                onClick={() => selectSpecimen(activeIndex - 1)}
-                aria-label="Previous design specimen"
-                className="p-1.5 rounded-full border border-cinema-border hover:border-sunrise-rose/60 hover:text-sunrise-rose transition-colors cursor-pointer"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" />
-              </button>
-              <span className="px-2 text-cinema-text">
-                0{activeIndex + 1} / 0{STUDIO_SPECIMENS.length}
-              </span>
-              <button
-                type="button"
-                onClick={() => selectSpecimen(activeIndex + 1)}
-                aria-label="Next design specimen"
-                className="p-1.5 rounded-full border border-cinema-border hover:border-sunrise-rose/60 hover:text-sunrise-rose transition-colors cursor-pointer"
-              >
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={handleRandomize}
+              className={cn(
+                'inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-cinema-surface/80 font-mono text-xs uppercase tracking-[0.16em] transition-all cursor-pointer hover:opacity-90',
+                ink.borderClass,
+                ink.textClass
+              )}
+            >
+              <Shuffle className="w-3.5 h-3.5" />
+              <span>Randomize #{seed}</span>
+            </button>
 
             <Link
               href="/design"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-sunrise-rose/40 bg-sunrise-rose/10 font-mono text-[11px] text-sunrise-rose hover:bg-sunrise-rose/20 transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-cinema-border bg-cinema-surface/60 font-mono text-xs uppercase tracking-[0.16em] text-cinema-text hover:border-cinema-gold/60 transition-colors"
             >
               <span>Design Lab</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -259,259 +210,243 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
           </div>
         </header>
 
-        {/* ASYMMETRIC SPLIT STUDIO: Left Specimen Selector + Right Live Sandbox */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          {/* LEFT RAIL: 4 Playable Design Specimens */}
-          <nav
-            aria-label="Design Studio Specimens"
-            className="lg:col-span-4 flex lg:flex-col gap-2.5 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0"
-          >
-            {STUDIO_SPECIMENS.map((spec, idx) => {
-              const isSelected = idx === activeIndex;
-              return (
-                <button
-                  key={spec.id}
-                  type="button"
-                  onClick={() => selectSpecimen(idx)}
-                  className={cn(
-                    'shrink-0 lg:w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 flex items-center justify-between gap-3 cursor-pointer',
-                    isSelected
-                      ? 'border-sunrise-rose/70 bg-sunrise-rose/10 text-cinema-text shadow-[0_0_24px_rgba(255,92,138,0.14)]'
-                      : 'border-cinema-border/50 bg-cinema-surface/30 text-cinema-muted hover:text-cinema-text hover:border-cinema-border'
-                  )}
-                >
-                  <div className="space-y-0.5 min-w-0">
-                    <div className={cn('font-mono text-[10px] uppercase tracking-[0.18em]', isSelected ? 'text-sunrise-rose' : 'text-cinema-muted/70')}>
-                      {spec.index} · {spec.category}
-                    </div>
-                    <div className="font-serif text-base sm:text-lg truncate">
-                      {spec.title}
-                    </div>
-                  </div>
-                  <Sliders className={cn('w-4 h-4 shrink-0', isSelected ? 'text-sunrise-rose' : 'opacity-40')} />
-                </button>
-              );
-            })}
-          </nav>
-
-          {/* RIGHT STAGE: Open Interactive Design Sandbox */}
-          <div className="lg:col-span-8 min-h-[340px] flex flex-col justify-center">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeSpecimen.id}
-                initial={!isReduced ? { opacity: 0, y: 18, filter: 'brightness(1.35)' } : false}
-                animate={{ opacity: 1, y: 0, filter: 'brightness(1)' }}
-                exit={!isReduced ? { opacity: 0, y: -14 } : undefined}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="space-y-6"
-              >
-                {/* Open Editorial Header */}
-                <div className="border-l-2 border-sunrise-rose pl-5 sm:pl-7 space-y-2">
-                  <div className="font-mono text-xs uppercase tracking-[0.22em] text-sunrise-rose">
-                    SPECIMEN {activeSpecimen.index} · {activeSpecimen.category}
-                  </div>
-                  <h3
-                    className="font-serif text-cinema-text tracking-tight leading-[1.04]"
-                    style={{ fontSize: 'clamp(2.1rem, 4.5vw, 3.5rem)' }}
+        {/* FULL-STAGE INTERACTIVE POSTER GENERATOR + PROCESS SCRUBBER */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* LEFT: Tactile Studio Controls */}
+          <div className="lg:col-span-4 space-y-6">
+            {/* 1. Mood / Layout Selector */}
+            <div className="space-y-2.5">
+              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-cinema-muted block">
+                01 · Composition Mood
+              </span>
+              <div className="grid grid-cols-2 gap-2 font-mono text-xs">
+                {MOODS.map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => setMood(m)}
+                    className={cn(
+                      'px-3 py-2 rounded-xl border text-left transition-all cursor-pointer',
+                      mood === m
+                        ? `${ink.borderClass} bg-cinema-surface text-cinema-text`
+                        : 'border-cinema-border/60 bg-cinema-surface/30 text-cinema-muted hover:text-cinema-text'
+                    )}
                   >
-                    {activeSpecimen.title}
-                  </h3>
-                  <p className="font-serif italic text-sm sm:text-base text-cinema-muted">
-                    &ldquo;{activeSpecimen.subtitle}&rdquo;
-                  </p>
+                    {m}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 2. Ink Swatch Selector */}
+            <div className="space-y-2.5">
+              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-cinema-muted block">
+                02 · Accent Ink
+              </span>
+              <div className="flex items-center gap-2.5">
+                {INK_PALETTE.map((sw, idx) => (
+                  <button
+                    key={sw.name}
+                    type="button"
+                    onClick={() => setInkIdx(idx)}
+                    aria-label={`Select ${sw.name} ink`}
+                    className={cn(
+                      'w-8 h-8 rounded-full transition-all cursor-pointer flex items-center justify-center',
+                      sw.bgClass,
+                      idx === inkIdx ? 'scale-110 ring-2 ring-cinema-text ring-offset-2 ring-offset-cinema-bg' : 'opacity-60 hover:opacity-100'
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* 3. Process Stage Scrubber (Sketch -> Wireframe -> Final) */}
+            <div className="space-y-2.5">
+              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-cinema-muted block">
+                03 · Design Process Stage
+              </span>
+              <div className="flex flex-col gap-1.5 font-mono text-[11px]">
+                {STAGES.map((st) => (
+                  <button
+                    key={st.id}
+                    type="button"
+                    onClick={() => setStage(st.id)}
+                    className={cn(
+                      'px-3.5 py-2 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between',
+                      stage === st.id
+                        ? `${ink.borderClass} bg-cinema-surface text-cinema-text`
+                        : 'border-cinema-border/60 bg-cinema-surface/30 text-cinema-muted hover:text-cinema-text'
+                    )}
+                  >
+                    <span>{st.label}</span>
+                    {stage === st.id && <span className={cn('w-2 h-2 rounded-full', ink.bgClass)} />}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 4. Grid Toggle + Live Coordinates */}
+            <div className="flex items-center justify-between pt-2 border-t border-cinema-border/60 font-mono text-[10px] text-cinema-muted">
+              <button
+                type="button"
+                onClick={() => setShowGrid((g) => !g)}
+                className={cn(
+                  'inline-flex items-center gap-1.5 px-3 py-1 rounded-full border cursor-pointer transition-colors',
+                  showGrid ? `${ink.borderClass} ${ink.textClass}` : 'border-cinema-border text-cinema-muted'
+                )}
+              >
+                <Grid className="w-3 h-3" />
+                <span>Grid: {showGrid ? 'ON' : 'OFF'}</span>
+              </button>
+              <span>
+                FOCAL: {focal.x}%, {focal.y}%
+              </span>
+            </div>
+          </div>
+
+          {/* RIGHT: Interactive Click-to-Sculpt Live Poster Canvas */}
+          <div className="lg:col-span-8">
+            <div
+              ref={canvasRef}
+              onClick={handleCanvasClick}
+              role="application"
+              aria-label="Interactive generative poster canvas. Click anywhere inside to reposition the focal point."
+              className="relative w-full h-[360px] sm:h-[420px] rounded-2xl border border-cinema-border bg-cinema-surface/55 backdrop-blur-md overflow-hidden cursor-crosshair shadow-2xl"
+            >
+              {/* Optional Swiss Construction Grid */}
+              {showGrid && (
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 opacity-20"
+                  style={{
+                    backgroundImage: `linear-gradient(to right, ${ink.varColor} 1px, transparent 1px), linear-gradient(to bottom, ${ink.varColor} 1px, transparent 1px)`,
+                    backgroundSize: '40px 40px',
+                  }}
+                />
+              )}
+
+              {/* Live SVG Geometric Artwork (Reacts to Mood + Stage + Click Focal Point) */}
+              <svg viewBox="0 0 600 400" fill="none" className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true">
+                {/* Ambient glow at focal point (Final stage only) */}
+                {stage === 'final' && (
+                  <circle
+                    cx={focal.x * 6}
+                    cy={focal.y * 4}
+                    r="110"
+                    fill={ink.varColor}
+                    opacity="0.16"
+                  />
+                )}
+
+                {/* Main Composition Geometry based on Mood */}
+                <motion.g
+                  animate={{ x: (focal.x - 50) * 1.4, y: (focal.y - 50) * 1.1 }}
+                  transition={isReduced ? { duration: 0 } : { type: 'spring', stiffness: 120, damping: 18 }}
+                >
+                  {mood === 'Editorial' && (
+                    <>
+                      <circle
+                        cx="300"
+                        cy="200"
+                        r="125"
+                        stroke={ink.varColor}
+                        strokeWidth={stage === 'sketch' ? '1' : '2'}
+                        strokeDasharray={stage === 'sketch' ? '6 6' : stage === 'wireframe' ? '10 4' : undefined}
+                      />
+                      <circle cx="300" cy="200" r="72" stroke="var(--color-cinema-text)" strokeWidth="1" opacity={stage === 'sketch' ? 0.3 : 0.6} />
+                      <line x1="120" y1="200" x2="480" y2="200" stroke={ink.varColor} strokeWidth="0.8" opacity="0.5" />
+                    </>
+                  )}
+
+                  {mood === 'Swiss' && (
+                    <>
+                      <rect
+                        x="170"
+                        y="70"
+                        width="260"
+                        height="260"
+                        stroke={ink.varColor}
+                        strokeWidth={stage === 'sketch' ? '1' : '2'}
+                        strokeDasharray={stage === 'sketch' ? '5 5' : undefined}
+                      />
+                      <rect
+                        x="220"
+                        y="120"
+                        width="160"
+                        height="160"
+                        fill={stage === 'final' ? ink.varColor : 'none'}
+                        fillOpacity="0.14"
+                        stroke="var(--color-cinema-text)"
+                        strokeWidth="1.2"
+                      />
+                      <line x1="170" y1="70" x2="430" y2="330" stroke={ink.varColor} strokeWidth="1" opacity="0.5" />
+                    </>
+                  )}
+
+                  {mood === 'Brutalist' && (
+                    <>
+                      <polygon
+                        points="300,55 455,325 145,325"
+                        stroke={ink.varColor}
+                        strokeWidth={stage === 'sketch' ? '1.2' : '2.5'}
+                        strokeDasharray={stage === 'sketch' ? '4 6' : undefined}
+                        fill={stage === 'final' ? ink.varColor : 'none'}
+                        fillOpacity="0.12"
+                      />
+                      <rect x="240" y="180" width="120" height="120" stroke="var(--color-cinema-text)" strokeWidth="1.5" />
+                    </>
+                  )}
+
+                  {mood === 'Orbital' && (
+                    <>
+                      <ellipse cx="300" cy="200" rx="170" ry="68" stroke={ink.varColor} strokeWidth="1.5" strokeDasharray={stage === 'sketch' ? '5 5' : undefined} />
+                      <ellipse cx="300" cy="200" rx="170" ry="68" transform="rotate(60 300 200)" stroke="var(--color-cinema-text)" strokeWidth="1" opacity="0.55" />
+                      <ellipse cx="300" cy="200" rx="170" ry="68" transform="rotate(120 300 200)" stroke={ink.varColor} strokeWidth="1" opacity="0.7" />
+                    </>
+                  )}
+                </motion.g>
+
+                {/* Crosshair at Exact Clicked Focal Point */}
+                <g transform={`translate(${focal.x * 6}, ${focal.y * 4})`} stroke={ink.varColor}>
+                  <circle r="6" fill={stage === 'final' ? ink.varColor : 'none'} strokeWidth="1.5" />
+                  <line x1="-14" y1="0" x2="14" y2="0" strokeWidth="1" opacity="0.8" />
+                  <line x1="0" y1="-14" x2="0" y2="14" strokeWidth="1" opacity="0.8" />
+                </g>
+              </svg>
+
+              {/* Poster Typography Overlay */}
+              <div className="relative z-10 h-full p-6 sm:p-8 flex flex-col justify-between pointer-events-none">
+                <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.22em]">
+                  <span className={ink.textClass}>SPECIMEN // #{seed}</span>
+                  <span className="text-cinema-muted">{stage.toUpperCase()} STAGE</span>
                 </div>
 
-                {/* ---------------------------------------------------------- */}
-                {/* SPECIMEN 01: LIVE TYPOGRAPHY PLAYGROUND                    */}
-                {/* ---------------------------------------------------------- */}
-                {activeIndex === 0 && (
-                  <div className="space-y-4">
-                    <div className="flex flex-wrap items-center gap-2 font-mono text-[10px]">
-                      {(['serif', 'display', 'mono'] as const).map((f) => (
-                        <button
-                          key={f}
-                          type="button"
-                          onClick={() => setTypeFace(f)}
-                          className={cn(
-                            'px-3 py-1 rounded-full border uppercase tracking-wider cursor-pointer transition-all',
-                            typeFace === f
-                              ? 'border-sunrise-rose bg-sunrise-rose/20 text-sunrise-rose'
-                              : 'border-cinema-border text-cinema-muted hover:text-cinema-text'
-                          )}
-                        >
-                          {f}
-                        </button>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() => setTypeTracking((t) => (t === 'tight' ? 'wide' : 'tight'))}
-                        className="px-3 py-1 rounded-full border border-sunrise-rose/40 text-sunrise-rose hover:bg-sunrise-rose/15 cursor-pointer ml-auto"
-                      >
-                        Tracking: {typeTracking.toUpperCase()}
-                      </button>
-                    </div>
-
-                    <div className="py-6 px-5 rounded-xl border border-sunrise-rose/25 bg-cinema-surface/50 backdrop-blur-md text-center overflow-hidden">
-                      <div
-                        className={cn(
-                          'text-3xl sm:text-5xl text-cinema-text leading-tight transition-all duration-300',
-                          typeFace === 'serif' && 'font-serif italic',
-                          typeFace === 'display' && 'font-display uppercase font-bold',
-                          typeFace === 'mono' && 'font-mono uppercase',
-                          typeTracking === 'tight' ? 'tracking-tight' : 'tracking-[0.2em]'
-                        )}
-                      >
-                        DESIGN IS A LANGUAGE
-                      </div>
-                    </div>
+                <div className="my-auto text-center">
+                  <div
+                    className={cn(
+                      'text-3xl sm:text-5xl leading-none transition-all duration-300',
+                      mood === 'Editorial' && 'font-serif italic',
+                      mood === 'Swiss' && 'font-sans font-black uppercase tracking-tighter',
+                      mood === 'Brutalist' && 'font-display uppercase tracking-wide',
+                      mood === 'Orbital' && 'font-mono font-light uppercase tracking-[0.22em]',
+                      stage === 'sketch' ? 'opacity-45' : 'opacity-100'
+                    )}
+                    style={
+                      stage === 'wireframe'
+                        ? { WebkitTextStroke: `1px ${ink.varColor}`, color: 'transparent' }
+                        : undefined
+                    }
+                  >
+                    DESIGN IS A LANGUAGE
                   </div>
-                )}
+                </div>
 
-                {/* ---------------------------------------------------------- */}
-                {/* SPECIMEN 02: LIVE SUNRISE-RAMP COLOR & CONTRAST LAB        */}
-                {/* ---------------------------------------------------------- */}
-                {activeIndex === 1 && (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-5 gap-2">
-                      {SUNRISE_SWATCHES.map((sw, idx) => (
-                        <button
-                          key={sw.name}
-                          type="button"
-                          onClick={() => setSwatchIdx(idx)}
-                          className={cn(
-                            'p-3 rounded-xl border transition-all text-left space-y-2 cursor-pointer',
-                            idx === swatchIdx
-                              ? `${sw.borderClass} bg-cinema-surface`
-                              : 'border-cinema-border/60 bg-cinema-surface/30 hover:border-cinema-border'
-                          )}
-                        >
-                          <div className={cn('w-full h-6 rounded-md', sw.bgClass)} />
-                          <div className="font-mono text-[10px] text-cinema-text">{sw.name}</div>
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="px-5 py-4 rounded-xl border border-cinema-border bg-cinema-surface/60 flex items-center justify-between font-mono text-xs">
-                      <div className="flex items-center gap-3">
-                        <span className={cn('w-3 h-3 rounded-full', SUNRISE_SWATCHES[swatchIdx].bgClass)} />
-                        <span className="text-cinema-text">
-                          {SUNRISE_SWATCHES[swatchIdx].name} · {SUNRISE_SWATCHES[swatchIdx].token}
-                        </span>
-                      </div>
-                      <span className={SUNRISE_SWATCHES[swatchIdx].textClass}>
-                        WCAG {SUNRISE_SWATCHES[swatchIdx].ratio}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* ---------------------------------------------------------- */}
-                {/* SPECIMEN 03: INTERACTIVE GOLDEN-RATIO GEOMETRY COMPOSER    */}
-                {/* ---------------------------------------------------------- */}
-                {activeIndex === 2 && (
-                  <div className="space-y-4">
-                    <div className="flex flex-wrap gap-2 font-mono text-[10px]">
-                      {(['grid', 'circle', 'golden'] as const).map((layerKey) => (
-                        <button
-                          key={layerKey}
-                          type="button"
-                          onClick={() =>
-                            setLayers((prev) => ({ ...prev, [layerKey]: !prev[layerKey] }))
-                          }
-                          className={cn(
-                            'px-3 py-1 rounded-full border uppercase tracking-wider cursor-pointer transition-all',
-                            layers[layerKey]
-                              ? 'border-sunrise-rose bg-sunrise-rose/20 text-sunrise-rose'
-                              : 'border-cinema-border text-cinema-muted hover:text-cinema-text'
-                          )}
-                        >
-                          {layerKey}: {layers[layerKey] ? 'ON' : 'OFF'}
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="h-44 rounded-xl border border-sunrise-rose/25 bg-cinema-surface/40 flex items-center justify-center relative overflow-hidden">
-                      <svg viewBox="0 0 320 160" fill="none" className="w-full h-full" aria-hidden="true">
-                        {layers.grid && (
-                          <g stroke="var(--color-border-strong)" strokeWidth="0.7" opacity="0.55">
-                            <line x1="0" y1="80" x2="320" y2="80" strokeDasharray="3 3" />
-                            <line x1="160" y1="0" x2="160" y2="160" strokeDasharray="3 3" />
-                            <rect x="60" y="20" width="200" height="120" />
-                          </g>
-                        )}
-                        {layers.circle && (
-                          <g stroke="var(--color-accent-rose)" fill="none">
-                            <circle cx="160" cy="80" r="56" strokeWidth="1.5" />
-                            <circle cx="160" cy="80" r="34" strokeWidth="1" strokeDasharray="4 4" />
-                          </g>
-                        )}
-                        {layers.golden && (
-                          <g stroke="var(--color-accent-gold)" fill="none">
-                            <path d="M 160,80 A 21 21 0 0 1 181,59 A 34 34 0 0 1 215,93 A 55 55 0 0 1 160,148" strokeWidth="1.6" />
-                            <circle cx="160" cy="80" r="3.5" fill="var(--color-accent-rose)" stroke="none" />
-                          </g>
-                        )}
-                      </svg>
-                    </div>
-                  </div>
-                )}
-
-                {/* ---------------------------------------------------------- */}
-                {/* SPECIMEN 04: MOTION EASING & SPRING PLAYGROUND             */}
-                {/* ---------------------------------------------------------- */}
-                {activeIndex === 3 && (
-                  <div className="space-y-4">
-                    <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-[10px]">
-                      <div className="flex gap-2">
-                        {(['cinema', 'snappy', 'spring'] as const).map((preset) => (
-                          <button
-                            key={preset}
-                            type="button"
-                            onClick={() => {
-                              setMotionPreset(preset);
-                              setMotionPulse((p) => p + 1);
-                            }}
-                            className={cn(
-                              'px-3 py-1 rounded-full border uppercase tracking-wider cursor-pointer transition-all',
-                              motionPreset === preset
-                                ? 'border-sunrise-rose bg-sunrise-rose/20 text-sunrise-rose'
-                                : 'border-cinema-border text-cinema-muted hover:text-cinema-text'
-                            )}
-                          >
-                            {preset}
-                          </button>
-                        ))}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setMotionPulse((p) => p + 1)}
-                        className="px-3 py-1 rounded-full border border-sunrise-rose/50 bg-sunrise-rose/15 text-sunrise-rose cursor-pointer"
-                      >
-                        Replay ⚡
-                      </button>
-                    </div>
-
-                    <div className="h-24 px-6 rounded-xl border border-sunrise-rose/25 bg-cinema-surface/40 flex items-center relative overflow-hidden">
-                      <div className="w-full h-px bg-cinema-border relative flex items-center">
-                        <motion.div
-                          key={`${motionPreset}-${motionPulse}`}
-                          initial={!isReduced ? { x: 0 } : false}
-                          animate={{ x: 'calc(100% - 28px)' }}
-                          transition={
-                            motionPreset === 'spring'
-                              ? { type: 'spring', stiffness: 260, damping: 16 }
-                              : motionPreset === 'snappy'
-                                ? { duration: 0.35, ease: [0.16, 1, 0.3, 1] }
-                                : { duration: 0.9, ease: [0.22, 1, 0.36, 1] }
-                          }
-                          className="w-7 h-7 rounded-full bg-sunrise-rose shadow-[0_0_20px_var(--color-accent-rose)]"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </motion.div>
-            </AnimatePresence>
+                <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-cinema-muted">
+                  <span>CLICK CANVAS TO MOVE FOCAL POINT</span>
+                  <span className={ink.textClass}>{mood} · {ink.name}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
