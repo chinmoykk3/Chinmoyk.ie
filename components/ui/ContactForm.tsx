@@ -247,10 +247,10 @@ export function ContactForm({ className }: ContactFormProps) {
         <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
           <Button
             type="submit"
-            variant="accent"
+            variant="primary"
             size="md"
             disabled={status === 'submitting'}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto bg-cinema-text text-cinema-bg hover:opacity-90"
           >
             <Send className="w-4 h-4" />
             <span>{status === 'submitting' ? 'Transmitting...' : 'Send Message'}</span>
