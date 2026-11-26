@@ -146,8 +146,9 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
       {/* Subtle Engineering Blueprint Grid */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 opacity-[0.06]"
+        className="pointer-events-none absolute inset-0 z-0"
         style={{
+          opacity: 'var(--stage-grid-opacity, 0.06)',
           backgroundImage:
             'linear-gradient(to right, var(--color-accent-azure) 1px, transparent 1px), linear-gradient(to bottom, var(--color-accent-azure) 1px, transparent 1px)',
           backgroundSize: '56px 56px',
@@ -160,7 +161,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
           key={`bg-word-${backdropWord}`}
           aria-hidden="true"
           initial={!isReduced ? { opacity: 0, scale: 1.06 } : false}
-          animate={{ opacity: 0.12, scale: 1 }}
+          animate={{ opacity: 1, scale: 1 }}
           exit={!isReduced ? { opacity: 0 } : undefined}
           transition={{ duration: 0.5 }}
           className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
@@ -172,6 +173,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
               fontSize: 'clamp(5.5rem, 22vw, 22rem)',
               WebkitTextStroke: '1.5px var(--color-accent-azure)',
               color: 'transparent',
+              opacity: 'var(--stage-watermark-opacity, 0.12)',
             }}
           >
             {backdropWord}

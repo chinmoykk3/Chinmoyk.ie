@@ -256,8 +256,8 @@ export function Chapter02({ chapter }: Chapter02Props) {
             background: activeStyle
               ? activeStyle.backdrop
               : activeStage === 4
-                ? 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(255, 200, 87, 0.16) 0%, transparent 75%)'
-                : 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255, 255, 255, 0.04) 0%, transparent 75%)',
+                ? 'radial-gradient(ellipse 70% 60% at 50% 50%, color-mix(in srgb, var(--color-accent-gold) 15%, transparent) 0%, transparent 75%)'
+                : 'radial-gradient(ellipse 60% 50% at 50% 50%, color-mix(in srgb, var(--color-accent-gold) 8%, transparent) 0%, transparent 75%)',
           }}
         />
 

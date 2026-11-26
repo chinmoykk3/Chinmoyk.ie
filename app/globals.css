@@ -74,6 +74,13 @@
   --color-accent-iris: #5B21B6;
   --color-accent-rose: #BE185D;
   --color-accent-ember: #C2410C;
+
+  /* Light Mode Stage Visibility Variables */
+  --stage-watermark-opacity: 0.28;
+  --stage-grid-opacity: 0.14;
+  --poster-icon-far: 0.45;
+  --poster-icon-mid: 0.65;
+  --poster-icon-near: 0.82;
 }
 
 .dark {
@@ -135,6 +142,13 @@
   --color-accent-iris: #9B7BFF;
   --color-accent-rose: #FF5C8A;
   --color-accent-ember: #FF8A4C;
+
+  /* Dark Mode Stage Visibility Variables (Unchanged) */
+  --stage-watermark-opacity: 0.12;
+  --stage-grid-opacity: 0.06;
+  --poster-icon-far: 0.25;
+  --poster-icon-mid: 0.40;
+  --poster-icon-near: 0.50;
 }
 
 /* ==========================================================================

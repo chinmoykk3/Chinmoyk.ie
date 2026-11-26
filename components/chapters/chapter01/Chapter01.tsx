@@ -156,8 +156,9 @@ export function Chapter01({ chapter }: Chapter01Props) {
         {/* Giant Outlined "CURIOSITY" Backdrop */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden opacity-[0.12] transition-transform duration-300 ease-out"
+          className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden transition-transform duration-300 ease-out"
           style={{
+            opacity: 'var(--stage-watermark-opacity, 0.12)',
             transform: !isReduced
               ? `translate3d(${-pointer.x * 12}px, ${-pointer.y * 8}px, 0)`
               : 'none',
@@ -259,9 +260,9 @@ export function Chapter01({ chapter }: Chapter01Props) {
                   x2={230 + Math.cos(rad) * (converged ? 155 : 110)}
                   y2={175 + Math.sin(rad) * (converged ? 155 : 110)}
                   stroke="var(--color-accent-gold)"
-                  strokeWidth="0.6"
+                  strokeWidth="0.8"
                   strokeDasharray="2 5"
-                  opacity={converged ? 0.35 : 0.14}
+                  opacity={converged ? 0.55 : 0.32}
                 />
               );
             })}

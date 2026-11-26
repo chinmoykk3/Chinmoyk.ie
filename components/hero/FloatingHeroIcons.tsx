@@ -390,9 +390,15 @@ const FLOATING_ITEMS: FloatingItem[] = [
 ];
 
 const DEPTH_STYLES: Record<DepthTier, string> = {
-  far: 'opacity-25 scale-90 p-1.5 border-transparent bg-transparent',
-  mid: 'opacity-40 scale-100 rounded-xl border border-poster-cream/15 bg-poster-cream/[0.03] p-2.5 sm:p-3 backdrop-blur-[1px]',
-  near: 'opacity-50 scale-105 rounded-xl border border-poster-cream/20 bg-poster-cream/[0.045] p-2.5 sm:p-3 backdrop-blur-[2px]',
+  far: 'scale-90 p-1.5 border-transparent bg-transparent',
+  mid: 'scale-100 rounded-xl border border-poster-cream/15 bg-poster-cream/[0.03] p-2.5 sm:p-3 backdrop-blur-[1px]',
+  near: 'scale-105 rounded-xl border border-poster-cream/20 bg-poster-cream/[0.045] p-2.5 sm:p-3 backdrop-blur-[2px]',
+};
+
+const DEPTH_OPACITY_VAR: Record<DepthTier, string> = {
+  far: 'var(--poster-icon-far, 0.25)',
+  mid: 'var(--poster-icon-mid, 0.40)',
+  near: 'var(--poster-icon-near, 0.50)',
 };
 
 export function FloatingHeroIcons({ mouseOffset, isReduced }: FloatingHeroIconsProps) {
@@ -426,7 +432,10 @@ export function FloatingHeroIcons({ mouseOffset, isReduced }: FloatingHeroIconsP
                 : 'text-poster-cream/85',
               !isReduced && item.animClass
             )}
-            style={!isReduced ? { animationDelay: item.delay } : undefined}
+            style={{
+              opacity: DEPTH_OPACITY_VAR[item.depth],
+              ...(!isReduced ? { animationDelay: item.delay } : {}),
+            }}
             title={item.label}
           >
             {item.render()}

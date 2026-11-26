@@ -205,7 +205,7 @@ export function RoleBackdropVibe({ activeStage, isReduced }: RoleBackdropVibePro
         {/* 0. Giant Kinetic Outlined Backdrop Typography */}
         <motion.div
           initial={!isReduced ? { opacity: 0, scale: 1.08 } : false}
-          animate={{ opacity: 0.14, scale: 1 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="absolute inset-0 flex items-center justify-center"
         >
@@ -216,6 +216,7 @@ export function RoleBackdropVibe({ activeStage, isReduced }: RoleBackdropVibePro
               fontSize: 'clamp(5.5rem, 22vw, 22rem)',
               WebkitTextStroke: `1.5px ${wordStrokeColor}`,
               color: 'transparent',
+              opacity: 'var(--stage-watermark-opacity, 0.14)',
             }}
           >
             {backdropWord}

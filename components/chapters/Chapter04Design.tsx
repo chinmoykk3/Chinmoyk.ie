@@ -105,7 +105,8 @@ export function Chapter04Design({ chapter }: Chapter04DesignProps) {
       {/* Giant Kinetic Outlined Backdrop Word */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden opacity-[0.11]"
+        className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
+        style={{ opacity: 'var(--stage-watermark-opacity, 0.11)' }}
       >
         <span
           className="font-display font-bold uppercase tracking-tight leading-none whitespace-nowrap transition-all duration-500"
