@@ -173,7 +173,7 @@ const rawChapters: Chapter[] = [
   },
   {
     id: 'chapter-07',
-    number: 7,
+    number: 5,
     title: confirmed('Beyond the Work', 'Official Chapter 07 title'),
     subtitle: draft('Explorations outside the primary stack', 'Chapter 07 subtitle'),
     emotionalArc: 'Possibility',
