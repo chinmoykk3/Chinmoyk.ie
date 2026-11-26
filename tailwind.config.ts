@@ -58,6 +58,14 @@ const config: Config = {
           cream: 'var(--color-poster-cream)',
           muted: 'var(--color-poster-muted)',
         },
+        // Adaptive Light/Dark stage accents (Print ink in Light, Luminous glow in Dark)
+        stage: {
+          gold: 'var(--color-accent-gold)',
+          azure: 'var(--color-accent-azure)',
+          iris: 'var(--color-accent-iris)',
+          rose: 'var(--color-accent-rose)',
+          ember: 'var(--color-accent-ember)',
+        },
       },
       fontFamily: {
         serif: ['var(--font-serif)', 'Instrument Serif', 'Georgia', 'serif'],

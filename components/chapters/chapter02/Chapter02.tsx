@@ -23,32 +23,32 @@ export interface Chapter02Props {
 
 const ACCENT_STYLES = {
   azure: {
-    rule: 'border-l-2 border-sunrise-azure pl-5 sm:pl-7',
-    text: 'text-sunrise-azure',
-    dot: 'bg-sunrise-azure',
+    rule: 'border-l-2 border-stage-azure pl-5 sm:pl-7',
+    text: 'text-stage-azure',
+    dot: 'bg-stage-azure',
     backdrop:
-      'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(76, 141, 255, 0.20) 0%, transparent 75%)',
+      'radial-gradient(ellipse 65% 55% at 50% 50%, color-mix(in srgb, var(--color-accent-azure) 16%, transparent) 0%, transparent 75%)',
   },
   iris: {
-    rule: 'border-l-2 border-sunrise-iris pl-5 sm:pl-7',
-    text: 'text-sunrise-iris',
-    dot: 'bg-sunrise-iris',
+    rule: 'border-l-2 border-stage-iris pl-5 sm:pl-7',
+    text: 'text-stage-iris',
+    dot: 'bg-stage-iris',
     backdrop:
-      'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(155, 123, 255, 0.20) 0%, transparent 75%)',
+      'radial-gradient(ellipse 65% 55% at 50% 50%, color-mix(in srgb, var(--color-accent-iris) 16%, transparent) 0%, transparent 75%)',
   },
   rose: {
-    rule: 'border-l-2 border-sunrise-rose pl-5 sm:pl-7',
-    text: 'text-sunrise-rose',
-    dot: 'bg-sunrise-rose',
+    rule: 'border-l-2 border-stage-rose pl-5 sm:pl-7',
+    text: 'text-stage-rose',
+    dot: 'bg-stage-rose',
     backdrop:
-      'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(255, 92, 138, 0.20) 0%, transparent 75%)',
+      'radial-gradient(ellipse 65% 55% at 50% 50%, color-mix(in srgb, var(--color-accent-rose) 16%, transparent) 0%, transparent 75%)',
   },
   ember: {
-    rule: 'border-l-2 border-sunrise-ember pl-5 sm:pl-7',
-    text: 'text-sunrise-ember',
-    dot: 'bg-sunrise-ember',
+    rule: 'border-l-2 border-stage-ember pl-5 sm:pl-7',
+    text: 'text-stage-ember',
+    dot: 'bg-stage-ember',
     backdrop:
-      'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(255, 138, 76, 0.20) 0%, transparent 75%)',
+      'radial-gradient(ellipse 65% 55% at 50% 50%, color-mix(in srgb, var(--color-accent-ember) 16%, transparent) 0%, transparent 75%)',
   },
 } as const;
 
@@ -244,7 +244,7 @@ export function Chapter02({ chapter }: Chapter02Props) {
         {/* Top 1.5px Spectrum Progress Hairline */}
         <div
           aria-hidden="true"
-          className="absolute top-0 left-0 h-[2px] z-30 transition-all duration-100 bg-gradient-to-r from-sunrise-azure via-sunrise-iris to-sunrise-ember"
+          className="absolute top-0 left-0 h-[2px] z-30 transition-all duration-100 bg-gradient-to-r from-stage-azure via-stage-iris to-stage-ember"
           style={{ width: `${Math.round(scrollProgress * 100)}%` }}
         />
 
@@ -354,7 +354,7 @@ export function Chapter02({ chapter }: Chapter02Props) {
                   className={cn(
                     'space-y-2.5',
                     activeStage === 1 && 'text-center flex flex-col items-center',
-                    activeStage === 2 && 'text-right border-r-2 border-sunrise-rose pr-5 sm:pr-7',
+                    activeStage === 2 && 'text-right border-r-2 border-stage-rose pr-5 sm:pr-7',
                     (activeStage === 0 || activeStage === 3) && activeStyle.rule
                   )}
                 >
@@ -440,7 +440,7 @@ export function Chapter02({ chapter }: Chapter02Props) {
               >
                 <div
                   aria-hidden="true"
-                  className="mx-auto w-32 h-[2px] bg-gradient-to-r from-sunrise-azure via-sunrise-iris to-sunrise-ember"
+                  className="mx-auto w-32 h-[2px] bg-gradient-to-r from-stage-azure via-stage-iris to-stage-ember"
                 />
 
                 <div className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.26em] text-cinema-gold">

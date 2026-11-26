@@ -38,9 +38,9 @@ export function BuilderStage({ isReduced }: StageProps) {
   return (
     <div className="w-full space-y-2 py-1" onClick={(e) => e.stopPropagation()}>
       <div className="flex items-center justify-between font-mono text-[10px] text-cinema-muted">
-        <span className="text-sunrise-azure">CLICK NODES TO PATCH CIRCUIT</span>
+        <span className="text-stage-azure">CLICK NODES TO PATCH CIRCUIT</span>
         <span>
-          THROUGHPUT: <strong className="text-sunrise-azure">{totalThroughput}k req/s</strong>
+          THROUGHPUT: <strong className="text-stage-azure">{totalThroughput}k req/s</strong>
         </span>
       </div>
 
@@ -196,7 +196,7 @@ export function IntelligenceStage({ isReduced }: StageProps) {
     >
       {/* Left: Interactive 5x5 Attention Heatmap */}
       <div className="space-y-1.5">
-        <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-sunrise-iris text-center">
+        <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-stage-iris text-center">
           TOUCH ATTENTION MATRIX
         </div>
         <div className="grid grid-cols-5 gap-1.5">
@@ -214,10 +214,10 @@ export function IntelligenceStage({ isReduced }: StageProps) {
                   className={cn(
                     'w-6 h-6 sm:w-7 sm:h-7 rounded-md border transition-all duration-200 cursor-pointer focus:outline-none',
                     isExact
-                      ? 'bg-sunrise-iris border-sunrise-iris scale-110 shadow-[0_0_16px_var(--color-accent-iris)]'
+                      ? 'bg-stage-iris border-stage-iris scale-110 shadow-[0_0_16px_var(--color-accent-iris)]'
                       : isCross
-                        ? 'bg-sunrise-iris/30 border-sunrise-iris/60'
-                        : 'bg-cinema-bg/70 border-cinema-border/70 hover:border-sunrise-iris/50'
+                        ? 'bg-stage-iris/30 border-stage-iris/60'
+                        : 'bg-cinema-bg/70 border-cinema-border/70 hover:border-stage-iris/50'
                   )}
                 />
               );
@@ -230,22 +230,22 @@ export function IntelligenceStage({ isReduced }: StageProps) {
       <div className="w-full sm:w-56 space-y-2.5 font-mono text-xs">
         <div className="flex items-center justify-between text-[10px] text-cinema-muted">
           <span>HEAD [{MATRIX_LABELS[focusCell.r]}]</span>
-          <span className="text-sunrise-iris">× {MATRIX_LABELS[focusCell.c]}</span>
+          <span className="text-stage-iris">× {MATRIX_LABELS[focusCell.c]}</span>
         </div>
 
         <div className="space-y-1">
           <div className="flex justify-between text-[11px]">
             <span className="text-cinema-text">next_token:</span>
-            <span className="text-sunrise-iris font-semibold">{activePred.token}</span>
+            <span className="text-stage-iris font-semibold">{activePred.token}</span>
           </div>
           <div className="h-1.5 w-full rounded-full bg-cinema-bg overflow-hidden">
             <motion.div
-              className="h-full bg-sunrise-iris rounded-full"
+              className="h-full bg-stage-iris rounded-full"
               animate={{ width: `${activePred.score}%` }}
               transition={{ duration: isReduced ? 0 : 0.3 }}
             />
           </div>
-          <div className="text-right text-[10px] text-sunrise-iris/85">
+          <div className="text-right text-[10px] text-stage-iris/85">
             {activePred.score}% confidence
           </div>
         </div>
@@ -282,7 +282,7 @@ export function VisualStage({ isReduced }: StageProps) {
         e.stopPropagation();
         setShapeIdx((s) => (s + 1) % GEOMETRY_SHAPES.length);
       }}
-      className="relative w-full py-5 px-4 overflow-hidden cursor-crosshair select-none border-y border-sunrise-rose/25"
+      className="relative w-full py-5 px-4 overflow-hidden cursor-crosshair select-none border-y border-stage-rose/25"
     >
       {/* Interactive Rose Spotlight following cursor */}
       <div
@@ -322,7 +322,7 @@ export function VisualStage({ isReduced }: StageProps) {
         </svg>
       </div>
 
-      <div className="relative z-10 flex justify-between font-mono text-[9px] uppercase tracking-[0.2em] text-sunrise-rose/85 mt-3">
+      <div className="relative z-10 flex justify-between font-mono text-[9px] uppercase tracking-[0.2em] text-stage-rose/85 mt-3">
         <span>SWIPE TO WARP TYPE · CLICK TO MORPH</span>
         <span>TRACKING: {trackingEm}EM</span>
       </div>
@@ -364,7 +364,7 @@ export function ExplorerStage({ isReduced }: StageProps) {
       onMouseMove={handleMove}
       onMouseLeave={() => setPointer((p) => ({ ...p, active: false }))}
       onClick={(e) => e.stopPropagation()}
-      className="relative w-full h-28 border-y border-sunrise-ember/25 overflow-hidden cursor-crosshair"
+      className="relative w-full h-28 border-y border-stage-ember/25 overflow-hidden cursor-crosshair"
     >
       {/* Dynamic Tether Lines from Cursor Gravity Well to Satellites */}
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full" aria-hidden="true">
@@ -397,7 +397,7 @@ export function ExplorerStage({ isReduced }: StageProps) {
             }}
             className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 transition-all duration-200 ease-out pointer-events-none"
           >
-            <span className="w-2 h-2 rounded-full bg-sunrise-ember shadow-[0_0_10px_var(--color-accent-ember)]" />
+            <span className="w-2 h-2 rounded-full bg-stage-ember shadow-[0_0_10px_var(--color-accent-ember)]" />
             <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-cinema-text">
               {sat.label}
             </span>
@@ -405,7 +405,7 @@ export function ExplorerStage({ isReduced }: StageProps) {
         );
       })}
 
-      <div className="absolute bottom-1.5 left-0 right-0 text-center font-mono text-[9px] uppercase tracking-[0.22em] text-sunrise-ember/80 pointer-events-none">
+      <div className="absolute bottom-1.5 left-0 right-0 text-center font-mono text-[9px] uppercase tracking-[0.22em] text-stage-ember/80 pointer-events-none">
         {pointer.active ? 'GRAVITY WELL ENGAGED' : 'MOVE CURSOR TO BEND HORIZON'}
       </div>
     </div>

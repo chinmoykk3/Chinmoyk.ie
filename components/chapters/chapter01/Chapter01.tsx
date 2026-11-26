@@ -137,8 +137,8 @@ export function Chapter01({ chapter }: Chapter01Props) {
           className="pointer-events-none absolute inset-0 z-0 transition-all duration-700"
           style={{
             background: converged
-              ? 'radial-gradient(ellipse 68% 58% at 50% 48%, rgba(255, 200, 87, 0.24) 0%, transparent 72%)'
-              : 'radial-gradient(ellipse 52% 45% at 50% 48%, rgba(255, 200, 87, 0.11) 0%, transparent 70%)',
+              ? 'radial-gradient(ellipse 68% 58% at 50% 48%, color-mix(in srgb, var(--color-accent-gold) 18%, transparent) 0%, transparent 72%)'
+              : 'radial-gradient(ellipse 52% 45% at 50% 48%, color-mix(in srgb, var(--color-accent-gold) 10%, transparent) 0%, transparent 70%)',
           }}
         />
 

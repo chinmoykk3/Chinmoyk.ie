@@ -390,9 +390,9 @@ const FLOATING_ITEMS: FloatingItem[] = [
 ];
 
 const DEPTH_STYLES: Record<DepthTier, string> = {
-  far: 'opacity-20 scale-90 p-1.5 border-transparent bg-transparent',
-  mid: 'opacity-30 scale-100 rounded-xl border border-poster-cream/10 bg-poster-cream/[0.02] p-2.5 sm:p-3 backdrop-blur-[1px]',
-  near: 'opacity-40 scale-105 rounded-xl border border-poster-cream/15 bg-poster-cream/[0.035] p-2.5 sm:p-3 backdrop-blur-[2px] shadow-[0_0_20px_rgba(236,229,216,0.04)]',
+  far: 'opacity-25 scale-90 p-1.5 border-transparent bg-transparent',
+  mid: 'opacity-40 scale-100 rounded-xl border border-poster-cream/15 bg-poster-cream/[0.03] p-2.5 sm:p-3 backdrop-blur-[1px]',
+  near: 'opacity-50 scale-105 rounded-xl border border-poster-cream/20 bg-poster-cream/[0.045] p-2.5 sm:p-3 backdrop-blur-[2px]',
 };
 
 export function FloatingHeroIcons({ mouseOffset, isReduced }: FloatingHeroIconsProps) {
@@ -422,7 +422,7 @@ export function FloatingHeroIcons({ mouseOffset, isReduced }: FloatingHeroIconsP
               'flex items-center justify-center gap-1.5',
               DEPTH_STYLES[item.depth],
               item.category === 'motivation'
-                ? 'text-theme-gold/80 border-theme-gold/15'
+                ? 'text-stage-gold/85 border-stage-gold/25'
                 : 'text-poster-cream/85',
               !isReduced && item.animClass
             )}

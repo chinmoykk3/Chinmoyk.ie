@@ -23,11 +23,11 @@
   --color-text-muted: #5E5A70;
   --color-thread-gold: #FFB000;
 
-  /* Poster Hero Tokens (Light "Daylight" Editorial Print Edition) */
-  --color-poster-bg: #F6EFE2;
-  --color-poster-cream: #14121F;
-  --color-poster-muted: #5E5A70;
-  --color-poster-spotlight: radial-gradient(ellipse 70% 60% at 50% 48%, rgba(255, 255, 255, 0.75) 0%, rgba(246, 239, 226, 0) 75%);
+  /* Poster Hero Tokens (Light "Daylight" Archival Print Edition) */
+  --color-poster-bg: #F4EDE0;
+  --color-poster-cream: #16141F;
+  --color-poster-muted: #524E63;
+  --color-poster-spotlight: radial-gradient(ellipse 70% 60% at 50% 48%, rgba(255, 252, 245, 0.85) 0%, rgba(244, 237, 224, 0) 75%);
 
   /* Accent Fills (Light mode) */
   --color-azure-fill: #2E6BFF;
@@ -62,17 +62,17 @@
   --accent-text: var(--color-gold-text);
   --wash: var(--color-gold-wash);
 
-  /* Cinema tokens for Light "Daylight" mode (Warm Editorial Cream & Ink) */
+  /* Cinema tokens for Light "Daylight" mode (Warm Editorial Cream & Print Ink) */
   --color-cinema-bg: #FFF8EC;
   --color-cinema-surface: #FFFFFF;
-  --color-cinema-text: #14121F;
-  --color-cinema-muted: #5E5A70;
-  --color-cinema-border: #E8DCC4;
-  --color-cinema-gold: #8A5A00;
-  --color-accent-gold: #8A5A00;
-  --color-accent-azure: #1B4FD6;
-  --color-accent-iris: #5B35D8;
-  --color-accent-rose: #C81E5B;
+  --color-cinema-text: #16141F;
+  --color-cinema-muted: #524E63;
+  --color-cinema-border: #DFD3BC;
+  --color-cinema-gold: #9A6300;
+  --color-accent-gold: #9A6300;
+  --color-accent-azure: #1D4ED8;
+  --color-accent-iris: #5B21B6;
+  --color-accent-rose: #BE185D;
   --color-accent-ember: #C2410C;
 }
 

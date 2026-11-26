@@ -47,7 +47,7 @@ interface VibeIcon {
 
 const BUILDER_ICONS: VibeIcon[] = [
   { id: 'b-1', pos: 'top-[10%] left-[5%]', anim: 'animate-ch02-vibe-1', delay: '0s', size: 'lg', tag: 'CLI', render: () => <Terminal className="w-5 h-5" /> },
-  { id: 'b-2', pos: 'top-[14%] left-[22%]', anim: 'animate-ch02-vibe-2', delay: '-0.8s', size: 'sm', tag: '200 OK', render: () => <span className="w-1.5 h-1.5 rounded-full bg-sunrise-azure" /> },
+  { id: 'b-2', pos: 'top-[14%] left-[22%]', anim: 'animate-ch02-vibe-2', delay: '-0.8s', size: 'sm', tag: '200 OK', render: () => <span className="w-1.5 h-1.5 rounded-full bg-stage-azure" /> },
   { id: 'b-3', pos: 'top-[12%] right-[24%]', anim: 'animate-ch02-vibe-3', delay: '-1.6s', size: 'md', tag: 'TS', render: () => <Code2 className="w-4 h-4" /> },
   { id: 'b-4', pos: 'top-[16%] right-[6%]', anim: 'animate-ch02-vibe-1', delay: '-2.2s', size: 'lg', tag: 'API', render: () => <Server className="w-5 h-5" /> },
   { id: 'b-5', pos: 'top-[34%] left-[4%]', anim: 'animate-ch02-vibe-2', delay: '-1.1s', size: 'md', render: () => <Braces className="w-5 h-5" /> },
@@ -64,7 +64,7 @@ const BUILDER_ICONS: VibeIcon[] = [
 
 const AI_ICONS: VibeIcon[] = [
   { id: 'a-1', pos: 'top-[10%] left-[6%]', anim: 'animate-ch02-vibe-2', delay: '0s', size: 'lg', tag: 'LLM', render: () => <Cpu className="w-5 h-5" /> },
-  { id: 'a-2', pos: 'top-[15%] left-[24%]', anim: 'animate-ch02-vibe-1', delay: '-1.2s', size: 'sm', tag: '∑ W·X', render: () => <span className="w-1.5 h-1.5 rounded-full bg-sunrise-iris" /> },
+  { id: 'a-2', pos: 'top-[15%] left-[24%]', anim: 'animate-ch02-vibe-1', delay: '-1.2s', size: 'sm', tag: '∑ W·X', render: () => <span className="w-1.5 h-1.5 rounded-full bg-stage-iris" /> },
   { id: 'a-3', pos: 'top-[12%] right-[25%]', anim: 'animate-ch02-vibe-3', delay: '-2.4s', size: 'md', tag: 'ATTN', render: () => <Sparkles className="w-4 h-4" /> },
   { id: 'a-4', pos: 'top-[15%] right-[6%]', anim: 'animate-ch02-vibe-2', delay: '-0.7s', size: 'lg', tag: 'RAG', render: () => <Network className="w-5 h-5" /> },
   { id: 'a-5', pos: 'top-[33%] left-[4%]', anim: 'animate-ch02-vibe-3', delay: '-3.1s', size: 'md', render: () => <Workflow className="w-5 h-5" /> },
@@ -81,7 +81,7 @@ const AI_ICONS: VibeIcon[] = [
 
 const VISUAL_ICONS: VibeIcon[] = [
   { id: 'v-1', pos: 'top-[10%] left-[6%]', anim: 'animate-ch02-vibe-1', delay: '0s', size: 'lg', tag: 'BEZIER', render: () => <PenTool className="w-5 h-5" /> },
-  { id: 'v-2', pos: 'top-[14%] left-[23%]', anim: 'animate-ch02-vibe-3', delay: '-1.5s', size: 'sm', tag: '1.618', render: () => <span className="w-1.5 h-1.5 rounded-full bg-sunrise-rose" /> },
+  { id: 'v-2', pos: 'top-[14%] left-[23%]', anim: 'animate-ch02-vibe-3', delay: '-1.5s', size: 'sm', tag: '1.618', render: () => <span className="w-1.5 h-1.5 rounded-full bg-stage-rose" /> },
   { id: 'v-3', pos: 'top-[12%] right-[24%]', anim: 'animate-ch02-vibe-2', delay: '-2.6s', size: 'md', tag: 'TYPE', render: () => <span className="font-serif italic text-base leading-none">Aa</span> },
   { id: 'v-4', pos: 'top-[16%] right-[6%]', anim: 'animate-ch02-vibe-1', delay: '-0.8s', size: 'lg', tag: 'COLOR', render: () => <Palette className="w-5 h-5" /> },
   { id: 'v-5', pos: 'top-[33%] left-[4%]', anim: 'animate-ch02-vibe-2', delay: '-3.2s', size: 'md', render: () => <Compass className="w-5 h-5" /> },
@@ -98,7 +98,7 @@ const VISUAL_ICONS: VibeIcon[] = [
 
 const EXPLORER_ICONS: VibeIcon[] = [
   { id: 'e-1', pos: 'top-[10%] left-[6%]', anim: 'animate-ch02-vibe-3', delay: '0s', size: 'lg', tag: '0 → 1', render: () => <Rocket className="w-5 h-5" /> },
-  { id: 'e-2', pos: 'top-[15%] left-[24%]', anim: 'animate-ch02-vibe-1', delay: '-1.4s', size: 'sm', tag: 'NEXT?', render: () => <span className="w-1.5 h-1.5 rounded-full bg-sunrise-ember" /> },
+  { id: 'e-2', pos: 'top-[15%] left-[24%]', anim: 'animate-ch02-vibe-1', delay: '-1.4s', size: 'sm', tag: 'NEXT?', render: () => <span className="w-1.5 h-1.5 rounded-full bg-stage-ember" /> },
   { id: 'e-3', pos: 'top-[12%] right-[25%]', anim: 'animate-ch02-vibe-2', delay: '-2.5s', size: 'md', tag: 'WEBGPU', render: () => <Zap className="w-4 h-4" /> },
   { id: 'e-4', pos: 'top-[15%] right-[6%]', anim: 'animate-ch02-vibe-3', delay: '-0.9s', size: 'lg', tag: 'RADAR', render: () => <Radar className="w-5 h-5" /> },
   { id: 'e-5', pos: 'top-[33%] left-[4%]', anim: 'animate-ch02-vibe-1', delay: '-3.3s', size: 'md', render: () => <Globe className="w-5 h-5" /> },
@@ -114,11 +114,11 @@ const EXPLORER_ICONS: VibeIcon[] = [
 ];
 
 const UNIFIED_ICONS: VibeIcon[] = [
-  { id: 'u-1', pos: 'top-[13%] left-[9%]', anim: 'animate-ch02-vibe-1', delay: '0s', size: 'lg', tag: 'BUILD', render: () => <Code2 className="w-5 h-5 text-sunrise-azure" /> },
-  { id: 'u-2', pos: 'top-[13%] right-[9%]', anim: 'animate-ch02-vibe-2', delay: '-1.2s', size: 'lg', tag: 'THINK', render: () => <Cpu className="w-5 h-5 text-sunrise-iris" /> },
-  { id: 'u-3', pos: 'bottom-[16%] left-[9%]', anim: 'animate-ch02-vibe-3', delay: '-2.4s', size: 'lg', tag: 'CRAFT', render: () => <PenTool className="w-5 h-5 text-sunrise-rose" /> },
-  { id: 'u-4', pos: 'bottom-[16%] right-[9%]', anim: 'animate-ch02-vibe-1', delay: '-3.6s', size: 'lg', tag: 'EXPLORE', render: () => <Rocket className="w-5 h-5 text-sunrise-ember" /> },
-  { id: 'u-5', pos: 'top-[46%] left-[4%]', anim: 'animate-ch02-vibe-2', delay: '-1.8s', size: 'md', render: () => <Terminal className="w-4 h-4 text-sunrise-azure" /> },
+  { id: 'u-1', pos: 'top-[13%] left-[9%]', anim: 'animate-ch02-vibe-1', delay: '0s', size: 'lg', tag: 'BUILD', render: () => <Code2 className="w-5 h-5 text-stage-azure" /> },
+  { id: 'u-2', pos: 'top-[13%] right-[9%]', anim: 'animate-ch02-vibe-2', delay: '-1.2s', size: 'lg', tag: 'THINK', render: () => <Cpu className="w-5 h-5 text-stage-iris" /> },
+  { id: 'u-3', pos: 'bottom-[16%] left-[9%]', anim: 'animate-ch02-vibe-3', delay: '-2.4s', size: 'lg', tag: 'CRAFT', render: () => <PenTool className="w-5 h-5 text-stage-rose" /> },
+  { id: 'u-4', pos: 'bottom-[16%] right-[9%]', anim: 'animate-ch02-vibe-1', delay: '-3.6s', size: 'lg', tag: 'EXPLORE', render: () => <Rocket className="w-5 h-5 text-stage-ember" /> },
+  { id: 'u-5', pos: 'top-[46%] left-[4%]', anim: 'animate-ch02-vibe-2', delay: '-1.8s', size: 'md', render: () => <Terminal className="w-4 h-4 text-stage-azure" /> },
   { id: 'u-6', pos: 'top-[46%] right-[4%]', anim: 'animate-ch02-vibe-3', delay: '-2.9s', size: 'md', render: () => <Sparkles className="w-4 h-4 text-cinema-gold" /> },
 ];
 
@@ -138,24 +138,24 @@ export function RoleBackdropVibe({ activeStage, isReduced }: RoleBackdropVibePro
 
   const vibeTheme =
     activeStage === 0
-      ? 'text-sunrise-azure border-sunrise-azure/30 bg-sunrise-azure/10 shadow-[0_0_24px_rgba(76,141,255,0.2)]'
+      ? 'text-stage-azure border-stage-azure/30 bg-stage-azure/10 shadow-[0_0_24px_rgba(76,141,255,0.2)]'
       : activeStage === 1
-        ? 'text-sunrise-iris border-sunrise-iris/30 bg-sunrise-iris/10 shadow-[0_0_24px_rgba(155,123,255,0.2)]'
+        ? 'text-stage-iris border-stage-iris/30 bg-stage-iris/10 shadow-[0_0_24px_rgba(155,123,255,0.2)]'
         : activeStage === 2
-          ? 'text-sunrise-rose border-sunrise-rose/30 bg-sunrise-rose/10 shadow-[0_0_24px_rgba(255,92,138,0.2)]'
+          ? 'text-stage-rose border-stage-rose/30 bg-stage-rose/10 shadow-[0_0_24px_rgba(255,92,138,0.2)]'
           : activeStage === 3
-            ? 'text-sunrise-ember border-sunrise-ember/30 bg-sunrise-ember/10 shadow-[0_0_24px_rgba(255,138,76,0.2)]'
+            ? 'text-stage-ember border-stage-ember/30 bg-stage-ember/10 shadow-[0_0_24px_rgba(255,138,76,0.2)]'
             : 'text-cinema-gold border-cinema-gold/30 bg-cinema-gold/10 shadow-[0_0_24px_rgba(255,200,87,0.2)]';
 
   const ringColor =
     activeStage === 0
-      ? 'border-sunrise-azure/45'
+      ? 'border-stage-azure/45'
       : activeStage === 1
-        ? 'border-sunrise-iris/45'
+        ? 'border-stage-iris/45'
         : activeStage === 2
-          ? 'border-sunrise-rose/45'
+          ? 'border-stage-rose/45'
           : activeStage === 3
-            ? 'border-sunrise-ember/45'
+            ? 'border-stage-ember/45'
             : 'border-cinema-gold/45';
 
   const backdropWord =
@@ -182,13 +182,13 @@ export function RoleBackdropVibe({ activeStage, isReduced }: RoleBackdropVibePro
 
   const streakBg =
     activeStage === 0
-      ? 'from-transparent via-sunrise-azure/60 to-transparent'
+      ? 'from-transparent via-stage-azure/60 to-transparent'
       : activeStage === 1
-        ? 'from-transparent via-sunrise-iris/60 to-transparent'
+        ? 'from-transparent via-stage-iris/60 to-transparent'
         : activeStage === 2
-          ? 'from-transparent via-sunrise-rose/60 to-transparent'
+          ? 'from-transparent via-stage-rose/60 to-transparent'
           : activeStage === 3
-            ? 'from-transparent via-sunrise-ember/60 to-transparent'
+            ? 'from-transparent via-stage-ember/60 to-transparent'
             : 'from-transparent via-cinema-gold/60 to-transparent';
 
   return (
@@ -248,8 +248,8 @@ export function RoleBackdropVibe({ activeStage, isReduced }: RoleBackdropVibePro
 
         {activeStage === 1 && (
           <div className="absolute inset-0 flex items-center justify-center opacity-20">
-            <div className="w-[460px] h-[460px] sm:w-[680px] sm:h-[680px] rounded-full border border-dashed border-sunrise-iris/50 animate-ch02-orbit" />
-            <div className="absolute w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] rounded-full border border-sunrise-iris/30" />
+            <div className="w-[460px] h-[460px] sm:w-[680px] sm:h-[680px] rounded-full border border-dashed border-stage-iris/50 animate-ch02-orbit" />
+            <div className="absolute w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] rounded-full border border-stage-iris/30" />
           </div>
         )}
 
@@ -268,8 +268,8 @@ export function RoleBackdropVibe({ activeStage, isReduced }: RoleBackdropVibePro
 
         {activeStage === 3 && (
           <div className="absolute inset-0 flex items-center justify-center opacity-25">
-            <div className="w-[420px] h-[420px] sm:w-[660px] sm:h-[660px] rounded-full border border-sunrise-ember/30" />
-            <div className="absolute w-[620px] h-[620px] sm:w-[920px] sm:h-[920px] rounded-full border border-dashed border-sunrise-ember/20 animate-ch02-radar" />
+            <div className="w-[420px] h-[420px] sm:w-[660px] sm:h-[660px] rounded-full border border-stage-ember/30" />
+            <div className="absolute w-[620px] h-[620px] sm:w-[920px] sm:h-[920px] rounded-full border border-dashed border-stage-ember/20 animate-ch02-radar" />
           </div>
         )}
 

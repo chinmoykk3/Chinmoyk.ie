@@ -34,10 +34,10 @@ const STAGES: { id: ProcessStage; label: string }[] = [
 ];
 
 const INK_PALETTE = [
-  { name: 'Rose', varColor: 'var(--color-accent-rose)', textClass: 'text-sunrise-rose', bgClass: 'bg-sunrise-rose', borderClass: 'border-sunrise-rose' },
-  { name: 'Iris', varColor: 'var(--color-accent-iris)', textClass: 'text-sunrise-iris', bgClass: 'bg-sunrise-iris', borderClass: 'border-sunrise-iris' },
-  { name: 'Azure', varColor: 'var(--color-accent-azure)', textClass: 'text-sunrise-azure', bgClass: 'bg-sunrise-azure', borderClass: 'border-sunrise-azure' },
-  { name: 'Ember', varColor: 'var(--color-accent-ember)', textClass: 'text-sunrise-ember', bgClass: 'bg-sunrise-ember', borderClass: 'border-sunrise-ember' },
+  { name: 'Rose', varColor: 'var(--color-accent-rose)', textClass: 'text-stage-rose', bgClass: 'bg-stage-rose', borderClass: 'border-stage-rose' },
+  { name: 'Iris', varColor: 'var(--color-accent-iris)', textClass: 'text-stage-iris', bgClass: 'bg-stage-iris', borderClass: 'border-stage-iris' },
+  { name: 'Azure', varColor: 'var(--color-accent-azure)', textClass: 'text-stage-azure', bgClass: 'bg-stage-azure', borderClass: 'border-stage-azure' },
+  { name: 'Ember', varColor: 'var(--color-accent-ember)', textClass: 'text-stage-ember', bgClass: 'bg-stage-ember', borderClass: 'border-stage-ember' },
   { name: 'Gold', varColor: 'var(--color-accent-gold)', textClass: 'text-cinema-gold', bgClass: 'bg-cinema-gold', borderClass: 'border-cinema-gold' },
 ] as const;
 

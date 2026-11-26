@@ -38,11 +38,11 @@ export interface Chapter03RealProps {
 }
 
 const LANG_DOT_CLASS: Record<string, string> = {
-  TypeScript: 'bg-sunrise-azure',
+  TypeScript: 'bg-stage-azure',
   JavaScript: 'bg-cinema-gold',
-  Python: 'bg-sunrise-iris',
-  CSS: 'bg-sunrise-rose',
-  HTML: 'bg-sunrise-ember',
+  Python: 'bg-stage-iris',
+  CSS: 'bg-stage-rose',
+  HTML: 'bg-stage-ember',
 };
 
 const FLOATING_DEV_GLYPHS = [
@@ -139,7 +139,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
         className="pointer-events-none absolute inset-0 z-0"
         style={{
           background:
-            'radial-gradient(ellipse 65% 55% at 62% 50%, rgba(76, 141, 255, 0.16) 0%, transparent 75%)',
+            'radial-gradient(ellipse 65% 55% at 62% 50%, color-mix(in srgb, var(--color-accent-azure) 14%, transparent) 0%, transparent 75%)',
         }}
       />
 
@@ -204,7 +204,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
           <div key={g.id} className={cn('absolute', g.pos)}>
             <div
               className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-sunrise-azure/25 bg-sunrise-azure/10 text-sunrise-azure/80 backdrop-blur-sm opacity-65',
+                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-stage-azure/25 bg-stage-azure/10 text-stage-azure/80 backdrop-blur-sm opacity-65',
                 !isReduced && g.anim
               )}
               style={!isReduced ? { animationDelay: g.delay } : undefined}
@@ -224,7 +224,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2.5">
-              <span className="font-mono text-xs uppercase tracking-[0.25em] text-sunrise-azure">
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-stage-azure">
                 CHAPTER 03
               </span>
               <span className="h-px w-8 bg-cinema-border" />
@@ -247,17 +247,17 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
               href={GITHUB_PROFILE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cinema-border bg-cinema-surface/70 backdrop-blur-sm font-mono text-[11px] text-cinema-text hover:border-sunrise-azure/60 transition-colors"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cinema-border bg-cinema-surface/70 backdrop-blur-sm font-mono text-[11px] text-cinema-text hover:border-stage-azure/60 transition-colors"
             >
               <span
                 className={cn(
                   'w-2 h-2 rounded-full',
-                  isLiveSynced ? 'bg-sunrise-azure animate-pulse' : 'bg-cinema-muted'
+                  isLiveSynced ? 'bg-stage-azure animate-pulse' : 'bg-cinema-muted'
                 )}
               />
               <span>@{GITHUB_USERNAME}</span>
               <span className="text-cinema-muted">·</span>
-              <span className="text-sunrise-azure">{repos.length} repos</span>
+              <span className="text-stage-azure">{repos.length} repos</span>
               <span className="text-cinema-muted">·</span>
               <span className="text-cinema-gold">{totalStars}★</span>
             </a>
@@ -266,7 +266,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
               type="button"
               onClick={syncFromGitHub}
               disabled={isSyncing}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-cinema-border bg-cinema-surface/70 font-mono text-[11px] text-cinema-muted hover:text-sunrise-azure hover:border-sunrise-azure/50 transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-cinema-border bg-cinema-surface/70 font-mono text-[11px] text-cinema-muted hover:text-stage-azure hover:border-stage-azure/50 transition-colors cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className={cn('w-3 h-3', isSyncing && 'animate-spin')} />
               <span>{isSyncing ? 'Syncing' : 'Sync'}</span>
@@ -290,8 +290,8 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
                   className={cn(
                     'px-3 py-1 rounded-full border font-mono text-[11px] transition-all cursor-pointer',
                     active
-                      ? 'border-sunrise-azure bg-sunrise-azure/15 text-sunrise-azure'
-                      : 'border-cinema-border/70 bg-cinema-surface/40 text-cinema-muted hover:text-cinema-text hover:border-sunrise-azure/40'
+                      ? 'border-stage-azure bg-stage-azure/15 text-stage-azure'
+                      : 'border-cinema-border/70 bg-cinema-surface/40 text-cinema-muted hover:text-cinema-text hover:border-stage-azure/40'
                   )}
                 >
                   {lang}
@@ -305,7 +305,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
               type="button"
               onClick={() => selectRepo(safeIndex - 1)}
               aria-label="Previous repository"
-              className="p-1.5 rounded-full border border-cinema-border hover:border-sunrise-azure/60 hover:text-sunrise-azure transition-colors cursor-pointer"
+              className="p-1.5 rounded-full border border-cinema-border hover:border-stage-azure/60 hover:text-stage-azure transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
             </button>
@@ -316,7 +316,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
               type="button"
               onClick={() => selectRepo(safeIndex + 1)}
               aria-label="Next repository"
-              className="p-1.5 rounded-full border border-cinema-border hover:border-sunrise-azure/60 hover:text-sunrise-azure transition-colors cursor-pointer"
+              className="p-1.5 rounded-full border border-cinema-border hover:border-stage-azure/60 hover:text-stage-azure transition-colors cursor-pointer"
             >
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
@@ -333,7 +333,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
             {filteredRepos.map((repo, idx) => {
               const isSelected = idx === safeIndex;
               const dotClass =
-                (repo.language && LANG_DOT_CLASS[repo.language]) || 'bg-sunrise-azure';
+                (repo.language && LANG_DOT_CLASS[repo.language]) || 'bg-stage-azure';
 
               return (
                 <button
@@ -343,12 +343,12 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
                   className={cn(
                     'shrink-0 lg:w-full text-left px-4 py-3 rounded-xl border transition-all duration-200 flex items-center justify-between gap-3 cursor-pointer',
                     isSelected
-                      ? 'border-sunrise-azure/70 bg-sunrise-azure/10 text-cinema-text shadow-[0_0_24px_rgba(76,141,255,0.12)]'
+                      ? 'border-stage-azure/70 bg-stage-azure/10 text-cinema-text shadow-[0_0_24px_rgba(76,141,255,0.12)]'
                       : 'border-cinema-border/50 bg-cinema-surface/30 text-cinema-muted hover:text-cinema-text hover:border-cinema-border'
                   )}
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className={cn('font-mono text-[10px]', isSelected ? 'text-sunrise-azure font-bold' : 'text-cinema-muted/60')}>
+                    <span className={cn('font-mono text-[10px]', isSelected ? 'text-stage-azure font-bold' : 'text-cinema-muted/60')}>
                       0{idx + 1}
                     </span>
                     <span className="font-sans text-sm font-medium truncate">
@@ -382,9 +382,9 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
                   className="space-y-6"
                 >
                   {/* Open Editorial Title Block with Vertical Azure Rule */}
-                  <div className="border-l-2 border-sunrise-azure pl-5 sm:pl-7 space-y-3">
+                  <div className="border-l-2 border-stage-azure pl-5 sm:pl-7 space-y-3">
                     <div className="flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-[0.2em]">
-                      <span className="text-sunrise-azure">
+                      <span className="text-stage-azure">
                         REPO 0{safeIndex + 1}
                       </span>
                       {activeRepo.language && (
@@ -394,7 +394,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
                             <span
                               className={cn(
                                 'w-2 h-2 rounded-full',
-                                LANG_DOT_CLASS[activeRepo.language] || 'bg-sunrise-azure'
+                                LANG_DOT_CLASS[activeRepo.language] || 'bg-stage-azure'
                               )}
                             />
                             {activeRepo.language}
@@ -428,22 +428,22 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
                   </div>
 
                   {/* Interactive Clone CLI Bar */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 rounded-xl border border-sunrise-azure/30 bg-cinema-surface/70 backdrop-blur-md font-mono text-xs">
+                  <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 rounded-xl border border-stage-azure/30 bg-cinema-surface/70 backdrop-blur-md font-mono text-xs">
                     <div className="flex items-center gap-2.5 text-cinema-muted truncate">
-                      <Terminal className="w-4 h-4 text-sunrise-azure shrink-0" />
+                      <Terminal className="w-4 h-4 text-stage-azure shrink-0" />
                       <span className="truncate">
-                        <span className="text-sunrise-azure">$</span> git clone {activeRepo.html_url}.git
+                        <span className="text-stage-azure">$</span> git clone {activeRepo.html_url}.git
                       </span>
                     </div>
                     <button
                       type="button"
                       onClick={handleCopyClone}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-cinema-border bg-cinema-bg/70 text-[10px] uppercase tracking-wider text-cinema-text hover:border-sunrise-azure/60 hover:text-sunrise-azure transition-colors cursor-pointer shrink-0"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-cinema-border bg-cinema-bg/70 text-[10px] uppercase tracking-wider text-cinema-text hover:border-stage-azure/60 hover:text-stage-azure transition-colors cursor-pointer shrink-0"
                     >
                       {copiedClone ? (
                         <>
-                          <Check className="w-3 h-3 text-sunrise-azure" />
-                          <span className="text-sunrise-azure">Copied</span>
+                          <Check className="w-3 h-3 text-stage-azure" />
+                          <span className="text-stage-azure">Copied</span>
                         </>
                       ) : (
                         <>
@@ -460,7 +460,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
                       href={activeRepo.html_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-sunrise-azure text-cinema-bg font-mono text-xs font-semibold uppercase tracking-[0.16em] hover:opacity-90 transition-opacity"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-stage-azure text-cinema-bg font-mono text-xs font-semibold uppercase tracking-[0.16em] hover:opacity-90 transition-opacity"
                     >
                       <span>View on GitHub</span>
                       <ArrowUpRight className="w-4 h-4" />
@@ -471,7 +471,7 @@ export function Chapter03Real({ chapter }: Chapter03RealProps) {
                         href={activeRepo.homepage}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-sunrise-azure/50 bg-sunrise-azure/10 text-sunrise-azure font-mono text-xs font-semibold uppercase tracking-[0.16em] hover:bg-sunrise-azure/20 transition-colors"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-stage-azure/50 bg-stage-azure/10 text-stage-azure font-mono text-xs font-semibold uppercase tracking-[0.16em] hover:bg-stage-azure/20 transition-colors"
                       >
                         <span>Launch Live App</span>
                         <ExternalLink className="w-3.5 h-3.5" />
