@@ -92,8 +92,7 @@ export function EditorialPosterHero({
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0 opacity-60"
         style={{
-          background:
-            'radial-gradient(ellipse 70% 60% at 50% 48%, rgba(46, 42, 38, 0.45) 0%, rgba(12, 12, 12, 0) 75%)',
+          background: 'var(--color-poster-spotlight)',
         }}
       />
 
@@ -199,7 +198,7 @@ export function EditorialPosterHero({
             href={`#${nextSectionId}`}
             onClick={handleScrollToNext}
             aria-label="Explore Chinmoy's documentary portfolio"
-            className="group inline-flex items-center gap-2.5 text-poster-cream hover:text-white transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold rounded-sm py-1 px-1.5"
+            className="group inline-flex items-center gap-2.5 text-poster-cream hover:opacity-80 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-gold rounded-sm py-1 px-1.5"
           >
             <span className="hidden sm:inline-block font-mono text-[11px] tracking-[0.25em] uppercase text-poster-muted group-hover:text-poster-cream transition-colors">
               Explore
